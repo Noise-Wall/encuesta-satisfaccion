@@ -1,0 +1,45 @@
+<%- include('templates/header.ejs') %> <%- include('templates/navbar.ejs') %>
+
+<div class="contenedor panel">
+  <% if (data.length<1) { %>
+  <h3>Error: la encuesta no tiene preguntas.</h3>
+  <a href="/encuesta">
+    <boton class="boton"> Agregar preguntas a la encuesta </boton>
+  </a>
+  <% } else { %>
+  <h3>Encuesta de Satisfacción al Cliente</h3>
+  <p>
+    Estimado cliente, nos dirigimos a usted para solicitarle la realización del
+    siguiente cuestionario, con el propósito de ajustarnos mejor a sus
+    necesidades. Su opinión es de gran importancia para nosotros.
+  </p>
+  <p>
+    A continuación se suministrará una serie de preguntas con el propósito de
+    mejorar nuestra calidad de servicio, favor de marcar la opción que
+    corresponda a su opinión.
+  </p>
+  <% let categoriaPrev = null %> <% for (let i = 0; i < data.length; i++) { %>
+  <% if (categoriaPrev !== data[i].contenidoCategoria) { %>
+  <h3><%= data[i].contenidoCategoria %></h3>
+  <% } %> <% categoriaPrev=data[i].contenidoCategoria %>
+  <fieldset>
+    <legend><%= data[i].contenidoPregunta %></legend>
+    <input type="radio" name="pregunta-<%= data[i].idPregunta %>" value="10" />
+    <label for="10">Excelente</label>
+    <input type="radio" name="pregunta-<%= data[i].idPregunta %>" value="8" />
+    <label for="8">Bueno</label>
+    <input type="radio" name="pregunta-<%= data[i].idPregunta %>" value="6" />
+    <label for="6">Regular</label>
+    <input type="radio" name="pregunta-<%= data[i].idPregunta %>" value="4" />
+    <label for="4">Malo</label>
+    <input type="radio" name="pregunta-<%= data[i].idPregunta %>" value="2" />
+    <label for="2">Pésimo</label>
+  </fieldset>
+  <% } %> <% } %>
+  <a href="/responder/enviar">
+    <button class="boton">Enviar respuestas</button>
+  </a>
+  <a href="/">Regresar</a>
+</div>
+
+<%- include('templates/footer.ejs') %>
