@@ -5,9 +5,8 @@ USE EncuestaDeSatisfaccion;
 CREATE TABLE Empresa(
 	idEmpresa INT NOT NULL AUTO_INCREMENT,
 	nombreEmpresa VARCHAR(255) NOT NULL,
-	nombre VARCHAR(255) NOT NULL,
+	nombreContacto VARCHAR(255) NOT NULL,
 	correo VARCHAR(60) NOT NULL,
-	observaciones LONGTEXT,
 	PRIMARY KEY (idEmpresa)
 );
 

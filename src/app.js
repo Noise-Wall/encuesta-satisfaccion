@@ -4,9 +4,10 @@ const ejs = require("ejs");
 const mysql = require("mysql2");
 const myConnection = require("express-myconnection");
 const app = express();
+require("dotenv").config();
 
 // herramientas de development
-if (!process.env.NODE_ENV) {
+if (process.env.ENV === "dev") {
   const morgan = require("morgan");
   app.use(morgan("dev"));
 }
@@ -29,11 +30,11 @@ app.use(
   myConnection(
     mysql,
     {
-      host: "localhost",
-      user: "root",
-      password: "AaBb123#",
-      port: 3306,
-      database: "EncuestaDeSatisfaccion",
+      host: process.env.HOST,
+      user: process.env.DBUSERNAME,
+      password: process.env.DBPASSWORD,
+      port: process.env.DBPORT,
+      database: process.env.DBNAME,
     },
     "request"
   )
@@ -52,4 +53,8 @@ app.use("/resultados", resultadosRoute);
 // codigo 404 para rutas no existentes
 app.all("*", (req, res) => res.status(404).render("404"));
 
-app.listen(8080, () => console.log("Server is listening on port 8080..."));
+console.log(new Date());
+
+app.listen(process.env.PORT, () =>
+  console.log(`Server is listening on port ${process.env.PORT}...`)
+);

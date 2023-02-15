@@ -1,0 +1,34 @@
+<%- include('templates/header.ejs') %> <%- include('templates/navbar.ejs') %>
+
+<div class="contenedor panel">
+  <form action="/responder/encuesta" method="post">
+    <fieldset>
+      <legend>Busque aquí su empresa</legend>
+      <input type="text" list="empresasResult" name="search" 
+      <% if (data.length < 1)  { %>
+        placeholder="No se encontró ningún valor."
+        disabled
+      <% } %> />  
+      <datalist id="empresasResult">
+          <% for (let i = 0; i<data.length;i++) { %>
+            <option value="<%= data[i].nombreEmpresa %>">
+            <input type="hidden" name="idEmpresa" value="<%= data[i].idEmpresa %>">
+          <% } %>  
+      </datalist>
+    </fieldset>
+    <fieldset>
+      <legend>O llene el siguiente formulario:</legend>
+      <label for="nombreEmpresa">Nombre de empresa:</label>
+      <input type="text" name="nombreEmpresa" />
+      <label for="correo">Correo electrónico:</label>
+      <input type="text" name="correo">
+      <label for="nombreContacto">Nombre del contacto:</label>
+      <input type="text" name="nombreContacto">
+    </fieldset>
+    <button type="submit" class="boton">Proceder a las preguntas</button>
+  </form>
+  <a href="/">Regresar</a>
+  <script src="/js/formEmpresa.js"></script>
+</div>
+
+<%- include('templates/footer.ejs') %>
