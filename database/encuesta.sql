@@ -6,17 +6,8 @@ CREATE TABLE Empresa(
 	idEmpresa INT NOT NULL AUTO_INCREMENT,
 	nombreEmpresa VARCHAR(255) NOT NULL,
 	nombreContacto VARCHAR(255) NOT NULL,
-	correo VARCHAR(60) NOT NULL,
+	correo VARCHAR(100) NOT NULL,
 	PRIMARY KEY (idEmpresa)
-);
-
-CREATE TABLE Pregunta(
-	idPregunta INT NOT NULL AUTO_INCREMENT,
-	contenidoPregunta LONGTEXT NOT NULL,
-	idCategoria INT NOT NULL,
-	enEncuesta BOOL NOT NULL
-	PRIMARY KEY (idPregunta),
-	FOREIGN KEY (idCategoria) REFERENCES Categoria(idCategoria)
 );
 
 CREATE TABLE Categoria(
@@ -25,18 +16,43 @@ CREATE TABLE Categoria(
 	PRIMARY KEY (idCategoria)
 );
 
+CREATE TABLE Pregunta(
+	idPregunta INT NOT NULL AUTO_INCREMENT,
+	contenidoPregunta LONGTEXT NOT NULL,
+	idCategoria INT NOT NULL,
+	deshabilitada INT,
+	PRIMARY KEY (idPregunta),
+	FOREIGN KEY (idCategoria) REFERENCES Categoria(idCategoria)
+);
+
+CREATE TABLE Encuesta(
+	idEncuesta INT NOT NULL AUTO_INCREMENT,
+	fecha DATE NOT NULL,
+	comentarios LONGTEXT,
+	idEmpresa INT NOT NULL,
+	PRIMARY KEY (idEncuesta),
+	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa)
+);
+
 CREATE TABLE Respuesta(
 	idRespuesta INT NOT NULL AUTO_INCREMENT,
-	idPregunta INT NOT NULL,
-	idEmpresa INT NOT NULL,
-	fecha DATE NOT NULL,
 	valor INT NOT NULL,
-	PRIMARY KEY (idRespuesta),
-	FOREIGN KEY (idPregunta) REFERENCES Pregunta(idPregunta)
-	FOREIGN KEY (idEmpresa) REFERENCES Encuesta(idEmpresa)
+	PRIMARY KEY (idRespuesta)
+);
+
+
+CREATE TABLE QA(
+	idPregunta INT NOT NULL,
+	idEncuesta INT NOT NULL,
+	idRespuesta INT NOT NULL,
+	FOREIGN KEY (idPregunta) REFERENCES Pregunta(idPregunta),
+	FOREIGN KEY (idEncuesta) REFERENCES Encuesta(idEncuesta),
+	FOREIGN KEY (idRespuesta) REFERENCES Respuesta(idRespuesta)
 );
 
 DESCRIBE Empresa;
 DESCRIBE Categoria;
 DESCRIBE Pregunta;
+DESCRIBE Encuesta;
 DESCRIBE Respuesta;
+DESCRIBE QA;

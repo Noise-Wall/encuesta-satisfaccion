@@ -1,3 +1,2 @@
-node_modules
-todo.md
-.env
+server/node_modules
+client/node_modules
