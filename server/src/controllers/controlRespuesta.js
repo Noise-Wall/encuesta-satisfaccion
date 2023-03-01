@@ -29,7 +29,7 @@ controller.get = (req, res) => {
     const querySingle = query(req, res, sql, id);
     Promise.all([querySingle]).then((data) => {
       res.json({
-        Categoria: data[0],
+        Respuesta: data[0],
       });
     });
   };

@@ -1,7 +1,11 @@
 const router = require('express').Router();
 
-const encuestaController = require("../controllers/temp");
+const encuestaController = require("../controllers/controlEncuesta");
 
-router.get("/", encuestaController.temp);
+router.get("/", encuestaController.get);
+router.post("/", encuestaController.insert);
+router.get("/:id", encuestaController.getSingle);
+router.patch("/update/:id", encuestaController.update);
+router.delete("/delete/:id", encuestaController.delete);
 
 module.exports = router;

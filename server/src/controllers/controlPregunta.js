@@ -29,8 +29,22 @@ controller.getSingle = (req, res) => {
   const querySingle = query(req, res, sql, id);
   Promise.all([querySingle]).then((data) => {
     res.json({
-      Categoria: data[0],
+      Pregunta: data[0],
     });
+  });
+};
+// metodo HTTP GET con parametros query para obtener todas las preguntas de una categoria que esten habilitadas. cuando no haya query, regresa la concatenacion de ambas tablas.
+controller.getByCategoria = (req, res) => {
+  const cat = req.query.id || null;
+  let sql;
+  cat
+    ? (sql =
+        "SELECT * FROM Pregunta INNER JOIN Categoria on Pregunta.idCategoria = Categoria.idCategoria WHERE Pregunta.idCategoria = ? AND Pregunta.deshabilitada = 0")
+    : (sql =
+        "SELECT * FROM Pregunta INNER JOIN Categoria on Pregunta.idCategoria = Categoria.idCategoria");
+  const queryByCategoria = query(req, res, sql, cat);
+  Promise.all([queryByCategoria]).then((data) => {
+    res.json(data);
   });
 };
 // metodo HTTP PATCH para actualizar una entrada en Pregunta
