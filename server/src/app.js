@@ -3,6 +3,7 @@ const app = express();
 const mysql = require("mysql2");
 const myConnection = require("express-myconnection");
 require("dotenv").config();
+const cors = require("cors");
 
 // dev environment
 if (process.env.ENV === "production") {
@@ -22,6 +23,14 @@ const resultadosRoute = require("./routes/resultados");
 // settings
 app.set("port", process.env.PORT || 8080);
 app.use(express.urlencoded({ extended: false }));
+// otorga acceso al front end a hacer requests del API
+app.use(
+  cors({
+    origin: "http://localhost:8080",
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
 
 // mysql connection
 app.use(
