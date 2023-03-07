@@ -1,7 +1,12 @@
 import Api from "@/services/API";
 
+function get() {
+  return Api().get("/categorias");
+}
+
 export default {
-  getCategorias() {
-    return Api().get("/categorias");
+  async getCategorias(data) {
+    const res = await get()
+    data.jsonData = res.data
   },
 };

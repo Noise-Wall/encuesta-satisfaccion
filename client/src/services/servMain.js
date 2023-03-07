@@ -1,7 +1,12 @@
 import Api from "@/services/API";
 
+function get() {
+  return Api().get("/");
+}
+
 export default {
-  getAll() {
-    return Api().get("/");
+  async getAll(data) {
+    const res = await get()
+    data.jsonData = res.data
   },
 };

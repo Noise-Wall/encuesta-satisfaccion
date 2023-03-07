@@ -1,6 +1,7 @@
 <script>
 // components
 import Navbar from './components/navbar.vue';
+import TableHead from './components/tableHead.vue';
 import servMain from './services/servMain'
 import servEmpresas from './services/servEmpresas'
 import servCategorias from './services/servCategorias'
@@ -15,65 +16,51 @@ export default {
     return {
       msg: 'Portal de administrador',
       categoria: '',
+      tableTitulos: [], 
+      tableColumnas: '',
       jsonData: {},
     }
   },
   // componentes externos
   components: {
-    Navbar
+    Navbar, TableHead,
   },
   // funciones
   methods: {
-    setCategoria(e) {
+    async setCategoria(e) {
       this.categoria = e.target.innerHTML
       switch (this.categoria) {
         case "Empresas":
-          this.getEmpresas()
+          servEmpresas.getEmpresas(this)
+          this.tableColumnas = 'tabla-col4'
+          this.tableTitulos = ['ID', 'Nombre Empresa', 'Nombre Contacto', 'Correo']
           return;
         case "Categorias":
-          this.getCategorias()
+          servCategorias.getCategorias(this)
+          this.tableColumnas = 'tabla-col2'
+          this.tableTitulos = ['ID', 'Categoria']
           return;
         case "Preguntas":
-          this.getPreguntas()
+          servPreguntas.getPreguntas(this);
+          this.tableColumnas = 'tabla-col4'
+          this.tableTitulos = ['ID', 'Contenido Pregunta', 'ID Categoria', 'Habilitada']
           return;
         case "Encuestas":
-          this.getEncuestas()
+          servEncuestas.getEncuestas(this)
+          this.tableColumnas = 'tabla-col4'
+          this.tableTitulos = ['ID', 'Fecha', 'Comentarios', 'ID Empresa']
           return;
         case "Respuestas":
-          this.getRespuestas()
+          servRespuestas.getRespuestas(this)
+          this.tableColumnas = 'tabla-col2'
+          this.tableTitulos = ['ID', 'Valor']
           return;
         case "Resultados":
-          this.getResultados()
+          servResultados.getResultados(this)
+          this.tableColumnas = 'tabla-col3'
+          this.tableTitulos = ['','','']
           return;
       }
-    },
-    async getAll() {
-      const res = await servMain.getAll()
-      this.jsonData = res.data
-    },
-    async getEmpresas() {
-      const res = await servEmpresas.getEmpresas()
-      this.jsonData = res.data
-    },
-    async getCategorias() {
-      const res = await servCategorias.getCategorias()
-      this.jsonData = res.data
-    },
-    async getPreguntas() {
-      const res = await servPreguntas.getPreguntas()
-      this.jsonData = res.data
-    },
-    async getEncuestas() {
-      const res = await servEncuestas.getEncuestas()
-      this.jsonData = res.data
-    },
-    async getRespuestas() {
-      const res = await servRespuestas.getRespuestas()
-      this.jsonData = res.data
-    },
-    async getResultados() {
-      const res = await servResultados.getResultados()
-      this.jsonData = res.data
     },
   },
 }
@@ -95,15 +82,13 @@ export default {
 
     </section>
     <section v-if="categoria">
-      <p>{{ categoria }}</p>
-      <ul>
-        <span v-for="entry in jsonData">
-          <li v-for="children in entry">
-            {{ children }}
-          </li>
-        </span>
-      </ul>
-      <!-- <p>{{ jsonData }}</p> -->
+      <p :style="'font-weight:bold;'">{{ categoria }}</p>
+      <TableHead 
+      :tableTitulos="tableTitulos" 
+      :tableColumnas="tableColumnas"
+      :tableData="jsonData"/>
+
+      <button class="boton"><h1>+</h1></button>
     </section>
   </main>
 </template>

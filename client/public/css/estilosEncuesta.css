@@ -7,6 +7,7 @@
   --colorFondo1: #1e90e6b3;
   --colorFondo2: #34495e;
   --shadow: rgba(0,0,0,0.2);
+  --colorDarkGray: rgb(50,50,50)
 }
 
 * {
@@ -80,6 +81,8 @@ section > p {
   text-align: center;
 }
 
+/* Menu de seleccion de categorias */
+
 .menu {
   width: 100%;
   padding: 15px;
@@ -87,6 +90,7 @@ section > p {
   display: flex;
   justify-content: space-between;
   background-color: var(--color2);
+  cursor: pointer;
 }
 
 .menu a {
@@ -94,4 +98,95 @@ section > p {
   color: var(--colorlaquin);
   background-color: var(--color3);
   padding: 20px 10px;
+}
+
+.menu > li:hover { 
+  color: rgba(95, 238, 90, 0.9);
+  font-size: 1.05rem;
+  text-decoration: underline;
+}
+
+.menu > li:active {
+  color: orange;
+  font-size: 1.05rem;
+  text-decoration: underline;
+}
+
+/* Clases de tabla */
+
+.panel-tabla {
+  margin: 15px 0;
+  overflow-y: scroll;
+  display: grid;
+  gap: 1px;
+}
+
+.tabla-col5 {
+  grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+}
+
+.tabla-col4 {
+  grid-template-columns: 1fr 5fr 2fr 1fr;
+}
+
+.tabla-col3 {
+  grid-template-columns: 1fr 5fr 1fr;
+}
+
+.tabla-col2 {
+  grid-template-columns: 1fr 2fr;
+}
+
+.item-tabla {
+  display: inline-grid;
+  text-align: center;
+  align-items: center;
+  border: 1px solid rgba(150, 150, 150, 0.4);
+  gap: 3px;
+  border-radius: 5px;
+}
+
+.item-tabla-head {
+  border-top: 5px solid rgba(7, 200, 222, 0.7);
+  font-family: 'Source Serif Pro', serif;
+  color: white;
+  background-color: var(--colorDarkGray);
+  min-height: 45px;
+  padding: 5px 10px;
+}
+
+/* botones */
+.boton {
+  width: 100%;
+  background-color: var(--colorDarkGray);
+  display: inline-block;
+  padding: 10px;
+  border: none;
+  color: #fff;
+  font-family: "open sans";
+  border-top: 5px solid rgba(7, 200, 222, 0.7);
+}
+
+.boton h1 {
+  color: white;
+  padding: 0;
+  margin: 0;
+}
+
+.boton:hover {
+  background-color: var(--colorFondo1);
+}
+
+.boton-rojo {
+  background-color: rgb(170, 40, 40);
+  border-top: 5px solid var(--colorlaquin);
+}
+
+.boton-rojo:hover {
+  background-color: rgb(255, 100, 100);
+}
+
+.boton:focus {
+  background-color: white;
+  color: var(--colorDarkGray);
 }
