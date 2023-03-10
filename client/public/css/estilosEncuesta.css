@@ -6,36 +6,45 @@
   --fondo: #f2f2f2;
   --colorFondo1: #1e90e6b3;
   --colorFondo2: #34495e;
-  --shadow: rgba(0,0,0,0.2);
-  --colorDarkGray: rgb(50,50,50)
+  --shadow: rgba(0, 0, 0, 0.2);
+  --colorDarkGray: rgb(50, 50, 50);
 }
 
 * {
   box-sizing: border-box;
   color: var(--colorlaquin);
+  animation: fadein 0.5s;
 }
 
-*:before, *:after {
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
 body {
   background-color: var(--fondo);
-  font-family: 'Open Sans', serif;
+  font-family: "Open Sans", serif;
 }
 
-h1,h2,h3,h4,h5,h6 {
-  font-family: 'Source Serif Pro', serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Source Serif Pro", serif;
   font-size: 1.5rem;
   font-weight: 200;
 }
+
+/* Barra de navegacion */
 
 nav {
   position: fixed;
   width: 100%;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   padding: 10px;
   height: 5rem;
   border-bottom: 1px solid lightgray;
@@ -62,14 +71,16 @@ nav h1 {
 }
 
 .whitespace {
-  color: rgba(0,0,0,0)
+  color: rgba(0, 0, 0, 0);
 }
+
+/* Elementos */
 
 main {
   margin-top: 3rem;
   border: 1px solid blue;
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   padding: 25px;
 }
 
@@ -100,7 +111,7 @@ section > p {
   padding: 20px 10px;
 }
 
-.menu > li:hover { 
+.menu > li:hover {
   color: rgba(95, 238, 90, 0.9);
   font-size: 1.05rem;
   text-decoration: underline;
@@ -148,7 +159,7 @@ section > p {
 
 .item-tabla-head {
   border-top: 5px solid rgba(7, 200, 222, 0.7);
-  font-family: 'Source Serif Pro', serif;
+  font-family: "Source Serif Pro", serif;
   color: white;
   background-color: var(--colorDarkGray);
   min-height: 45px;
@@ -189,4 +200,60 @@ section > p {
 .boton:focus {
   background-color: white;
   color: var(--colorDarkGray);
+}
+
+/* Animaciones */
+
+.cargando {
+  border: 15px solid var(--shadow);
+  border-top: 15px solid var(--colorlaquin);
+  border-radius: 50%;
+  margin: 20px auto;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+/* Iconos */
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.fa-solid {
+  margin: 3px auto;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.fa-trash-can {
+  color:rgb(196, 0, 0);
+}
+
+.fa-solid:hover {
+  opacity: 60%;
+}
+
+.fa-solid:active {
+  color: orange;
 }

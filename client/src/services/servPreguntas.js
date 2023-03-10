@@ -7,6 +7,6 @@ function get() {
 export default {
   async getPreguntas(data) {
     const res = await get()
-    data.jsonData = res.data
+    data.jsonData = Array.from(res.data.Pregunta)
   },
 };
