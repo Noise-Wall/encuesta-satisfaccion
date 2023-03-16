@@ -7,6 +7,6 @@ function get() {
 export default {
   async getEncuestas(data) {
     const res = await get()
-    data.jsonData = Array.from(res.data.Encuesta)
+    data.data = Array.from(res.data.Encuesta)
   },
 };

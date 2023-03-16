@@ -1,9 +1,7 @@
-<script>
-    export default {
-        props: {
-            navTitulo: String
-        }
-    }
+<script setup>
+    const props = defineProps({
+        navTitulo: String,
+    })
 </script>
 
 <template>

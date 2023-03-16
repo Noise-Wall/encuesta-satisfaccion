@@ -7,6 +7,6 @@ function get() {
 export default {
   async getCategorias(data) {
     const res = await get()
-    data.jsonData = Array.from(res.data.Categoria)
+    data.data = Array.from(res.data.Categoria)
   },
 };
