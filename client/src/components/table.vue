@@ -1,4 +1,7 @@
 <script setup>
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
 const props = defineProps({
   tablaTitulos: Array,
   tablaColumnas: String,
@@ -19,17 +22,12 @@ const props = defineProps({
       <div class="item-tabla actions">
         <i
           class="fa-solid fa-file-pen"
-          :data-key="index"
-          :data-value="Object.values(parent)[0]"
-          @click="funcEditar"
+          @click="router.push(`/edit/${Object.values(parent)[0]}`)"
         ></i>
         <i
           class="fa-solid fa-trash-can"
-          :data-key="index"
-          :data-value="Object.values(parent)[0]"
-          @click="funcEliminar"
+          @click="router.push(`/eliminar/${Object.values(parent)[0]}`)"
         ></i>
-        <template></template>
       </div>
     </template>
   </div>
