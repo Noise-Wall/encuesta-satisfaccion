@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 // otorga acceso al front end a hacer requests del API
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: `http://localhost:${process.env.HOST}`,
     credentials: true,
     optionsSuccessStatus: 200,
   })
@@ -44,7 +44,7 @@ app.use(
       database: process.env.DBNAME,
     },
     "request"
-  )
+  ),
 );
 
 // rutas
