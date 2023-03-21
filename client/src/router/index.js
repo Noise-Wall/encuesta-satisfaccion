@@ -9,9 +9,10 @@ const router = createRouter({
             component: ()=>import("../views/HomeView.vue")
         },
         {
-            path: "/edit",
+            path: "/edit/:categoria/:id",
             name: "edit",
-            component: ()=>import("../views/EditView.vue")
+            params: true,
+            component: ()=>import("../views/EditView.vue"),
         },
     ]
 })

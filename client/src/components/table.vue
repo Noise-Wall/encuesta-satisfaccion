@@ -1,12 +1,43 @@
 <script setup>
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 const props = defineProps({
   tablaTitulos: Array,
   tablaColumnas: String,
   tablaData: Array,
 });
+
+// routes to editView with data passed through states
+function edit(key, object) {
+  let categoria;
+  switch (Object.keys(object)[0]) {
+    case 'idEmpresa':
+      categoria = 'empresa'
+      break;
+    case 'idCategoria':
+      categoria = 'categoria'
+      break;
+    case 'idPregunta':
+      categoria = 'pregunta'
+      break;
+    case 'idEncuesta':
+      categoria = 'encuesta'
+      break;
+    case 'idRespuesta':
+      categoria = 'respuesta'
+      break;
+    default:
+      console.log('Categoria invalida')
+      return
+  }
+  const data = object
+  router.push({
+    name: "edit",
+    state: data,
+    params: { categoria: categoria, id: key },
+  });
+}
 </script>
 
 <template>
@@ -22,7 +53,7 @@ const props = defineProps({
       <div class="item-tabla actions">
         <i
           class="fa-solid fa-file-pen"
-          @click="router.push(`/edit/${Object.values(parent)[0]}`)"
+          @click="edit(Object.values(parent)[0], parent)"
         ></i>
         <i
           class="fa-solid fa-trash-can"
