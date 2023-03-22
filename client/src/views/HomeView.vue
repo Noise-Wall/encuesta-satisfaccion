@@ -1,11 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import Tabla from "../components/table.vue";
-import Empresas from "../services/servEmpresas";
-import Categorias from "../services/servCategorias";
-import Preguntas from "../services/servPreguntas";
-import Encuestas from "../services/servEncuestas";
-import Respuestas from "../services/servRespuestas";
+import get from "../services/get";
 
 const categoria = ref("");
 let jsonData = ref([]);
@@ -20,7 +16,7 @@ async function setCategoria(e) {
 
   switch (categoria.value) {
     case "Empresas":
-      Promise.all([Empresas.getEmpresas(temp)]).then(
+      Promise.all([get.getEmpresas(temp)]).then(
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col5";
@@ -32,14 +28,14 @@ async function setCategoria(e) {
       ];
       return;
     case "Categorias":
-      Promise.all([Categorias.getCategorias(temp)]).then(
+      Promise.all([get.getCategorias(temp)]).then(
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col3";
       tablaTitulos.value = ["ID", "Contenido"];
       return;
     case "Preguntas":
-      Promise.all([Preguntas.getPreguntas(temp)]).then(
+      Promise.all([get.getPreguntas(temp)]).then(
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col5";
@@ -51,14 +47,14 @@ async function setCategoria(e) {
       ];
       return;
     case "Encuestas":
-    Promise.all([Encuestas.getEncuestas(temp)]).then(
+    Promise.all([get.getEncuestas(temp)]).then(
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col5";
       tablaTitulos.value = ["ID", "Fecha", "Comentarios","Empresa"];
       return;
     case "Respuestas":
-        Promise.all([Respuestas.getRespuestas(temp)]).then(
+        Promise.all([get.getRespuestas(temp)]).then(
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col3";
@@ -89,6 +85,7 @@ async function setCategoria(e) {
         :tablaColumnas="tablaColumnas"
         :tablaData="jsonData"
       />
+      <button class="boton"><h1>+</h1></button>
     </template>
     <template v-else>
       <div class="cargando"></div>

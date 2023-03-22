@@ -167,6 +167,7 @@ section > p {
 }
 
 /* botones */
+
 .boton {
   width: 100%;
   background-color: var(--colorDarkGray);
@@ -256,4 +257,30 @@ section > p {
 
 .fa-solid:active {
   color: orange;
+}
+
+/* Formularios */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 25px;
+}
+
+.form-item {
+  width: 100%;
+}
+
+.form > input {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  height: 35px;
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.form > label {
+  font-family: "Source Serif Pro", serif;
+  font-size: 1.1rem;
 }

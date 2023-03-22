@@ -51,6 +51,7 @@ controller.getByCategoria = (req, res) => {
 controller.update = (req, res) => {
   const id = req.params.id;
   const body = req.body;
+  console.log(body)
   const sql = "UPDATE Pregunta SET ? WHERE idPregunta = ?";
   const queryUpdate = query(req, res, sql, [body, id]);
   Promise.all([queryUpdate]).then(() => {
