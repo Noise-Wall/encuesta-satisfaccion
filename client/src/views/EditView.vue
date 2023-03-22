@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 import update from "../services/update";
+import get from "../services/get";
+
+import FormPregunta from "../components/formPregunta.vue"
 
 // declarar route para obtener parametros
 const route = useRoute();
@@ -13,6 +16,14 @@ let currentState = Object.entries(history.state).splice(
   Object.entries(history.state).length
 );
 console.log(currentState);
+
+// obtener informacion extra, e.g. la lista de categorias cuando se modifiquen las preguntas, la lista de empresas al modificar las encuestas
+const extraData = ref([])
+const extraDataDisplay = ref('')
+if (route.params.categoria === 'pregunta') {
+  const temp = {}
+  Promise.all([get.getCategorias(temp)]).then(()=>(extraData.value=temp.data))
+}
 
 async function actualizar() {
   // Se recaba la informacion del formulario y se acomoda
@@ -43,15 +54,7 @@ async function actualizar() {
   <section>
     <p>Editar {{ route.params.categoria }}</p>
     <form class="form" id="form">
-      <template v-for="item in currentState">
-        <label :for="item[0]" :class="'form-item'">{{ item[0] }}</label>
-        <input
-          type="text"
-          :name="item[0]"
-          :value="item[1]"
-          :class="'form-item'"
-        />
-      </template>
+      <FormPregunta v-if="route.params.categoria === 'pregunta'" :currentState="currentState" :catData="extraData"/>
     </form>
     <button class="boton" @click="actualizar">
       Actualizar {{ route.params.categoria }}

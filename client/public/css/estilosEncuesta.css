@@ -272,12 +272,17 @@ section > p {
   width: 100%;
 }
 
-.form > input {
+.form > input, select {
   border: 1px solid lightgray;
   border-radius: 5px;
   height: 35px;
   padding: 5px;
   font-size: 1rem;
+}
+
+.form > input[type="radio"] {
+  font-size: 0.7rem;
+  width:50%;
 }
 
 .form > label {
