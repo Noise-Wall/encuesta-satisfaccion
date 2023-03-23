@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 import update from "../services/update";
 import get from "../services/get";
 
-import FormPregunta from "../components/formPregunta.vue"
+// componentes de formulario de edicion
+import FormPregunta from "../components/formPregunta.vue";
+import Form from "../components/form.vue";
 
 // declarar route para obtener parametros
 const route = useRoute();
@@ -15,14 +17,14 @@ let currentState = Object.entries(history.state).splice(
   6,
   Object.entries(history.state).length
 );
-console.log(currentState);
 
 // obtener informacion extra, e.g. la lista de categorias cuando se modifiquen las preguntas, la lista de empresas al modificar las encuestas
-const extraData = ref([])
-const extraDataDisplay = ref('')
-if (route.params.categoria === 'pregunta') {
-  const temp = {}
-  Promise.all([get.getCategorias(temp)]).then(()=>(extraData.value=temp.data))
+const extraData = ref([]);
+if (route.params.categoria === "pregunta") {
+  const temp = {};
+  Promise.all([get.getCategorias(temp)]).then(
+    () => (extraData.value = temp.data)
+  );
 }
 
 async function actualizar() {
@@ -32,29 +34,54 @@ async function actualizar() {
     new FormData(document.querySelector("#form")).entries()
   );
 
-  console.log(JSON.stringify(data));
-  const temp = {}
+  const temp = {};
 
+  // Se recaba la informacion
   Promise.all([
     update.updateTabla(
-      `/${route.params.categoria}s/update/${route.params.id}`,JSON.parse(JSON.stringify(data)), temp)
+      `/${route.params.categoria}s/update/${route.params.id}`,
+      JSON.parse(JSON.stringify(data)),
+      temp
+    ),
   ])
     .then(() => {
-      console.log(temp.data)
-      console.log("actualizado");
+      console.log(`actualizado`);
       router.push("/");
     })
     .catch((e) => {
       console.log(e.message);
     });
 }
+
+const titulosArray = computed(() => {
+  switch (route.params.categoria) {
+    case "empresa":
+      return [
+        "ID Empresa",
+        "Nombre de la empresa",
+        "Nombre contacto",
+        "Correo electrónico",
+      ];
+    case "categoria":
+      return ["ID Categoría", "Contenido de la categoría"];
+    case "encuesta":
+      return ["ID Encuesta", "Fecha de la encuesta", "Comentarios", "Empresa"];
+    case "respuesta":
+      return ['ID Respuesta','Valor'];
+  }
+});
 </script>
 
 <template>
   <section>
     <p>Editar {{ route.params.categoria }}</p>
     <form class="form" id="form">
-      <FormPregunta v-if="route.params.categoria === 'pregunta'" :currentState="currentState" :catData="extraData"/>
+      <FormPregunta
+        v-if="route.params.categoria === 'pregunta'"
+        :currentState="currentState"
+        :catData="extraData"
+      />
+      <Form v-else :currentState="currentState" :titulos="titulosArray" />
     </form>
     <button class="boton" @click="actualizar">
       Actualizar {{ route.params.categoria }}

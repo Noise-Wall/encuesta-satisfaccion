@@ -33,7 +33,7 @@ function edit(key, object) {
   }
   const data = object
   router.push({
-    name: "edit",
+    name: "editar",
     state: data,
     params: { categoria: categoria, id: key },
   });

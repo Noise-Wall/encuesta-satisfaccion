@@ -10,7 +10,6 @@ function update(string, object) {
 
 export default {
   async updateTabla(string, object, data) {
-    console.log(object);
     const res = await update(string, object);
     data.data = res.data
   },

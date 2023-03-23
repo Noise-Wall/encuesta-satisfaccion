@@ -1,7 +1,10 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import Tabla from "../components/table.vue";
 import get from "../services/get";
+
+const router = useRouter();
 
 const categoria = ref("");
 let jsonData = ref([]);
@@ -39,22 +42,17 @@ async function setCategoria(e) {
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col5";
-      tablaTitulos.value = [
-        "ID",
-        "Contenido",
-        "Categoria",
-        "Habilitada",
-      ];
+      tablaTitulos.value = ["ID", "Contenido", "Categoria", "Habilitada"];
       return;
     case "Encuestas":
-    Promise.all([get.getEncuestas(temp)]).then(
+      Promise.all([get.getEncuestas(temp)]).then(
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col5";
-      tablaTitulos.value = ["ID", "Fecha", "Comentarios","Empresa"];
+      tablaTitulos.value = ["ID", "Fecha", "Comentarios", "Empresa"];
       return;
     case "Respuestas":
-        Promise.all([get.getRespuestas(temp)]).then(
+      Promise.all([get.getRespuestas(temp)]).then(
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col3";
@@ -63,6 +61,13 @@ async function setCategoria(e) {
     case "Resultados":
       return;
   }
+}
+
+function agregar() {
+  router.push({
+    name: "agregar",
+    params: { categoria: categoria.value.toLowerCase().slice(0, -1) },
+  });
 }
 </script>
 
@@ -85,7 +90,7 @@ async function setCategoria(e) {
         :tablaColumnas="tablaColumnas"
         :tablaData="jsonData"
       />
-      <button class="boton"><h1>+</h1></button>
+      <button class="boton" @click="agregar"><h1>+</h1></button>
     </template>
     <template v-else>
       <div class="cargando"></div>

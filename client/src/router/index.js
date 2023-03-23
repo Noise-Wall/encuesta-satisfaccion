@@ -9,10 +9,16 @@ const router = createRouter({
             component: ()=>import("../views/HomeView.vue")
         },
         {
-            path: "/edit/:categoria/:id",
-            name: "edit",
+            path: "/editar/:categoria/:id",
+            name: "editar",
             params: true,
             component: ()=>import("../views/EditView.vue"),
+        },
+        {
+            path: "/agregar/:categoria",
+            name: "agregar",
+            params: true,
+            component: ()=>import("../views/AddView.vue"),
         },
     ]
 })
