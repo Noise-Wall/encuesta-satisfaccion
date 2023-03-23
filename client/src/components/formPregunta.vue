@@ -12,7 +12,6 @@ const props = defineProps({
     class="form-item"
     :name="currentState[0][0]"
     :value="currentState[0][1]"
-    required
   />
   <label :for="currentState[1][0]" class="form-item"
     >Contenido de la pregunta</label

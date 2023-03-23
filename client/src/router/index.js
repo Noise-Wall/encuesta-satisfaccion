@@ -18,8 +18,14 @@ const router = createRouter({
             path: "/agregar/:categoria",
             name: "agregar",
             params: true,
-            component: ()=>import("../views/AddView.vue"),
+            component: ()=>import("../views/EditView.vue"),
         },
+        {
+            path: "/eliminar/:categoria/:id",
+            name: "eliminar",
+            params: true,
+            component: ()=>import("../views/HomeView.vue")
+        }
     ]
 })
 
