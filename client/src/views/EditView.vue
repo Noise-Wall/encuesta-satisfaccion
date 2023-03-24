@@ -7,6 +7,7 @@ import update from "../services/update";
 
 // componentes de formulario de edicion
 import FormPregunta from "../components/formPregunta.vue";
+import FormEncuesta from "../components/formEncuesta.vue";
 import Form from "../components/form.vue";
 
 // declarar route para obtener parametros
@@ -15,8 +16,9 @@ const router = useRouter();
 
 // obtener la informacion almacenada en el history state
 const modo = ref('');
+
 let currentState;
-if (!Object.entries(history.state).length < 7) {
+if (Object.entries(history.state).length < 7) {
   modo.value = "Agregar"
   currentState = computed(()=> {
     switch (route.params.categoria) {
@@ -59,13 +61,17 @@ if (!Object.entries(history.state).length < 7) {
     Object.entries(history.state).length
   );
 }
-console.log(history.state)
 
 // obtener informacion extra, e.g. la lista de categorias cuando se modifiquen las preguntas, la lista de empresas al modificar las encuestas
 const extraData = ref([]);
 if (route.params.categoria === "pregunta") {
   const temp = {};
   Promise.all([get.getCategorias(temp)]).then(
+    () => (extraData.value = temp.data)
+  );
+} else if (route.params.categoria === "encuesta") {
+  const temp = {};
+  Promise.all([get.getEmpresas(temp)]).then(
     () => (extraData.value = temp.data)
   );
 }
@@ -146,6 +152,11 @@ const titulosArray = computed(() => {
     <form class="form" id="form">
       <FormPregunta
         v-if="route.params.categoria === 'pregunta'"
+        :currentState="currentState"
+        :catData="extraData"
+      />
+      <FormEncuesta
+        v-else-if="route.params.categoria === 'encuesta'"
         :currentState="currentState"
         :catData="extraData"
       />

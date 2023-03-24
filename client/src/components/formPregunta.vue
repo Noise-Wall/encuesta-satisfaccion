@@ -26,7 +26,7 @@ const props = defineProps({
   <label :for="currentState[2][0]" class="form-item">Categoría</label>
   <select name="idCategoria">
     <template v-for="cat in catData">
-      <option :value="Object.values(cat)[0]">
+      <option :value="Object.values(cat)[0]" :selected="Object.values(cat)[0]===currentState[2][1]">
         {{ Object.values(cat)[1] }}
       </option>
     </template>

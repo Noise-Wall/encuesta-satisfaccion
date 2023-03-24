@@ -11,15 +11,15 @@ const props = defineProps({
 function parametros(string) {
   switch (string) {
     case 'idEmpresa':
-      return categoria = 'empresa'
+      return 'empresa'
     case 'idCategoria':
-      return categoria = 'categoria'
+      return 'categoria'
     case 'idPregunta':
-      return categoria = 'pregunta'
+      return 'pregunta'
     case 'idEncuesta':
-      return categoria = 'encuesta'
+      return 'encuesta'
     case 'idRespuesta':
-      return categoria = 'respuesta'
+      return 'respuesta'
     default:
       console.log('Categoria invalida')
       return
