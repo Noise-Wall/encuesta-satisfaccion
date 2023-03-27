@@ -1,4 +1,5 @@
 <script setup>
+import del from "../services/delete.js"
 import { useRouter } from "vue-router";
 const router = useRouter();
 
@@ -36,10 +37,10 @@ function edit(key, object) {
 }
 
 function eliminar(key, object) {
-  router.push({
-    name: "eliminar",
-    params: { categoria: parametros(Object.keys(object)[0]), id: key },
-  })
+  const params = parametros(Object.keys(object)[0])
+  const temp = {}
+  console.log(`/${params}s/delete/${key}`)
+  del.deleteTabla(`/${params}s/delete/${key}`, temp)
 }
 
 function confirmarBorrado(key, object) {
@@ -58,6 +59,12 @@ function confirmarBorrado(key, object) {
   btn.classList.add('boton')
   btn.classList.add('boton-eliminar')
   btn.innerHTML = "Aceptar"
+
+  btn.addEventListener('click', (e)=>{
+    Promise.all([eliminar(key, object)]).then(()=> {
+      e.target.parentElement.parentElement.remove();
+    })
+  })
 
   x.addEventListener('click', (e) => {
     e.target.parentElement.parentElement.remove()

@@ -97,4 +97,7 @@ function agregar() {
       <p>Cargando...</p>
     </template>
   </section>
+  <section>
+    <button class="boton" @click="router.push('/')">Regresar al inicio</button>
+  </section>
 </template>

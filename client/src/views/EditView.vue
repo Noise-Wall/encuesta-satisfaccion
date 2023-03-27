@@ -95,7 +95,7 @@ async function actualizar() {
   ])
     .then(() => {
       console.log(`actualizado`);
-      router.push("/");
+      router.push("/admin");
     })
     .catch((e) => {
       console.log(e.message);
@@ -120,7 +120,7 @@ async function agregar () {
   ])
     .then(() => {
       console.log(`insertado`);
-      router.push("/");
+      router.push("/admin");
     })
     .catch((e) => {
       console.log(e.message);
@@ -166,7 +166,7 @@ const titulosArray = computed(() => {
       Actualizar {{ route.params.categoria }}
     </button>
     <button v-else class="boton" @click="agregar">Agregar {{ route.params.categoria }}</button>
-    <p><router-link to="/">Regresar</router-link></p>
+    <p><router-link to="/admin">Regresar</router-link></p>
   </section>
 </template>
 

@@ -203,6 +203,17 @@ section > p {
   color: var(--colorDarkGray);
 }
 
+.boton-eliminar {
+  background-color: darkred;
+  border-top: darkred;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+fieldset > .boton-eliminar {
+  margin: 0px auto;
+}
+
 /* Animaciones */
 
 .cargando {
