@@ -33,4 +33,12 @@ export default {
     const res = await get("/resultados")
     data.data= Array.from(res.data.Resultado)
   },
+  async getPreguntasHabilitadas(data) {
+    const res = await get("/preguntas/enabled")
+    data.data= Array.from(res.data.Pregunta)
+  },
+  async getLatest(data,tabla){
+    const res = await get(`/latest/${tabla}`)
+    data.data=res.data[0]
+  }
 };

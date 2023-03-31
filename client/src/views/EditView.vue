@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import { RouterView, useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import get from "../services/get";
 import insert from "../services/insert";
 import update from "../services/update";

@@ -9,6 +9,11 @@ const router = createRouter({
             component: ()=>import("../views/HomeView.vue")
         },
         {
+            path: "/encuesta/:id",
+            name: "encuesta",
+            component: ()=>import("../views/EncuestaView.vue")
+        },
+        {
             path: "/login",
             name: "login",
             component: ()=>import("../views/LoginView.vue")
@@ -35,6 +40,11 @@ const router = createRouter({
             name: "eliminar",
             params: true,
             component: ()=>import("../views/AdminView.vue")
+        },
+        {
+            path: "/:pathMatch(.*)*",
+            name: "404",
+            component: (()=>import("../views/404View.vue"))
         }
     ]
 })

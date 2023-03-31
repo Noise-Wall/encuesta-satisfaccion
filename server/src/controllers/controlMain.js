@@ -16,16 +16,18 @@ controller.all = (req, res) => {
     queryEncuesta,
     queryRespuesta,
     queryResultados,
-  ]).then((data) => {
-    res.json({
-      Empresa: data[0],
-      Categoria: data[1],
-      Pregunta: data[2],
-      Encuesta: data[3],
-      Respuesta: data[4],
-      Resultados: data[5],
-    });
-  });
+  ])
+    .then((data) => {
+      res.json({
+        Empresa: data[0],
+        Categoria: data[1],
+        Pregunta: data[2],
+        Encuesta: data[3],
+        Respuesta: data[4],
+        Resultados: data[5],
+      });
+    })
+    .catch((e) => res.json(e));
 };
 
 module.exports = controller;

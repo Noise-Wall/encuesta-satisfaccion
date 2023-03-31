@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import get from '../services/get'
+import insert from '../services/insert'
+
+const router = useRouter()
 
 const empresas = ref([])
 const empresaSelected = ref([''])
@@ -22,12 +26,55 @@ function borrarBusqueda(e) {
 
 function comenzarEncuesta(e) {
     e.preventDefault();
-    let data;
-    if (empresaSelected.value[0] == "") {
-        data = Object.fromEntries(new FormData(document.querySelector("#form")).entries())
+    let idEmpresa;
+
+    // comprueba que los inputs no esten vacios
+    let isEmpty = false
+    document.querySelectorAll('.formEmpresa').forEach(element => isEmpty = element.value.trim() == '' || isEmpty)
+
+    if (isEmpty) {
+        alert('Debe llenar todos los campos.')
+        return
     }
-    else data = empresaSelected.value
-    console.log(data)
+
+    if (empresaSelected.value[0] == "") {
+        // en caso de ser empresa nueva, se insertara el siguiente body
+        const data = Object.fromEntries(new FormData(document.querySelector("#form")).entries())
+        let temp = {};
+        Promise.all([
+            insert.insertTabla(
+                `/Empresas`,
+                JSON.parse(JSON.stringify(data)),
+                temp
+            ),
+            get.getLatest(temp, 'empresa')
+        ])
+            .then(() => {
+                idEmpresa = Object.values(temp)[0].idEmpresa
+                console.log(`insertado`);
+                //   router.push("/encuesta");
+            })
+            .catch((e) => {
+                console.log(e.message);
+            });
+    }
+
+    else idEmpresa = empresaSelected.value[0].idEmpresa
+
+    console.log(idEmpresa)
+    if (idEmpresa) {
+        const body = {
+            idEmpresa: idEmpresa,
+            fecha: new Date(),
+            comentarios: ''
+        }
+        let temp = {}
+        Promise.all([insert.insertTabla('/Encuestas', body, temp)]).then(() => {
+            console.log('nueva encuesta creada')
+            router.push(`/encuesta/${idEmpresa}`)
+        }
+        ).catch((e) => console.log(e.message))
+    }
 }
 
 </script>
@@ -58,20 +105,22 @@ function comenzarEncuesta(e) {
             <label for="nombreEmpresa" class="form-item">
                 Nombre de la empresa:
             </label>
-            <input type="text" name="nombreEmpresa" :value="empresaSelected[0].nombreEmpresa" class="form-item"
+            <input type="text" name="nombreEmpresa" :value="empresaSelected[0].nombreEmpresa" class="form-item formEmpresa"
                 :disabled="empresaSelected[0] !== ''" required>
             <label for="correo" class="form-item">Correo electrónico:</label>
-            <input type="text" name="correo" :value="empresaSelected[0].correo" class="form-item"
+            <input type="text" name="correo" :value="empresaSelected[0].correo" class="form-item formEmpresa"
                 :disabled="empresaSelected[0] !== ''" required>
             <label for="correo" class="form-item">Nombre del contacto:</label>
-            <input type="text" name="nombreContacto" :value="empresaSelected[0].nombreContacto" class="form-item"
-                :disabled="empresaSelected[0] !== ''" required>
+            <input type="text" name="nombreContacto" :value="empresaSelected[0].nombreContacto"
+                class="form-item formEmpresa" :disabled="empresaSelected[0] !== ''" required>
 
             <button class="boton" @click="e => comenzarEncuesta(e)">Proceder a las preguntas</button>
         </form>
     </fieldset>
 </template>
 
-<style scoped>fieldset>input {
+<style scoped>
+fieldset>input {
     width: 100%;
-}</style>
+}
+</style>
