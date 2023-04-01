@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import get from '../services/get'
 import insert from '../services/insert'
+import pop from '../components/popup'
 
 const router = useRouter()
 
@@ -33,7 +34,7 @@ function comenzarEncuesta(e) {
     document.querySelectorAll('.formEmpresa').forEach(element => isEmpty = element.value.trim() == '' || isEmpty)
 
     if (isEmpty) {
-        alert('Debe llenar todos los campos.')
+        pop.createPopup('Debe llenar todos los campos.', (e)=>e.target.parentElement.parentElement.remove())
         return
     }
 
@@ -117,6 +118,7 @@ function comenzarEncuesta(e) {
             <button class="boton" @click="e => comenzarEncuesta(e)">Proceder a las preguntas</button>
         </form>
     </fieldset>
+
 </template>
 
 <style scoped>

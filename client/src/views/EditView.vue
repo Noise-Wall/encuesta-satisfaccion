@@ -31,8 +31,8 @@ if (Object.entries(history.state).length < 7) {
       ];
     case "categoria":
       return [
-        ["idCategoría", ""],
-        ["contenidoCategoría", ""],
+        ["idCategoria", ""],
+        ["contenidoCategoria", ""],
       ];
     case "pregunta":
       return [
@@ -50,8 +50,8 @@ if (Object.entries(history.state).length < 7) {
       ];
     case "respuesta":
       return [
-        ["ID Respuesta", ""],
-        ["Valor", ""],
+        ["idRespuesta", ""],
+        ["valor", ""],
       ];
   }})
 } else {
@@ -114,11 +114,12 @@ async function agregar () {
   Promise.all([
     insert.insertTabla(
       `/${route.params.categoria}s`,
-      JSON.parse(JSON.stringify(data)),
+      data,
       temp
     ),
   ])
     .then(() => {
+      console.log(temp.data)
       console.log(`insertado`);
       router.push("/admin");
     })

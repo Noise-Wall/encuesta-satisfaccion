@@ -100,3 +100,12 @@ function confirmarBorrado(key, object) {
     </template>
   </div>
 </template>
+
+<style>
+.actions{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+</style>
