@@ -34,7 +34,7 @@ function comenzarEncuesta(e) {
     document.querySelectorAll('.formEmpresa').forEach(element => isEmpty = element.value.trim() == '' || isEmpty)
 
     if (isEmpty) {
-        pop.createPopup('Debe llenar todos los campos.', (e)=>e.target.parentElement.parentElement.remove())
+        pop.createPopup('Debe llenar todos los campos.', (e) => e.target.parentElement.parentElement.remove())
         return
     }
 
@@ -46,25 +46,29 @@ function comenzarEncuesta(e) {
             insert.insertTabla(
                 `/Empresas`,
                 JSON.parse(JSON.stringify(data)),
-                temp
-            ),
-            get.getLatest(temp, 'empresa')
-        ])
-            .then(() => {
-                idEmpresa = Object.values(temp)[0].idEmpresa
-                console.log(`insertado`);
-                //   router.push("/encuesta");
-            })
-            .catch((e) => {
-                console.log(e.message);
-            });
+                temp)
+        ]).then(() => {
+            console.log(`insertado`);
+        }).catch((e) => {
+            console.log(e.message);
+        });
+
+        Promise.all([get.getLatest(temp, 'empresa')]).then(() => {
+            idEmpresa = Object.values(temp)[0].idEmpresa
+            insertarEncuesta(idEmpresa);
+        }).catch((e) => { console.log(e.message) })
     }
 
-    else idEmpresa = empresaSelected.value[0].idEmpresa
 
-    console.log(idEmpresa)
-    if (idEmpresa) {
-        const body = {
+    else {
+        idEmpresa = empresaSelected.value[0].idEmpresa
+        insertarEncuesta(idEmpresa);
+    }
+}
+
+const insertarEncuesta = (idEmpresa)=>{
+    console.log('insertando encuesta')
+    const body = {
             idEmpresa: idEmpresa,
             fecha: new Date(),
             comentarios: ''
@@ -72,11 +76,16 @@ function comenzarEncuesta(e) {
         let temp = {}
         Promise.all([insert.insertTabla('/Encuestas', body, temp)]).then(() => {
             console.log('nueva encuesta creada')
-            router.push(`/encuesta/${idEmpresa}`)
         }
         ).catch((e) => console.log(e.message))
+        
+
+        Promise.all([get.getLatest(temp, 'encuesta')]).then(()=>{
+            let idEncuesta = Object.values(temp)[0].idEncuesta
+            console.log('ruteando a encuesta...')
+            router.push(`/encuesta/${idEncuesta}`)
+        })
     }
-}
 
 </script>
 
@@ -118,7 +127,6 @@ function comenzarEncuesta(e) {
             <button class="boton" @click="e => comenzarEncuesta(e)">Proceder a las preguntas</button>
         </form>
     </fieldset>
-
 </template>
 
 <style scoped>

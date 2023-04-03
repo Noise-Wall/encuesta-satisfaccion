@@ -5,6 +5,7 @@ import pop from '../components/popup'
 
 let preguntas = ref([])
 let categorias = ref([])
+let confirmado = ref(false);
 
 const getPreguntas = () => {
     let temp = {}
@@ -23,9 +24,20 @@ const getCategorias = () => {
 const getData = ()=>{
     let data = []
     document.querySelectorAll('form').forEach(form => {
-        data.push(Object.fromEntries(new FormData(form).entries()))
+        let temp = Object.fromEntries(new FormData(form).entries())
+
+        data.push({
+            idPregunta: temp.idPregunta,
+            valor: Object.values(temp)[1] || null,
+        })
     })
-    return JSON.stringify(data)
+    console.log(data)
+    return data
+}
+
+const contestarEncuesta = () => {
+    const data = getData()
+    return 'true'
 }
 
 getCategorias()
@@ -79,8 +91,9 @@ getPreguntas()
                 </template>
             </div>
 
-            <button class="boton terminar" @click="pop.createPopup(getData(), (e)=>e.target.parentElement.parentElement.remove())">
-                <h1>Terminar encuesta</h1>
+            <button class="boton terminar" v-if="!confirmado" @click="confirmado = true"><h1>Terminar encuesta</h1></button>
+            <button v-else class="boton terminar" @click="pop.createPopup(contestarEncuesta(), (e)=>e.target.parentElement.parentElement.remove())">
+                <h1>Clic de nuevo para confirmar</h1>
             </button>
         </template>
     </section>

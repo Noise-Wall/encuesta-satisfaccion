@@ -37,17 +37,11 @@ CREATE TABLE Encuesta(
 CREATE TABLE Respuesta(
 	idRespuesta INT NOT NULL AUTO_INCREMENT,
 	valor INT NOT NULL,
-	PRIMARY KEY (idRespuesta)
-);
-
-
-CREATE TABLE QA(
 	idPregunta INT NOT NULL,
 	idEncuesta INT NOT NULL,
-	idRespuesta INT NOT NULL,
+	PRIMARY KEY (idRespuesta)
 	FOREIGN KEY (idPregunta) REFERENCES Pregunta(idPregunta),
 	FOREIGN KEY (idEncuesta) REFERENCES Encuesta(idEncuesta),
-	FOREIGN KEY (idRespuesta) REFERENCES Respuesta(idRespuesta)
 );
 
 DESCRIBE Empresa;
@@ -55,4 +49,3 @@ DESCRIBE Categoria;
 DESCRIBE Pregunta;
 DESCRIBE Encuesta;
 DESCRIBE Respuesta;
-DESCRIBE QA;
