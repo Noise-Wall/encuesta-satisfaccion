@@ -44,8 +44,15 @@ CREATE TABLE Respuesta(
 	FOREIGN KEY (idEncuesta) REFERENCES Encuesta(idEncuesta)
 );
 
+CREATE TABLE Usuarios(
+	idUsuario INT NOT NULL AUTO_INCREMENT,
+	nombreUsuario VARCHAR(20) NOT NULL,
+	contrasena VARCHAR(50) NOT NULL
+)
+
 DESCRIBE Empresa;
 DESCRIBE Categoria;
 DESCRIBE Pregunta;
 DESCRIBE Encuesta;
 DESCRIBE Respuesta;
+DESCRIBE Usuarios;
