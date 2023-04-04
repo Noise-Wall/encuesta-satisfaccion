@@ -56,7 +56,7 @@ async function setCategoria(e) {
         () => (jsonData.value = temp.data)
       );
       tablaColumnas.value = "tabla-col3";
-      tablaTitulos.value = ["ID", "Valor"];
+      tablaTitulos.value = ["ID", "Valor", "ID Pregunta", "ID Categoria"];
       return;
     case "Resultados":
       return;

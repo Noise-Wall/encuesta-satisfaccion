@@ -142,7 +142,7 @@ const titulosArray = computed(() => {
     case "encuesta":
       return ["ID Encuesta", "Fecha de la encuesta", "Comentarios", "Empresa"];
     case "respuesta":
-      return ['ID Respuesta','Valor'];
+      return ['ID Respuesta','Valor', 'idPregunta', 'idEncuesta'];
   }
 });
 </script>

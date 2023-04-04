@@ -41,10 +41,6 @@ export default {
     const res = await get("/respuestas");
     data.data = Array.from(res.data.Respuesta);
   },
-  async getResultados(data) {
-    const res = await get("/resultados");
-    data.data = Array.from(res.data.Resultado);
-  },
   async getPreguntasHabilitadas(data) {
     const res = await get("/preguntas/enabled");
     data.data = Array.from(res.data.Pregunta);

@@ -18,7 +18,6 @@ const categoriasRoute = require("./routes/categorias");
 const preguntasRoute = require("./routes/preguntas");
 const encuestaRoute = require("./routes/encuesta");
 const respuestasRoute = require("./routes/respuestas");
-const resultadosRoute = require("./routes/resultados");
 const latestRoute = require("./routes/latest")
 
 // settings
@@ -55,7 +54,6 @@ app.use("/categorias", categoriasRoute);
 app.use("/preguntas", preguntasRoute);
 app.use("/encuestas", encuestaRoute);
 app.use("/respuestas", respuestasRoute);
-app.use("/resultados", resultadosRoute);
 app.use("/latest", latestRoute);
 // ruta 404
 app.all("*", (req, res) =>

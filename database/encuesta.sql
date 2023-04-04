@@ -36,12 +36,12 @@ CREATE TABLE Encuesta(
 
 CREATE TABLE Respuesta(
 	idRespuesta INT NOT NULL AUTO_INCREMENT,
-	valor INT NOT NULL,
+	valor INT,
 	idPregunta INT NOT NULL,
 	idEncuesta INT NOT NULL,
-	PRIMARY KEY (idRespuesta)
+	PRIMARY KEY (idRespuesta),
 	FOREIGN KEY (idPregunta) REFERENCES Pregunta(idPregunta),
-	FOREIGN KEY (idEncuesta) REFERENCES Encuesta(idEncuesta),
+	FOREIGN KEY (idEncuesta) REFERENCES Encuesta(idEncuesta)
 );
 
 DESCRIBE Empresa;
