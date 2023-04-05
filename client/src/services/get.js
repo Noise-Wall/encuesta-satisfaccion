@@ -18,35 +18,67 @@ function get(string) {
 
 export default {
   async getAll(data) {
-    const res = await get("/");
-    data.data = Array.from(res.data);
+    try {
+      const res = await get("/");
+      data.data = Array.from(res.data);
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
   },
   async getEmpresas(data) {
-    const res = await get("/empresas");
-    data.data = Array.from(res.data.Empresa);
+    try {
+      const res = await get("/empresas");
+      data.data = Array.from(res.data.Empresa);
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
   },
   async getCategorias(data) {
-    const res = await get("/categorias");
-    data.data = Array.from(res.data.Categoria);
+    try {
+      const res = await get("/categorias");
+      data.data = Array.from(res.data.Categoria);
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
   },
   async getPreguntas(data) {
-    const res = await get("/preguntas");
-    data.data = Array.from(res.data.Pregunta);
+    try {
+      const res = await get("/preguntas");
+      data.data = Array.from(res.data.Pregunta);
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
   },
   async getEncuestas(data) {
-    const res = await get("/encuestas");
-    data.data = Array.from(res.data.Encuesta);
+    try{
+      const res = await get("/encuestas");
+      data.data = Array.from(res.data.Encuesta);
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
   },
   async getRespuestas(data) {
-    const res = await get("/respuestas");
-    data.data = Array.from(res.data.Respuesta);
+    try {
+      const res = await get("/respuestas");
+      data.data = Array.from(res.data.Respuesta);
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
   },
   async getPreguntasHabilitadas(data) {
-    const res = await get("/preguntas/enabled");
-    data.data = Array.from(res.data.Pregunta);
+    try {
+      const res = await get("/preguntas/enabled");
+      data.data = Array.from(res.data.Pregunta);
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
   },
   async getLatest(data, tabla) {
-    const res = await get(`/latest/${tabla}`);
-    data.data = res.data[0];
+    try {
+      const res = await get(`/latest/${tabla}`);
+      data.data = res.data[0];
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
   },
 };

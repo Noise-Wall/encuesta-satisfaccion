@@ -1,7 +1,10 @@
 <script setup>
 import get from '../services/get'
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import pop from '../components/popup'
+
+const route = useRoute()
 
 let preguntas = ref([])
 let categorias = ref([])
@@ -21,14 +24,24 @@ const getCategorias = () => {
         .catch((e) => console.log(e))
 }
 
-const getData = ()=>{
+const getData = () => {
+    confirmado.value = false
     let data = []
-    document.querySelectorAll('form').forEach(form => {
+    let form = document.querySelectorAll('form')
+
+    // do insert multiple rows in one query
+    form.forEach(form => {
         let temp = Object.fromEntries(new FormData(form).entries())
+        let valor = Object.values(temp)[1] || null
+
+        if (!valor) {
+            return null
+        }
 
         data.push({
             idPregunta: temp.idPregunta,
-            valor: Object.values(temp)[1] || null,
+            valor: valor,
+            idEncuesta: route.params.id,
         })
     })
     console.log(data)
@@ -37,6 +50,8 @@ const getData = ()=>{
 
 const contestarEncuesta = () => {
     const data = getData()
+
+    if (data.length < 1) return 'Debe llenar todos los campos.'
     return 'true'
 }
 
@@ -55,7 +70,9 @@ getPreguntas()
         </template>
         <template v-else>
             <div class="info">
-                <p>Los criterios de evaluación son los siguientes: </p><p> Excelente (10 puntos), Bueno (8 puntos), Regular (6 puntos), Malo (4 puntos) y Pésimo (2 puntos); se suman los resultados y se saca un promedio.</p>
+                <p>Los criterios de evaluación son los siguientes: </p>
+                <p> Excelente (10 puntos), Bueno (8 puntos), Regular (6 puntos), Malo (4 puntos) y Pésimo (2 puntos); se
+                    suman los resultados y se saca un promedio.</p>
             </div>
 
             <div class="panel-tabla">
@@ -89,10 +106,19 @@ getPreguntas()
                         </form>
                     </fieldset>
                 </template>
+                <div class="item-encuesta item-encuesta-head">Comentarios (Opcional)</div>
+                <fieldset>
+                    <legend>Si desea realizar alguna observación sobre el servicio que no hayamos contemplado en la
+                        encuesta, compártalo a continuación:</legend>
+                    <textarea name="comentarios" rows="4" placeholder="Comparta su opinión (opcional)..."></textarea>
+                </fieldset>
             </div>
 
-            <button class="boton terminar" v-if="!confirmado" @click="confirmado = true"><h1>Terminar encuesta</h1></button>
-            <button v-else class="boton terminar" @click="pop.createPopup(contestarEncuesta(), (e)=>e.target.parentElement.parentElement.remove())">
+            <button class="boton terminar" v-if="!confirmado" @click="confirmado = true">
+                <h1>Terminar encuesta</h1>
+            </button>
+            <button v-else class="boton terminar"
+                @click="pop.createPopup(contestarEncuesta(), (e) => e.target.parentElement.parentElement.remove())">
                 <h1>Clic de nuevo para confirmar</h1>
             </button>
         </template>
@@ -131,7 +157,7 @@ fieldset {
 
 fieldset>form {
     width: 100%;
-    height:100%;
+    height: 100%;
     display: inherit;
     justify-content: space-around;
 }
@@ -153,5 +179,11 @@ fieldset>form>span>input[type="radio"] {
     padding: 10px 25px;
     margin: 15px 25px;
     font-family: "Source Serif Pro", serif;
+}
+
+textarea {
+    resize: none;
+    margin: 10px;
+    width: 100%;
 }
 </style>

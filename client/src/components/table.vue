@@ -41,6 +41,16 @@ function eliminar(key, object) {
   const temp = {}
   console.log(`/${params}s/delete/${key}`)
   del.deleteTabla(`/${params}s/delete/${key}`, temp)
+
+  /* const categoriaLabel = document.getElementById('categoriaLabel').innerHTML
+  console.log(categoriaLabel)
+  
+  const li = document.querySelectorAll('li')
+  
+  const singleLi = li.filter(element => element.innerHTML == categoriaLabel)
+  
+  console.log(li.filter(element => element.innerHTML == categoriaLabel));
+  singleLi.click() */
 }
 
 function confirmarBorrado(key, object) {

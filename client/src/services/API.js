@@ -11,7 +11,7 @@ export default () => {
       withCredentials: true,
     });
   } catch (error) {
-    console.log(error.response)
-    return error.response
+    console.log(error)
+    return error
   }
 };
