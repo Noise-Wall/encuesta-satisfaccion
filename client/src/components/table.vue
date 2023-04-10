@@ -42,15 +42,6 @@ function eliminar(key, object) {
   console.log(`/${params}s/delete/${key}`)
   del.deleteTabla(`/${params}s/delete/${key}`, temp)
 
-  /* const categoriaLabel = document.getElementById('categoriaLabel').innerHTML
-  console.log(categoriaLabel)
-  
-  const li = document.querySelectorAll('li')
-  
-  const singleLi = li.filter(element => element.innerHTML == categoriaLabel)
-  
-  console.log(li.filter(element => element.innerHTML == categoriaLabel));
-  singleLi.click() */
 }
 
 function confirmarBorrado(key, object) {
@@ -105,7 +96,9 @@ function confirmarBorrado(key, object) {
       </div>
       <div class="item-tabla actions">
         <i class="fa-solid fa-file-pen" @click="edit(Object.values(parent)[0], parent)"></i>
+        <i class="fa-solid fa-eye" v-if="parametros(Object.keys(parent)[0]) === 'encuesta'"></i>
         <i class="fa-solid fa-trash-can" @click="confirmarBorrado(Object.values(parent)[0], parent)"></i>
+
       </div>
     </template>
   </div>

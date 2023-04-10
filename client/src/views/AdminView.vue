@@ -72,7 +72,7 @@ async function setCategoria(e) {
         }
       );
       tablaColumnas.value = "tabla-col5";
-      tablaTitulos.value = ["ID", "Valor", "ID Pregunta", "ID Categoria"];
+      tablaTitulos.value = ["ID", "Valor", "ID Pregunta", "ID Encuesta"];
       return;
     default:
       categoria.value = "";
@@ -103,14 +103,14 @@ function agregar() {
     <p :style="'font-weight: bold;'" id="categoriaLabel">{{ categoria }}</p>
     <template v-if="jsonData.length > 0">
       <Tabla :tablaTitulos="tablaTitulos" :tablaColumnas="tablaColumnas" :tablaData="jsonData" />
-      <button class="boton" @click="agregar">
-        <h1>+</h1>
-      </button>
     </template>
     <template v-else>
       <div class="cargando"></div>
       <p>Cargando...</p>
     </template>
+    <button class="boton" @click="agregar">
+      <h1>+</h1>
+    </button>
   </section>
   <section>
     <button class="boton" @click="router.push('/')">Regresar al inicio</button>

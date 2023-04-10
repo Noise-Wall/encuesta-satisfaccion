@@ -39,6 +39,17 @@ controller.getSingle = (req, res) => {
     })
     .catch((e) => res.json(e));
 };
+controller.getByEncuesta = (req,res) => {
+  let id = req.params.id
+  let sql = "SELECT Respuesta.valor,Pregunta.contenidoPregunta FROM Respuesta INNER JOIN Pregunta on Respuesta.idPregunta = Pregunta.idPregunta WHERE Respuesta.idEncuesta = ?"
+  const queryByEncuesta = query(req,res,sql,id)
+  Promise.all([queryByEncuesta]).then((data)=>{
+    res.json({
+      Respuesta: data[0],
+    })
+  }).catch((e) => res.json(e));
+}
+
 // metodo HTTP PATCH para actualizar una entrada en Respuesta
 controller.update = (req, res) => {
   const id = req.params.id;

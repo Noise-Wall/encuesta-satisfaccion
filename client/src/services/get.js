@@ -50,7 +50,7 @@ export default {
     }
   },
   async getEncuestas(data) {
-    try{
+    try {
       const res = await get("/encuestas");
       data.data = Array.from(res.data.Encuesta);
     } catch (error) {
@@ -77,6 +77,13 @@ export default {
     try {
       const res = await get(`/latest/${tabla}`);
       data.data = res.data[0];
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
+  },
+  async getEncuestaResults(data, id) {
+    try {
+      const res = await get(`/respuestas/group/${id}`);
     } catch (error) {
       console.log(`ERROR: ${error.message}`);
     }

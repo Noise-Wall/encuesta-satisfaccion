@@ -264,6 +264,10 @@ fieldset > .boton-eliminar {
   color:rgb(196, 0, 0);
 }
 
+.fa-eye {
+  color: rgb(0,196,0);
+}
+
 .fa-solid:hover {
   opacity: 60%;
 }

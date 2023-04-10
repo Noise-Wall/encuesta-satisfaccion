@@ -1,10 +1,13 @@
 <script setup>
 import get from '../services/get'
+import insert from '../services/insert'
+import update from '../services/update'
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import pop from '../components/popup'
 
 const route = useRoute()
+const router = useRouter()
 
 let preguntas = ref([])
 let categorias = ref([])
@@ -44,15 +47,40 @@ const getData = () => {
             idEncuesta: route.params.id,
         })
     })
-    console.log(data)
     return data
+}
+
+const insertComentario = () => {
+    const comentario = document.getElementById('comentarios').value
+    if (comentario === "") return
+    let temp = {}
+
+    Promise.all([update.updateTabla(`/encuestas/update/${route.params.id}`, { comentarios: comentario }, temp)]).then(() => console.log(temp.data)).catch((e) => console.log(e))
 }
 
 const contestarEncuesta = () => {
     const data = getData()
 
     if (data.length < 1) return 'Debe llenar todos los campos.'
-    return 'true'
+
+    let temp = {}
+
+    insertComentario()
+
+    data.forEach(element => {
+        Promise.all([insert.insertTabla('/respuestas', element, temp)]).then(() => {
+            console.log(temp.data)
+        }).catch((e) => {
+            console.log(e)
+        })
+    })
+
+    return 'Encuesta contestada exitosamente.'
+}
+
+const terminarEncuesta = (e) => {
+    router.push('/')
+    e.target.parentElement.parentElement.remove()
 }
 
 getCategorias()
@@ -110,15 +138,15 @@ getPreguntas()
                 <fieldset>
                     <legend>Si desea realizar alguna observación sobre el servicio que no hayamos contemplado en la
                         encuesta, compártalo a continuación:</legend>
-                    <textarea name="comentarios" rows="4" placeholder="Comparta su opinión (opcional)..."></textarea>
+                    <textarea name="comentarios" rows="4" placeholder="Comparta su opinión (opcional)..."
+                        id="comentarios"></textarea>
                 </fieldset>
             </div>
 
             <button class="boton terminar" v-if="!confirmado" @click="confirmado = true">
                 <h1>Terminar encuesta</h1>
             </button>
-            <button v-else class="boton terminar"
-                @click="pop.createPopup(contestarEncuesta(), (e) => e.target.parentElement.parentElement.remove())">
+            <button v-else class="boton terminar" @click="pop.createPopup(contestarEncuesta(), e => terminarEncuesta(e))">
                 <h1>Clic de nuevo para confirmar</h1>
             </button>
         </template>
