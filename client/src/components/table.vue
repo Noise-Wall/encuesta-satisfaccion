@@ -96,7 +96,7 @@ function confirmarBorrado(key, object) {
       </div>
       <div class="item-tabla actions">
         <i class="fa-solid fa-file-pen" @click="edit(Object.values(parent)[0], parent)"></i>
-        <i class="fa-solid fa-eye" v-if="parametros(Object.keys(parent)[0]) === 'encuesta'"></i>
+        <i class="fa-solid fa-eye" v-if="parametros(Object.keys(parent)[0]) === 'encuesta'" @click="router.push(`/admin/encuesta/${Object.values(parent)[0]}`)"></i>
         <i class="fa-solid fa-trash-can" @click="confirmarBorrado(Object.values(parent)[0], parent)"></i>
 
       </div>

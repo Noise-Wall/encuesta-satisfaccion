@@ -84,6 +84,15 @@ export default {
   async getEncuestaResults(data, id) {
     try {
       const res = await get(`/respuestas/group/${id}`);
+      data.data = res.data.Respuesta
+    } catch (error) {
+      console.log(`ERROR: ${error.message}`);
+    }
+  },
+  async getEncuestaDatos(data, id) {
+    try {
+      const res = await get(`/encuestas/datos/${id}`);
+      data.data = res.data.Encuesta
     } catch (error) {
       console.log(`ERROR: ${error.message}`);
     }

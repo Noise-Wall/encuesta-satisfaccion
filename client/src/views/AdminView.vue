@@ -86,6 +86,8 @@ function agregar() {
     params: { categoria: categoria.value.toLowerCase().slice(0, -1) },
   });
 }
+
+console.log(sessionStorage)
 </script>
 
 <template>

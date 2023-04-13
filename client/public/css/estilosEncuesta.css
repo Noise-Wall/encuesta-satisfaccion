@@ -134,6 +134,10 @@ section > p {
   gap: 1px;
 }
 
+.tabla-col6 {
+  grid-template-columns: 4fr 1fr 1fr 1fr 1fr 1fr;
+}
+
 .tabla-col5 {
   grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
 }
