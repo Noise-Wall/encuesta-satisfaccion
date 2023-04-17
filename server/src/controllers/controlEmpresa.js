@@ -1,32 +1,37 @@
+// dynamodb functions
+const CyclicDb = require("@cyclic.sh/dynamodb")
+const db = CyclicDb("zany-duck-bathing-suitCyclicDB")
+const empresa = db.collection("empresa")
+const query = require("./dynamoQuery")
+
 const controller = {};
-const { query } = require("./query");
+const params = { Bucket: "cyclic-zany-duck-bathing-suit-ap-southeast-2", }
 
 // metodo HTTP GET para todos los valores en Empresa
-controller.get = (req, res) => {
-  const sql = "SELECT * FROM Empresa";
-  const queryAll = query(req, res, sql, "");
-  Promise.all([queryAll])
-    .then((data) => {
-      res.json({
-        Empresa: data[0],
-      });
-    })
-    .catch((e) => res.json(e));
-};
+controller.get = async (req, res) => {
+  await query.get(res, params)
+}
 
 // metodo HTTP POST para insertar valores en Empresa
 controller.insert = (req, res) => {
-  const body = req.body;
-  const sql = "INSERT INTO Empresa SET ?";
-  const queryInsert = query(req, res, sql, body);
+  const key = req.body.key || null;
+  const nombre = req.body.nombre || null;
+  const contacto = req.body.contacto || null;
+  const fecha = req.body.fecha || new Date();
 
-  Promise.all([queryInsert])
-    .then(() => {
-      res.json({
-        Upload: "success",
-      });
-    })
-    .catch((e) => res.json(e));
+  if (!nombre || !contacto) return res.status(400).json({message:"Se debe ingresar nombre y contacto."})
+
+  // const body = req.body;
+  // const sql = "INSERT INTO Empresa SET ?";
+  // const queryInsert = query(req, res, sql, body);
+
+  // Promise.all([queryInsert])
+  //   .then(() => {
+  //     res.json({
+  //       Upload: "success",
+  //     });
+  //   })
+  //   .catch((e) => res.json(e));
 };
 
 // metodo HTTP GET para una sola entrada en Empresa

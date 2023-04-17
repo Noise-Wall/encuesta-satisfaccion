@@ -1,9 +1,27 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
-const mysql = require("mysql2");
-const myConnection = require("express-myconnection");
-require("dotenv").config();
 const cors = require("cors");
+
+// test de dynamodb
+// como MongoDB, se incorporara la base de datos dentro del archivo de los controladores
+// 
+// const CyclicDb = require("@cyclic.sh/dynamodb")
+// const db = CyclicDb("zany-duck-bathing-suitCyclicDB")
+// const empresa = db.collection("empresa")
+// console.log(empresa)
+
+// const run = async function() {
+//   let testEmpresa = await empresa.set("testEmpresa2", {
+//     nombre: "Empresa de prueba 2",
+//     contacto: "Contacto de Prueba 2",
+//     correo: "test2@empresa2.com"
+//   })
+//   let item = await empresa.list()
+  
+//   console.log(item)
+// }
+// run().catch((e)=>console.log(e.message))
 
 // dev environment
 if (process.env.ENV === "production") {
@@ -22,7 +40,7 @@ const latestRoute = require("./routes/latest")
 
 // settings
 app.set("port", process.env.PORT || 8080);
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 // otorga acceso al front end a hacer requests del API
 app.use(
   cors({
@@ -32,20 +50,6 @@ app.use(
   })
 );
 
-// mysql connection
-app.use(
-  myConnection(
-    mysql,
-    {
-      host: process.env.HOST,
-      user: process.env.DBUSERNAME,
-      password: process.env.DBPASSWORD,
-      port: process.env.DBPORT,
-      database: process.env.DBNAME,
-    },
-    "request"
-  ),
-);
 
 // rutas
 app.use("/", mainRoute);
