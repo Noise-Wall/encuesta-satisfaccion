@@ -9,7 +9,7 @@ controller.get = async (req, res) => {
   const sql = "SELECT * FROM Usuarios";
   queryAll = await query(req, res, sql, "")
     .then((data) => res.json({ Usuarios: data[0] }))
-    .catch((error) => {
+    .catch((err) => {
       return res.status(500).json(err);
     });
 };
@@ -17,14 +17,18 @@ controller.get = async (req, res) => {
 controller.insert = async (req, res) => {
   // toma los valores introducidos en el metodo post y
   // encripta la contraseña con un hash de 10
+  console.log('start')
+  const contrasena = bcrypt.hashSync(req.body.contrasena, salt)
   const user = {
     nombreUsuario: req.body.nombreUsuario,
-    contrasena: await bcrypt.hash(req.body.contrasena, salt),
+    contrasena: contrasena,
   };
   const sql = "INSERT INTO Usuarios SET ?";
+  console.log(user)
+  console.log(sql)
   queryInsert = await query(req, res, sql, user)
     .then(() => res.json({ Upload: "success" }))
-    .catch((error) => {
+    .catch((err) => {
       return res.status(500).json(err);
     });
 };
@@ -73,8 +77,18 @@ controller.getSingle = async (req, res) => {
 controller.update = (req, res) => {
   res.json({ message: "true" });
 };
-controller.delete = (req, res) => {
-  res.json({ message: "true" });
+controller.delete = async (req, res) => {
+  const id = req.params.id;
+  const sql = "DELETE FROM Usuarios WHERE idUsuario = ?";
+  queryDelete = await query(req, res, sql, id)
+    .then((data) =>
+      res.json({
+        Delete: "success",
+      })
+    )
+    .catch((error) => {
+      return res.status(500).json(err);
+    });
 };
 
 module.exports = controller;
