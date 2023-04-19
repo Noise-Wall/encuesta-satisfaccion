@@ -1,8 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mysql = require("mysql2");
 const myConnection = require("express-myconnection");
-require("dotenv").config();
 const cors = require("cors");
 
 // dev environment
@@ -19,6 +19,7 @@ const preguntasRoute = require("./routes/preguntas");
 const encuestaRoute = require("./routes/encuesta");
 const respuestasRoute = require("./routes/respuestas");
 const latestRoute = require("./routes/latest")
+const userRoute = require('./routes/user')
 
 // settings
 app.set("port", process.env.PORT || 8080);
@@ -55,6 +56,7 @@ app.use("/preguntas", preguntasRoute);
 app.use("/encuestas", encuestaRoute);
 app.use("/respuestas", respuestasRoute);
 app.use("/latest", latestRoute);
+app.use("/usuarios", userRoute);
 // ruta 404
 app.all("*", (req, res) =>
   res.status(404).json({
