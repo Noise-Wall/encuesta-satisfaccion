@@ -8,7 +8,7 @@ const salt = process.env.SALT;
 controller.get = async (req, res) => {
   const sql = "SELECT * FROM Usuarios";
   queryAll = await query(req, res, sql, "")
-    .then((data) => res.json({ Usuarios: data[0] }))
+    .then((data) => res.json({ Usuarios: data }))
     .catch((err) => {
       return res.status(500).json(err);
     });
