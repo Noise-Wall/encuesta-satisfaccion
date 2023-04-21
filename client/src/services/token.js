@@ -6,15 +6,15 @@ function setToken(name, value) {
 }
 
 function getToken(name) {
-  let name = name + "=";
+  let nu = name + "=";
   let ca = document.cookie.split(";");
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
     while (c.charAt(0) == " ") {
       c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
+    if (c.indexOf(nu) == 0) {
+      return c.substring(nu.length, c.length);
     }
   }
   return "";
@@ -22,7 +22,7 @@ function getToken(name) {
 
 function checkToken() {
   let token = getToken("token");
-  if (user != "") {
+  if (token != "") {
     return false;
   }
   return true;

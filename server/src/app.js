@@ -5,12 +5,6 @@ const mysql = require("mysql2");
 const myConnection = require("express-myconnection");
 const cors = require("cors");
 
-// dev environment
-if (process.env.ENV === "production") {
-  const morgan = require("morgan");
-  app.use(morgan("dev"));
-}
-
 // route files
 const mainRoute = require("./routes/main");
 const empresasRoute = require("./routes/empresa");

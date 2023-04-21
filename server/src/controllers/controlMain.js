@@ -7,7 +7,6 @@ controller.all = (req, res) => {
   const queryPregunta = query(req, res, "SELECT * FROM Pregunta", "");
   const queryEncuesta = query(req, res, "SELECT * FROM Encuesta", "");
   const queryRespuesta = query(req, res, "SELECT * FROM Respuesta", "");
-  const queryResultados = query(req, res, "SELECT * FROM QA", "");
 
   Promise.all([
     queryEmpresa,
@@ -15,7 +14,6 @@ controller.all = (req, res) => {
     queryPregunta,
     queryEncuesta,
     queryRespuesta,
-    queryResultados,
   ])
     .then((data) => {
       res.json({

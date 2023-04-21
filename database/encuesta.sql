@@ -46,8 +46,8 @@ CREATE TABLE Respuesta(
 
 CREATE TABLE Usuarios(
 	idUsuario INT NOT NULL AUTO_INCREMENT,
-	nombreUsuario VARCHAR(20) NOT NULL,
-	contrasena VARCHAR(50) NOT NULL,
+	nombreUsuario VARCHAR(30) NOT NULL,
+	contrasena VARCHAR(60) NOT NULL,
 	PRIMARY KEY (idUsuario)
 )
 
