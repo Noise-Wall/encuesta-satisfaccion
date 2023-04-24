@@ -1,6 +1,10 @@
 <script setup>
 import login from '../services/login';
-import pop from '../components/popup'
+import pop from '../components/popup';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute()
+const router = useRouter()
 
 function inicioSesion(e) {
     let data = Object.fromEntries(
@@ -15,11 +19,13 @@ function inicioSesion(e) {
     }
 
     try {
-        login(data)
+        login.logIn(data).then(() => router.push("/admin"))
     } catch (error) {
         console.log(error.message)
     }
 }
+
+if (!route.fullPath.startsWith(login.validateRoute(route))) console.log(false)
 </script>
 <template>
     <section>

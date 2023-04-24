@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import get from "../services/get";
 import insert from "../services/insert";
 import update from "../services/update";
+import login from "../services/login";
 
 // componentes de formulario de edicion
 import FormPregunta from "../components/formPregunta.vue";
@@ -13,6 +14,9 @@ import Form from "../components/form.vue";
 // declarar route para obtener parametros
 const route = useRoute();
 const router = useRouter();
+
+// control de autorizacion
+if (!route.fullPath.startsWith(login.validateRoute(route))) router.push("/login")
 
 // obtener la informacion almacenada en el history state
 const modo = ref('');

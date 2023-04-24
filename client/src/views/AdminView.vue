@@ -1,10 +1,14 @@
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Tabla from "../components/table.vue";
 import get from "../services/get";
+import login from "../services/login"
 
+const route = useRoute()
 const router = useRouter();
+
+if (!route.fullPath.startsWith(login.validateRoute(route))) router.push("/login")
 
 const categoria = ref("");
 let jsonData = ref([]);
@@ -86,8 +90,6 @@ function agregar() {
     params: { categoria: categoria.value.toLowerCase().slice(0, -1) },
   });
 }
-
-console.log(sessionStorage)
 </script>
 
 <template>

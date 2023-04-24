@@ -5,9 +5,8 @@ function generateAccessToken(user) {
   return jwt.sign(user, process.env.TOKENSECRET, { expiresIn: "1h" });
 }
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+function authenticateToken(req, res) {
+  const token = req.cookies.token
   if (token == null)
     return res.status(401).json({ message: "Acceso restringido" });
 
@@ -16,9 +15,8 @@ function authenticateToken(req, res, next) {
       console.log(err);
       return res.status(403).json({ message: "Acceso prohibido" });
     }
-    req.user = user;
-
-    next();
+    
+    res.status(202).json({ message: "Aceptado"});
   });
 }
 

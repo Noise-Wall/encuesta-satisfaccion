@@ -62,16 +62,27 @@ controller.login = async (req, res) => {
     const token = generateAccessToken({
       nombreUsuario: querySingle.nombreUsuario,
     });
+    res.cookie("token", token, {
+      maxAge: 3600000,
+      sameSite: "lax",
+    });
+
     res.status(202).json({
       message: "Inicio de sesión exitoso.",
-      data: {
-        Usuario: querySingle.nombreUsuario,
-        token: token,
-      },
     });
   } else {
     res.status(401).json({ message: "Error: contraseña inválida." });
   }
+};
+
+controller.logout = (req, res) => {
+  const token = req.cookie.token || null;
+  if (token === null)
+    return res
+      .status(400)
+      .json({ message: "No se encontró una sesión para cerrar." });
+  res.clearCookie("token");
+  res.status(200).json({ message: "Sesión cerrada." });
 };
 
 controller.getSingle = async (req, res) => {

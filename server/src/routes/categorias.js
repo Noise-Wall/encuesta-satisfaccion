@@ -1,11 +1,10 @@
 const router = require("express").Router();
-const { authenticateToken } = require("../controllers/auth");
 const categoriasController = require("../controllers/controlCategoria");
 
-router.get("/", authenticateToken, categoriasController.get);
-router.post("/", authenticateToken,categoriasController.insert);
-router.get("/:id", authenticateToken,categoriasController.getSingle);
-router.patch("/update/:id", authenticateToken,categoriasController.update);
-router.delete("/delete/:id", authenticateToken,categoriasController.delete);
+router.get("/", categoriasController.get);
+router.post("/", categoriasController.insert);
+router.get("/:id", categoriasController.getSingle);
+router.patch("/update/:id", categoriasController.update);
+router.delete("/delete/:id", categoriasController.delete);
 
 module.exports = router;

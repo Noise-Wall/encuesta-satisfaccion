@@ -4,6 +4,7 @@ const app = express();
 const mysql = require("mysql2");
 const myConnection = require("express-myconnection");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 // route files
 const mainRoute = require("./routes/main");
@@ -12,8 +13,8 @@ const categoriasRoute = require("./routes/categorias");
 const preguntasRoute = require("./routes/preguntas");
 const encuestaRoute = require("./routes/encuesta");
 const respuestasRoute = require("./routes/respuestas");
-const latestRoute = require("./routes/latest")
-const userRoute = require('./routes/user')
+const latestRoute = require("./routes/latest");
+const userRoute = require("./routes/user");
 
 // settings
 app.set("port", process.env.PORT || 8080);
@@ -27,6 +28,8 @@ app.use(
   })
 );
 
+app.use(cookieParser());
+
 // mysql connection
 app.use(
   myConnection(
@@ -39,7 +42,7 @@ app.use(
       database: process.env.DBNAME,
     },
     "request"
-  ),
+  )
 );
 
 // rutas

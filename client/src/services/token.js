@@ -1,10 +1,3 @@
-function setToken(name, value) {
-  const d = new Date();
-  d.setTime(d.getTime() + 60 * 60 * 1000);
-  let expires = "expires=" + d.toUTCString();
-  document.cookie = name + "=" + value + ";" + expires + ";path=/";
-}
-
 function getToken(name) {
   let nu = name + "=";
   let ca = document.cookie.split(";");
@@ -29,7 +22,6 @@ function checkToken() {
 }
 
 export default {
-  setToken,
   getToken,
   checkToken,
 };
