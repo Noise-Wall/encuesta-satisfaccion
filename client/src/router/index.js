@@ -38,7 +38,7 @@ const router = createRouter({
         },
         {
             path: "/admin/encuesta/:id",
-            name: "encuesta",
+            name: "resumen",
             params: true,
             component: ()=>import("../views/SumarioView.vue")
         },
@@ -46,6 +46,11 @@ const router = createRouter({
             path: "/encuesta/:id",
             name: "encuesta",
             component: ()=>import("../views/EncuestaView.vue")
+        },
+        {
+            path: "/encuesta/error",
+            name: "errorEncuesta",
+            component: ()=>import("../views/404EncuestaView.vue")
         },
         {
             path: "/:pathMatch(.*)*",

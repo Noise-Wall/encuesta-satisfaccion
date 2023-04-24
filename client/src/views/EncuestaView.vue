@@ -10,9 +10,23 @@ const route = useRoute();
 const router = useRouter();
 
 const isTimeout = ref(false);
+const existe = ref(true);
+const contestada = ref(false);
 
 onMounted(() => {
   setTimeout(() => (isTimeout.value = true), 3000);
+  encuestaExiste().then(() => {
+    if (!existe.value) {
+      console.error("La encuesta no existe");
+      router.push("/encuesta/error");
+    }
+  });
+  encuestaContestada().then(() => {
+    if (contestada.value) {
+      console.error("La encuesta ya ha sido contestada");
+      router.push("/encuesta/error");
+    }
+  });
 });
 
 const preguntas = ref({});
@@ -21,6 +35,24 @@ const preguntasLength = ref(0);
 const categoriasLength = ref(0);
 
 let confirmado = ref(false);
+
+async function encuestaExiste() {
+  await get
+    .getTabla(`/encuestas/${route.params.id}`)
+    .then((res) => {
+      existe.value = res.Encuesta.length > 0;
+    })
+    .catch((e) => console.error(e));
+}
+
+async function encuestaContestada() {
+  await get
+    .getTabla(`/respuestas/group/${route.params.id}`)
+    .then((res) => {
+      contestada.value = res.Respuesta.length > 0;
+    })
+    .catch((e) => console.error(e));
+}
 
 async function getPreguntas() {
   await get
@@ -71,15 +103,26 @@ async function insertComentario() {
   if (comentario === "") return;
 
   await upd
-    .updateTabla(`/encuestas/update/${route.params.id}`)
+    .updateTabla(`/encuestas/update/${route.params.id}`, {
+      comentarios: comentario,
+    })
     .then((res) => console.log(res))
-    .catch((e) => console.log(e));
+    .catch((e) => {
+      console.log(e);
+      pop.createPopup(
+        "Hubo un error al subir la información. Intente de nuevo."
+      );
+      return;
+    });
 }
 
 async function contestarEncuesta() {
   const data = colectarRespuestas();
-  console.log(data)
-  if (data.length < 1) return "Debe llenar todos los campos.";
+
+  if (data.length < 1) {
+    pop.createPopup("Debe llenar todos los campos.");
+    return;
+  }
 
   await insertComentario();
 
@@ -89,10 +132,18 @@ async function contestarEncuesta() {
       .then((res) => console.log(res))
       .catch((e) => {
         console.log(e);
+        pop.createPopup(
+          "Hubo un error al subir la información. Intente de nuevo."
+        );
+        return;
       });
   });
 
-  return "Encuesta contestada exitosamente.";
+  pop.createPopup(
+    "Encuesta contestada exitosamente.",
+    e => terminarEncuesta(e),
+    "terminar"
+  );
 }
 
 const terminarEncuesta = (e) => {
@@ -210,13 +261,7 @@ getCategorias();
       >
         <h1>Terminar encuesta</h1>
       </button>
-      <button
-        v-else
-        class="boton terminar"
-        @click="
-          pop.createPopup(contestarEncuesta(), (e) => terminarEncuesta(e))
-        "
-      >
+      <button v-else class="boton terminar" @click="contestarEncuesta()">
         <h1>Clic de nuevo para confirmar</h1>
       </button>
     </template>

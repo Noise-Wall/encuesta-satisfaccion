@@ -39,16 +39,19 @@ controller.getSingle = (req, res) => {
     })
     .catch((e) => res.json(e));
 };
-controller.getByEncuesta = (req,res) => {
-  let id = req.params.id
-  let sql = "SELECT Respuesta.valor,Pregunta.contenidoPregunta, Categoria.contenidoCategoria FROM Respuesta INNER JOIN Pregunta on Respuesta.idPregunta = Pregunta.idPregunta INNER JOIN Categoria on Pregunta.idCategoria = Categoria.idCategoria WHERE Respuesta.idEncuesta = ?"
-  const queryByEncuesta = query(req,res,sql,id)
-  Promise.all([queryByEncuesta]).then((data)=>{
-    res.json({
-      Respuesta: data[0],
+controller.getByEncuesta = (req, res) => {
+  let id = req.params.id;
+  let sql =
+    "SELECT Respuesta.valor,Pregunta.contenidoPregunta, Categoria.contenidoCategoria FROM Respuesta INNER JOIN Pregunta on Respuesta.idPregunta = Pregunta.idPregunta INNER JOIN Categoria on Pregunta.idCategoria = Categoria.idCategoria WHERE Respuesta.idEncuesta = ? ORDER BY Categoria.idCategoria";
+  const queryByEncuesta = query(req, res, sql, id);
+  Promise.all([queryByEncuesta])
+    .then((data) => {
+      res.json({
+        Respuesta: data[0],
+      });
     })
-  }).catch((e) => res.json(e));
-}
+    .catch((e) => res.json(e));
+};
 
 // metodo HTTP PATCH para actualizar una entrada en Respuesta
 controller.update = (req, res) => {
@@ -76,6 +79,16 @@ controller.delete = (req, res) => {
       });
     })
     .catch((e) => res.json(e));
+};
+
+controller.deleteByEncuesta = async (req, res) => {
+  const id = req.params.id;
+  const sql = "DELETE FROM Respuesta WHERE idEncuesta = ?";
+  queryDeleteByEncuesta = await query(req, res, sql, id)
+    .then(() => res.json({ message: "Operación exitosa." }))
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
 };
 
 module.exports = controller;
