@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 // otorga acceso al front end a hacer requests del API
 app.use(
   cors({
-    origin: `http://${process.env.CLIENTHOST}:${process.env.CLIENTPORT}`,
+    origin: `${process.env.CLIENTHOST}:${process.env.CLIENTPORT}`,
     credentials: true,
     optionsSuccessStatus: 200,
   })

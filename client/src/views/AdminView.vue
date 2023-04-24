@@ -40,7 +40,7 @@ async function setCategoria(e) {
   //   jsonData.value = temp.data;
   // });
   jsonDataLength.value = Object.values(jsonData.value)[0].length;
-  if (categoria.value === "Respuestas" || categoria.value === "Categorias")
+  if (categoria.value === "Categorias")
     tablaColumnas.value = "tabla-col3";
   else tablaColumnas.value = "tabla-col5";
 

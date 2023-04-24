@@ -16,25 +16,25 @@ const resultadosLength = ref(0);
 const datosLength = ref(0);
 
 const getResultados = async () => {
-  resultados.value = await get
+  await get
     .getTabla(`/respuestas/group/${route.params.id}`)
-    .then(() => {
-      resultadosLength.value = Object.values(resultados.value).length;
+    .then((res) => {
+      resultados.value = res
+      console.log(resultados.value.Respuesta)
+      resultadosLength.value = Object.values(resultados.value.Respuesta).length;
+      console.log(resultadosLength.value)
     })
-    // Promise.all([get.getEncuestaResults(temp, route.params.id)])
-    //     .then(() => {
-    //         resultados.value = temp.data || []
-    //     })
     .catch((e) => console.log(e.message));
 };
 
 const getDatos = async () => {
-  datos.value = await get
-    .getTabla(`/encuestas/datos/${route.params.id}`)
-    // Promise.all([get.getEncuestaDatos(temp, route.params.id)])
-    //     .then((a) => {
-    //         datos.value = temp.data || []
-    //     })
+  await get
+    .getTabla(`/encuestas/datos/${route.params.id}`).then((res) => {
+      datos.value = res
+      console.log(datos.value.Encuesta)
+      datosLength.value = Object.values(datos.value.Encuesta).length
+      console.log(datosLength.value)
+    })
     .catch((e) => console.log(e.message));
 };
 
@@ -59,15 +59,20 @@ onMounted(() => {
   setTimeout(() => {
     isTimeout.value = false;
   }, 3000);
+  getResultados();
+  getDatos();
 });
 
-getResultados();
-getDatos();
 </script>
 
 <template>
   <section>
-    <template v-if="datosLength > 0">
+    {{ datos }}
+    <div class="item-tabla-head" style="width: 100%;">a</div>
+    {{ resultados }}
+    <!-- <template v-if=""></template>
+    <template v-else-if="datos && datosLength > 0"></template> -->
+    <!-- <template v-if="datosLength !== 0">
       <div class="intro" id="intro">
         <span>
           <img src="../../public/img/logo.png" alt="logo" class="logo" />
@@ -81,16 +86,14 @@ getDatos();
         </p>
         <div style="display: flex; justify-content: space-between">
           <label>Empresa: {{ datos[0].nombreEmpresa }}</label>
-          <label
-            >Fecha:
+          <label>Fecha:
             {{
               new Intl.DateTimeFormat("es", {
                 year: "numeric",
                 month: "numeric",
                 day: "numeric",
               }).format(new Date(datos[0].fecha))
-            }}</label
-          >
+            }}</label>
         </div>
         <div>
           <label>Nombre del contacto: {{ datos[0].nombreContacto }}</label>
@@ -105,15 +108,15 @@ getDatos();
         </p>
       </div>
     </template>
-    <template v-if="resultadosLength < 1 && isTimeout">
+    <template v-else-if="resultadosLength < 1 && isTimeout">
       <p class="cargando"></p>
       <p>Cargando...</p>
     </template>
-    <template v-else-if="resultadosLength < 1">
+    <template v-else="resultadosLength < 1">
       <p>Esta encuesta no tiene ninguna pregunta o respuesta.</p>
       <button class="boton boton-eliminar">Eliminar encuesta</button>
-    </template>
-    <div class="panel-tabla tabla-col6" id="Resultados" v-else>
+    </template> -->
+    <!--     <div class="panel-tabla tabla-col6" id="Resultados" v-else>
       <div class="item-tabla item-tabla-head">Preguntas</div>
       <div class="item-tabla item-tabla-head">Excelente</div>
       <div class="item-tabla item-tabla-head">Bueno</div>
@@ -124,13 +127,9 @@ getDatos();
         <div v-if="index === 0" class="item-tabla full">
           {{ fila.contenidoCategoria }}
         </div>
-        <div
-          v-else-if="
-            resultados[index].contenidoCategoria !==
-            resultados[index - 1].contenidoCategoria
-          "
-          class="item-tabla full"
-        >
+        <div v-else-if="resultados[index].contenidoCategoria !==
+          resultados[index - 1].contenidoCategoria
+          " class="item-tabla full">
           {{ fila.contenidoCategoria }}
         </div>
 
@@ -161,8 +160,8 @@ getDatos();
       <button class="boton" data-html2canvas-ignore @click="createPDF">
         Exportar a PDF
       </button>
-    </div>
-    <div class="intro">
+    </div> -->
+    <!-- <div class="intro">
       <span>
         <label>Ref: PGE-AD-004</label>
         <label>LAQUIN MR S.A. DE C.V.</label>
@@ -172,7 +171,7 @@ getDatos();
         <label></label>
         <label>R 04</label>
       </span>
-    </div>
+    </div> -->
   </section>
   <section>
     <button class="boton" @click="router.push('/admin')">Regresar</button>
@@ -205,7 +204,7 @@ getDatos();
   background-color: lightgray;
 }
 
-.panel-tabla > .boton {
+.panel-tabla>.boton {
   grid-column: 1 / -1;
 }
 

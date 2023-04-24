@@ -6,21 +6,21 @@ function validateRoute(route) {
     if (token.getToken("token") === "") {
       return "/login";
     }
-    console.log('token found')
+    console.log("token found");
     validate()
       .then(() => {
-        console.log('valid token')
+        console.log("valid token");
         return "/admin";
       })
       .catch(() => {
         return "/login";
       });
-    } else if (route.fullPath.startsWith("/login")) {
-      if (token.getToken("token") !== "") {
-        console.log('token found')
-        validate()
+  } else if (route.fullPath.startsWith("/login")) {
+    if (token.getToken("token") !== "") {
+      console.log("token found");
+      validate()
         .then(() => {
-          console.log('valid token')
+          console.log("valid token");
           return "/admin";
         })
         .catch(() => {
@@ -35,7 +35,7 @@ function validateRoute(route) {
 function api() {
   try {
     return axios.create({
-      baseURL: "http://localhost:7070/usuarios/",
+      baseURL: "http://localhost:7070",
       headers: {
         Accept: "application/x-www-form-urlencoded",
         "Content-Type": "application/x-www-form-urlencoded",
@@ -74,9 +74,11 @@ function validate() {
 
 export default {
   async logIn(object) {
-    await login(object).then((res) => {
-      console.log(res.data);
-    }).catch((e) => console.error(e.message))
+    await login(object)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((e) => console.error(e.message));
   },
   validateRoute,
 };

@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { RouterView, RouterLink, useRoute, useRouter } from "vue-router"
 
 const route = useRoute()
+const router = useRouter()
 // components & views
 import Navbar from './components/navbar.vue'
 
@@ -27,4 +28,5 @@ else {
     <main>
         <RouterView />
     </main>
+    <button class="boton" @click="router.push('/admin')">Ir al portal de administrador</button>
 </template>
