@@ -21,8 +21,8 @@ function update(string, object) {
 }
 
 export default {
-  async updateTabla(string, object, data) {
+  async updateTabla(string, object) {
     const res = await update(string, object);
-    data.data = res.data;
+    return res.data;
   },
 };

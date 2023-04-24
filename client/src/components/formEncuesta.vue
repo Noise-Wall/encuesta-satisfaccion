@@ -1,7 +1,7 @@
 <script setup>
 const props = defineProps({
   currentState: Array,
-  catData: Array,
+  empData: Array,
 });
 </script>
 
@@ -28,9 +28,9 @@ const props = defineProps({
 
   <label :for="currentState[3][0]" class="form-item">Empresa</label>
   <select name="idEmpresa">
-      <template v-for="cat in catData">
-        <option :value="Object.values(cat)[0]" :selected="Object.values(cat)[1]===currentState[3][1]">
-            {{ Object.values(cat)[1] }}
+      <template v-for="emp in empData">
+        <option :value="emp.idEmpresa" :selected="emp.idEmpresa===currentState[3][1]">
+            {{ emp.nombreEmpresa }}
         </option>
     </template>
 </select>

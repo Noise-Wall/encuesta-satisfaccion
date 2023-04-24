@@ -1,22 +1,26 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import get from "../services/get";
-import insert from "../services/insert";
+import ins from "../services/insert";
 import pop from "../components/popup";
 
 const router = useRouter();
+const isTimeout = ref(false);
+onMounted(() => setTimeout(() => (isTimeout.value = true), 3000));
 
-const empresas = ref([]);
+const empresas = ref({});
 const empresaSelected = ref([""]);
 
-if (true) {
-  const temp = {};
-  Promise.all([get.getEmpresas(temp)]).then(() => (empresas.value = temp.data));
+getEmpresas();
+async function getEmpresas() {
+  empresas.value = await get
+    .getTabla("/empresas")
+    .catch((e) => console.log(e.message));
 }
 
 function selectEmpresa(e) {
-  empresaSelected.value = empresas.value.filter(
+  empresaSelected.value = Object.values(empresas.value.Empresa).filter(
     (emp) => emp.nombreEmpresa == e.target.value
   );
   if (empresaSelected.value.length < 1) empresaSelected.value = [""];
@@ -27,7 +31,7 @@ function borrarBusqueda(e) {
   document.getElementById("buscador").value = "";
 }
 
-function comenzarEncuesta(e) {
+async function comenzarEncuesta(e) {
   e.preventDefault();
   let idEmpresa;
 
@@ -38,9 +42,7 @@ function comenzarEncuesta(e) {
     .forEach((element) => (isEmpty = element.value.trim() == "" || isEmpty));
 
   if (isEmpty) {
-    pop.createPopup("Debe llenar todos los campos.", (e) =>
-      e.target.parentElement.parentElement.remove()
-    );
+    pop.createPopup("Debe llenar todos los campos.");
     return;
   }
 
@@ -49,73 +51,68 @@ function comenzarEncuesta(e) {
     const data = Object.fromEntries(
       new FormData(document.querySelector("#form")).entries()
     );
-    let temp = {};
-    Promise.all([
-      insert.insertTabla(`/Empresas`, JSON.parse(JSON.stringify(data)), temp),
-    ])
-      .then(() => {
+    await ins
+      .insertTabla("/Empresas", data)
+      .then((res) => {
+        console.log(res);
         console.log(`insertado`);
       })
       .catch((e) => {
         console.log(e.message);
       });
 
-    Promise.all([get.getLatest(temp, "empresa")])
+    await get
+      .getTabla("/latest/empresa")
       .then(() => {
         idEmpresa = Object.values(temp)[0].idEmpresa;
-        insertarEncuesta(idEmpresa);
       })
       .catch((e) => {
         console.log(e.message);
       });
   } else {
     idEmpresa = empresaSelected.value[0].idEmpresa;
-    insertarEncuesta(idEmpresa);
   }
+  await insertarEncuesta(idEmpresa);
 }
 
-const insertarEncuesta = (idEmpresa) => {
-  let temp = {};
-  let idEncuesta;
-  const date = new Date
-  Promise.all([get.getLatest(temp, "encuesta")])
-    .then(() => {
-      idEncuesta = Object.values(temp)[0].idEncuesta + 1;
-    })
+async function insertarEncuesta(idEmpresa) {
+  const date = new Date();
+  const idEncuesta = await get
+    .getTabla("/latest/encuesta")
     .catch((e) => console.log(e.message));
 
   const body = {
-    idEncuesta: idEncuesta,
+    idEncuesta: idEncuesta[0].idEncuesta + 1,
     idEmpresa: idEmpresa,
-    fecha: `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`,
+    fecha: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     comentarios: "",
   };
-  Promise.all([insert.insertTabla("/Encuestas", body, temp)]).then(() => {
-    console.log(temp);
-    console.log("nueva encuesta creada");
-    console.log("ruteando a encuesta...");
-    router.push(`/encuesta/${idEncuesta}`);
-  }).catch((e) => console.log(e.message));;
-};
+  await ins
+    .insertTabla("/encuestas", body)
+    .then((res) => {
+      console.log(res);
+      console.log("nueva encuesta creada");
+      console.log("ruteando a encuesta...");
+      router.push(`/encuesta/${body.idEncuesta}`);
+    })
+    .catch((e) => console.log(e.message));
+}
 </script>
 
 <template>
-  <fieldset>
+  <fieldset v-if="empresas.Empresa">
     <legend>Busque aquí su empresa</legend>
     <form class="form" @submit="(e) => e.preventDefault()">
       <input
         type="text"
-        :placeholder="
-          empresas.length > 0
-            ? 'Escriba aqui para buscar...'
-            : 'No se encontro ningun valor'
-        "
+        placeholder="Escriba aqui para buscar..."
         id="buscador"
         list="buscar"
         @input="selectEmpresa"
+        :disabled="empresaSelected[0] !== ''"
       />
       <datalist id="buscar">
-        <template v-for="empresa in empresas">
+        <template v-for="empresa in empresas.Empresa">
           <option :value="empresa.nombreEmpresa">
             {{ empresa.nombreEmpresa }}
           </option>
@@ -130,6 +127,13 @@ const insertarEncuesta = (idEmpresa) => {
       Borrar resultado
     </button>
   </fieldset>
+  <div v-else-if="!isTimeout">
+    <div class="cargando"></div>
+    <p style="text-align: center">
+      Cargando búsqueda de empresas existentes...
+    </p>
+  </div>
+  <div v-else><p style="text-align: center"></p></div>
   <fieldset>
     <legend>O llene el siguiente formulario:</legend>
     <form class="form" id="form">

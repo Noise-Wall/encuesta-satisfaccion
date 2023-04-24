@@ -1,86 +1,76 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Tabla from "../components/table.vue";
 import get from "../services/get";
-import login from "../services/login"
+import login from "../services/login";
 
-const route = useRoute()
+const route = useRoute();
 const router = useRouter();
 
-if (!route.fullPath.startsWith(login.validateRoute(route))) router.push("/login")
+// variables para renderizar contenido
+const isLogin = ref(false);
+const isTimeout = ref(false);
+const mensaje = ref("");
 
+// codigo que corre al montarse la pagina
+onMounted(() => {
+  // redirecciona a la vista de login si no hay token de autorizacion.
+  if (!route.fullPath.startsWith(login.validateRoute(route)))
+    router.push("/login");
+  else isLogin.value = true;
+});
+
+// variables de informacion
+const jsonData = ref([]);
+const jsonDataLength = ref(0);
 const categoria = ref("");
-let jsonData = ref([]);
-const queryCompletada = ref(false)
 const tablaColumnas = ref("");
-let tablaTitulos = ref([]);
+const tablaTitulos = ref([]);
 
 async function setCategoria(e) {
-  const temp = {};
-  queryCompletada.value = false;
   categoria.value = e.target.innerHTML;
+  jsonDataLength.value = 0;
   jsonData.value = [];
+  runTimeout();
+
+  // switch (categoria.value) {
+  jsonData.value = await get.getTabla(`/${categoria.value.toLowerCase()}`);
+  // Promise.all([get.getEmpresas(temp)]).then(() => {
+  //   jsonData.value = temp.data;
+  // });
+  jsonDataLength.value = Object.values(jsonData.value)[0].length;
+  if (categoria.value === "Respuestas" || categoria.value === "Categorias")
+    tablaColumnas.value = "tabla-col3";
+  else tablaColumnas.value = "tabla-col5";
 
   switch (categoria.value) {
     case "Empresas":
-      Promise.all([get.getEmpresas(temp)]).then(
-        () => {
-          jsonData.value = temp.data
-          queryCompletada.value = true
-        }
-      );
-      tablaColumnas.value = "tabla-col5";
       tablaTitulos.value = [
         "ID",
         "Nombre Empresa",
         "Nombre Contacto",
         "Correo",
       ];
-      return;
+      break;
     case "Categorias":
-      Promise.all([get.getCategorias(temp)]).then(
-        () => {
-          jsonData.value = temp.data
-          queryCompletada.value = true
-        }
-      );
-      tablaColumnas.value = "tabla-col3";
       tablaTitulos.value = ["ID", "Contenido"];
-      return;
+      break;
+
     case "Preguntas":
-      Promise.all([get.getPreguntas(temp)]).then(
-        () => {
-          jsonData.value = temp.data
-          queryCompletada.value = true
-        }
-      );
-      tablaColumnas.value = "tabla-col5";
       tablaTitulos.value = ["ID", "Contenido", "Categoria", "Habilitada"];
-      return;
+      break;
+
     case "Encuestas":
-      Promise.all([get.getEncuestas(temp)]).then(
-        () => {
-          jsonData.value = temp.data
-          queryCompletada.value = true
-        }
-      );
-      tablaColumnas.value = "tabla-col5";
       tablaTitulos.value = ["ID", "Fecha", "Comentarios", "Empresa"];
-      return;
+      break;
+
     case "Respuestas":
-      Promise.all([get.getRespuestas(temp)]).then(
-        () => {
-          jsonData.value = temp.data
-          queryCompletada.value = true
-        }
-      );
-      tablaColumnas.value = "tabla-col5";
       tablaTitulos.value = ["ID", "Valor", "ID Pregunta", "ID Encuesta"];
-      return;
+      break;
+
     default:
       categoria.value = "";
-      return;
   }
 }
 
@@ -90,10 +80,15 @@ function agregar() {
     params: { categoria: categoria.value.toLowerCase().slice(0, -1) },
   });
 }
+
+function runTimeout() {
+  isTimeout.value = false;
+  setTimeout(() => (isTimeout.value = true), 3000);
+}
 </script>
 
 <template>
-  <section>
+  <section v-if="isLogin">
     <p>Seleccionar una categoría:</p>
     <ul class="menu">
       <li @click="setCategoria">Preguntas</li>
@@ -105,16 +100,23 @@ function agregar() {
   </section>
   <section v-if="categoria">
     <p :style="'font-weight: bold;'" id="categoriaLabel">{{ categoria }}</p>
-    <template v-if="jsonData.length > 0">
-      <Tabla :tablaTitulos="tablaTitulos" :tablaColumnas="tablaColumnas" :tablaData="jsonData" />
+    <template v-if="jsonData && jsonDataLength > 0">
+      <Tabla
+        :tablaTitulos="tablaTitulos"
+        :tablaColumnas="tablaColumnas"
+        :tablaData="Object.values(jsonData)[0]"
+      />
+      <button class="boton" @click="agregar">
+        <h1>+</h1>
+      </button>
     </template>
-    <template v-else>
+    <template v-else-if="!isTimeout">
       <div class="cargando"></div>
       <p>Cargando...</p>
     </template>
-    <button class="boton" @click="agregar">
-      <h1>+</h1>
-    </button>
+    <template v-else>
+      <p>No se encontró ningún valor.</p>
+    </template>
   </section>
   <section>
     <button class="boton" @click="router.push('/')">Regresar al inicio</button>

@@ -76,7 +76,7 @@ export default {
   async logIn(object) {
     await login(object).then((res) => {
       console.log(res.data);
-    });
+    }).catch((e) => console.error(e.message))
   },
   validateRoute,
 };

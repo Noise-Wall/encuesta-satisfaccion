@@ -1,9 +1,9 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import get from "../services/get";
-import insert from "../services/insert";
-import update from "../services/update";
+import ins from "../services/insert";
+import upd from "../services/update";
 import login from "../services/login";
 
 // componentes de formulario de edicion
@@ -15,51 +15,59 @@ import Form from "../components/form.vue";
 const route = useRoute();
 const router = useRouter();
 
-// control de autorizacion
-if (!route.fullPath.startsWith(login.validateRoute(route))) router.push("/login")
+const isLogin = ref("false");
 
-// obtener la informacion almacenada en el history state
-const modo = ref('');
+// control de autorizacion
+onMounted(() => {
+  if (!route.fullPath.startsWith(login.validateRoute(route)))
+    router.push("/login");
+  else isLogin.value = true;
+});
+
+// obtener la informacion almacenada en el history state,
+// si no hay informacion previa (se va a agregar), se agregan solo los campos de titulos.
+const modo = ref("");
 
 let currentState;
 if (Object.entries(history.state).length < 7) {
-  modo.value = "Agregar"
-  currentState = computed(()=> {
+  modo.value = "Agregar";
+  currentState = computed(() => {
     switch (route.params.categoria) {
-    case "empresa":
-      return [
-        ["idEmpresa", ""],
-        ["nombreEmpresa", ""],
-        ["nombreContacto", ""],
-        ["correo", ""],
-      ];
-    case "categoria":
-      return [
-        ["idCategoria", ""],
-        ["contenidoCategoria", ""],
-      ];
-    case "pregunta":
-      return [
-        ["idPregunta", ""],
-        ["contenidoPregunta", ""],
-        ["idCategoria", ""],
-        ["deshabilitada", ""],
-      ];
-    case "encuesta":
-      return [
-        ["idEncuesta", ""],
-        ["fecha", ""],
-        ["comentarios", ""],
-        ["idEmpresa", ""],
-      ];
-    case "respuesta":
-      return [
-        ["idRespuesta", ""],
-        ["valor", ""],
-      ];
-  }})
+      case "empresa":
+        return [
+          ["idEmpresa", ""],
+          ["nombreEmpresa", ""],
+          ["nombreContacto", ""],
+          ["correo", ""],
+        ];
+      case "categoria":
+        return [
+          ["idCategoria", ""],
+          ["contenidoCategoria", ""],
+        ];
+      case "pregunta":
+        return [
+          ["idPregunta", ""],
+          ["contenidoPregunta", ""],
+          ["idCategoria", ""],
+          ["deshabilitada", ""],
+        ];
+      case "encuesta":
+        return [
+          ["idEncuesta", ""],
+          ["fecha", ""],
+          ["comentarios", ""],
+          ["idEmpresa", ""],
+        ];
+      case "respuesta":
+        return [
+          ["idRespuesta", ""],
+          ["valor", ""],
+        ];
+    }
+  });
 } else {
-  modo.value = "Editar"
+  modo.value = "Editar";
   currentState = Object.entries(history.state).splice(
     6,
     Object.entries(history.state).length
@@ -67,69 +75,50 @@ if (Object.entries(history.state).length < 7) {
 }
 
 // obtener informacion extra, e.g. la lista de categorias cuando se modifiquen las preguntas, la lista de empresas al modificar las encuestas
-const extraData = ref([]);
-if (route.params.categoria === "pregunta") {
-  const temp = {};
-  Promise.all([get.getCategorias(temp)]).then(
-    () => (extraData.value = temp.data)
-  );
-} else if (route.params.categoria === "encuesta") {
-  const temp = {};
-  Promise.all([get.getEmpresas(temp)]).then(
-    () => (extraData.value = temp.data)
-  );
+const extraData = ref({});
+async function extraDataGet() {
+  if (route.params.categoria === "pregunta") {
+    extraData.value = await get.getTabla("/categorias").catch((e) => e.message);
+  } else if (route.params.categoria === "encuesta") {
+    extraData.value = await get.getTabla("/empresas").catch((e) => e.message);
+  }
+  console.log(extraData.value);
 }
+extraDataGet();
 
-async function actualizar() {
+async function insertarData() {
   // Se recaba la informacion del formulario y se acomoda
   // en un objeto con FormData API
   let data = Object.fromEntries(
     new FormData(document.querySelector("#form")).entries()
   );
+  if (Object.values(data)[0] == "") data = Object.fromEntries(Object.entries(data).filter((key, val)=>val !== 0)) 
 
-  const temp = {};
+  // se prepara la ruta y se envia la informacion
+  if (modo.value === "Editar") {
+    const url = `/${route.params.categoria}s/update/${route.params.id}`;
 
-  // Se recaba la informacion
-  Promise.all([
-    update.updateTabla(
-      `/${route.params.categoria}s/update/${route.params.id}`,
-      JSON.parse(JSON.stringify(data)),
-      temp
-    ),
-  ])
-    .then(() => {
-      console.log(`actualizado`);
-      router.push("/admin");
-    })
-    .catch((e) => {
-      console.log(e.message);
-    });
-}
-
-async function agregar () {
-  // similar a la funcion actualizar 
-  let data = Object.fromEntries(
-    new FormData(document.querySelector("#form")).entries()
-  );
-
-  const temp = {};
-
-  // Se recaba la informacion
-  Promise.all([
-    insert.insertTabla(
-      `/${route.params.categoria}s`,
-      data,
-      temp
-    ),
-  ])
-    .then(() => {
-      console.log(temp.data)
-      console.log(`insertado`);
-      router.push("/admin");
-    })
-    .catch((e) => {
-      console.log(e.message);
-    });
+    await upd.updateTabla(url, data)
+      .then((res) => {
+        console.log(res)
+        console.log(`actualizado`);
+        router.push("/admin");
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+  } else {
+    const url = `/${route.params.categoria}s`
+    await ins.insertTabla(url, data)
+      .then((res) => {
+        console.log(res)
+        console.log(`insertado`);
+        router.push("/admin");
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+  }
 }
 
 const titulosArray = computed(() => {
@@ -146,31 +135,30 @@ const titulosArray = computed(() => {
     case "encuesta":
       return ["ID Encuesta", "Fecha de la encuesta", "Comentarios", "Empresa"];
     case "respuesta":
-      return ['ID Respuesta','Valor', 'idPregunta', 'idEncuesta'];
+      return ["ID Respuesta", "Valor", "idPregunta", "idEncuesta"];
   }
 });
 </script>
 
 <template>
-  <section>
-    <p>{{modo}} {{ route.params.categoria }}</p>
+  <section v-if="isLogin">
+    <p>{{ modo }} {{ route.params.categoria }}</p>
     <form class="form" id="form">
       <FormPregunta
         v-if="route.params.categoria === 'pregunta'"
         :currentState="currentState"
-        :catData="extraData"
+        :catData="Object.values(extraData)[0]"
       />
       <FormEncuesta
         v-else-if="route.params.categoria === 'encuesta'"
         :currentState="currentState"
-        :catData="extraData"
+        :empData="Object.values(extraData)[0]"
       />
       <Form v-else :currentState="currentState" :titulos="titulosArray" />
     </form>
-    <button v-if="modo=='Editar'" class="boton" @click="actualizar">
-      Actualizar {{ route.params.categoria }}
+    <button class="boton" @click="insertarData">
+      Agregar {{ route.params.categoria }}
     </button>
-    <button v-else class="boton" @click="agregar">Agregar {{ route.params.categoria }}</button>
     <p><router-link to="/admin">Regresar</router-link></p>
   </section>
 </template>

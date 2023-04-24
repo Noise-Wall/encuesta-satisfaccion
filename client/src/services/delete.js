@@ -17,8 +17,8 @@ function deleteFunc(string) {
 }
 
 export default {
-  async deleteTabla(string, data) {
+  async deleteTabla(string) {
     const res = await deleteFunc(string);
-    data.data = Array.from(res.data);
+    return res.data;
   },
 };

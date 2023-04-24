@@ -21,8 +21,8 @@ function insert(string, object) {
 }
 
 export default {
-  async insertTabla(string, object, data) {
+  async insertTabla(string, object) {
     const res = await insert(string, object);
-    data.data = res.data;
+    return res.data
   },
 };

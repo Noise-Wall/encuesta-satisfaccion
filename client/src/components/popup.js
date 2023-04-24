@@ -1,4 +1,4 @@
-function createPopup (content, action) {
+function createPopup (content, action = (e)=>e.target.parentElement.parentElement.remove(), buttonClass = null) {
     const popupBlur = document.createElement("div");
     popupBlur.classList.add("blur-pantalla");
     const popupPanel = document.createElement("div");
@@ -10,7 +10,7 @@ function createPopup (content, action) {
     const btn = document.createElement("button");
     btn.classList.add("boton");
     btn.innerHTML = "Aceptar";
-    
+    if (buttonClass) btn.classList.add(buttonClass)
     btn.addEventListener("click", action);
     
     x.addEventListener("click", (e) => {
