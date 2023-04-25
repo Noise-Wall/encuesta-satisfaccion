@@ -4,7 +4,7 @@ import token from "./token";
 function api() {
   try {
     return axios.create({
-      baseURL: "http://localhost:7070/usuarios/login",
+      baseURL: "https://laquin-encuesta-rest.onrender.com/login",
       headers: {
         Accept: "application/x-www-form-urlencoded",
         "Content-Type": "application/x-www-form-urlencoded",

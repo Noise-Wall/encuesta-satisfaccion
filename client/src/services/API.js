@@ -1,15 +1,12 @@
 import axios from "axios";
-import token from "./token"
 
 export default () => {
   try {
-    const bearer=token.getToken(token);
     return axios.create({
-      baseURL: "http://localhost:7070",
+      baseURL: "https://laquin-encuesta-rest.onrender.com",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: bearer,
       },
       withCredentials: true,
     });
