@@ -4,3 +4,6 @@ client/.env
 server/.env
 plan.md
 client/dist
+
+# Local Netlify folder
+.netlify
