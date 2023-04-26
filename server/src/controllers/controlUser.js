@@ -65,7 +65,7 @@ controller.login = async (req, res) => {
     res.cookie("token", token, {
       maxAge: 3600000,
       sameSite: "Lax",
-      secure: true,
+      // secure: true,
     });
 
     res.status(202).json({
