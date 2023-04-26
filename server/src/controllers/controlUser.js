@@ -65,7 +65,7 @@ controller.login = async (req, res) => {
     res.cookie("token", token, {
       domain: "laquin-encuesta-rest.onrender.com",
       maxAge: 3600000,
-      sameSite: false,
+      SameSite: false,
       secure: true,
     });
 
