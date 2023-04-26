@@ -2,7 +2,6 @@ server/node_modules
 client/node_modules
 client/.env
 server/.env
-plan.md
 client/dist
 
 # Local Netlify folder

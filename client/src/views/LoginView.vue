@@ -10,7 +10,7 @@ function inicioSesion(e) {
     let data = Object.fromEntries(
         new FormData(document.querySelector("#form")).entries()
     )
-    console.log(data)
+    console.log(`Autenticando usuario ${data.nombreUsuario}...`)
 
     if (data.nombreUsuario.trim() === '' || data.contrasena.trim() === '') {
         pop.createPopup('Debe llenar todos los campos.', (f) =>
