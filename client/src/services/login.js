@@ -1,6 +1,22 @@
 import axios from "axios";
 import token from "./token";
 
+function api() {
+  try {
+    return axios.create({
+      baseURL: "http://localhost:7070/usuarios",
+      headers: {
+        Accept: "application/x-www-form-urlencoded",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      withCredentials: true,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return error;
+  }
+}
+
 function validateRoute(route) {
   if (route.fullPath.startsWith("/admin")) {
     if (token.getToken("token") === "") {
@@ -32,23 +48,7 @@ function validateRoute(route) {
   return route.fullPath;
 }
 
-function api() {
-  try {
-    return axios.create({
-      baseURL: "http://localhost:7070",
-      headers: {
-        Accept: "application/x-www-form-urlencoded",
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      withCredentials: true,
-    });
-  } catch (error) {
-    console.log(error.message);
-    return error;
-  }
-}
-
-function login(object) {
+async function login(object) {
   return api()
     .post("/login", object)
     .catch((err) =>
@@ -56,7 +56,7 @@ function login(object) {
     );
 }
 
-function logout() {
+async function logout() {
   return api()
     .post("/logout")
     .catch((err) =>
@@ -73,12 +73,7 @@ function validate() {
 }
 
 export default {
-  async logIn(object) {
-    await login(object)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((e) => console.error(e.message));
-  },
+  login,
+  logout,
   validateRoute,
 };

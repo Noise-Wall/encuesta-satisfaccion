@@ -255,7 +255,7 @@ getCategorias();
       </div>
 
       <button
-        class="boton terminar"
+        class="boton boton-terminar"
         v-if="!confirmado"
         @click="confirmado = true"
       >
@@ -308,11 +308,6 @@ fieldset > form {
 fieldset > form > span > input[type="radio"] {
   cursor: pointer;
   margin: 10px;
-}
-
-.terminar {
-  background-color: #339033;
-  border-radius: 0 0 10px 10px;
 }
 
 .info {

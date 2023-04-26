@@ -7,6 +7,7 @@ const route = useRoute()
 const router = useRouter()
 // components & views
 import Navbar from './components/navbar.vue'
+import Footer from './components/footer.vue'
 
 let navTitulo = ref('')
 if (route.fullPath.startsWith('/admin')) {
@@ -28,5 +29,5 @@ else {
     <main>
         <RouterView />
     </main>
-    <button class="boton" @click="router.push('/admin')">Ir al portal de administrador</button>
+    <Footer/>
 </template>

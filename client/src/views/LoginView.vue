@@ -19,7 +19,7 @@ function inicioSesion(e) {
     }
 
     try {
-        login.logIn(data).then(() => router.push("/admin"))
+        login.login(data).then(() => router.push("/admin"))
     } catch (error) {
         console.log(error.message)
     }

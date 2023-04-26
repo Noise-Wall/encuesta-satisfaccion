@@ -5,10 +5,12 @@ import { useRoute, useRouter } from "vue-router";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
+import TablaResumen from "../components/tableResumen.vue"
+
 const route = useRoute();
 const router = useRouter();
 
-const isTimeout = ref(true);
+const isTimeout = ref(false);
 
 const resultados = ref({});
 const datos = ref({});
@@ -19,21 +21,19 @@ const getResultados = async () => {
   await get
     .getTabla(`/respuestas/group/${route.params.id}`)
     .then((res) => {
-      resultados.value = res
-      console.log(resultados.value.Respuesta)
+      resultados.value = res;
       resultadosLength.value = Object.values(resultados.value.Respuesta).length;
-      console.log(resultadosLength.value)
     })
     .catch((e) => console.log(e.message));
 };
 
 const getDatos = async () => {
   await get
-    .getTabla(`/encuestas/datos/${route.params.id}`).then((res) => {
-      datos.value = res
-      console.log(datos.value.Encuesta)
-      datosLength.value = Object.values(datos.value.Encuesta).length
-      console.log(datosLength.value)
+    .getTabla(`/encuestas/datos/${route.params.id}`)
+    .then((res) => {
+      // console.log(res.Encuesta[0])
+      datos.value = res;
+      datosLength.value = Object.values(datos.value.Encuesta).length;
     })
     .catch((e) => console.log(e.message));
 };
@@ -57,186 +57,36 @@ const createPDF = () => {
 
 onMounted(() => {
   setTimeout(() => {
-    isTimeout.value = false;
+    isTimeout.value = true;
   }, 3000);
   getResultados();
   getDatos();
 });
-
 </script>
 
 <template>
   <section>
-    {{ datos }}
-    <div class="item-tabla-head" style="width: 100%;">a</div>
-    {{ resultados }}
-    <!-- <template v-if=""></template>
-    <template v-else-if="datos && datosLength > 0"></template> -->
-    <!-- <template v-if="datosLength !== 0">
-      <div class="intro" id="intro">
-        <span>
-          <img src="../../public/img/logo.png" alt="logo" class="logo" />
-          <h3 style="text-align: right">Encuesta de Satisfacción al Cliente</h3>
-        </span>
-        <p>
-          Estimado cliente, nos dirigimos a usted para solicitarle la
-          realización del siguiente cuestionario con el propósito de ajustarnos
-          mejor a sus necesidades. Su opinión es de gran importancia para
-          nosotros.
-        </p>
-        <div style="display: flex; justify-content: space-between">
-          <label>Empresa: {{ datos[0].nombreEmpresa }}</label>
-          <label>Fecha:
-            {{
-              new Intl.DateTimeFormat("es", {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-              }).format(new Date(datos[0].fecha))
-            }}</label>
-        </div>
-        <div>
-          <label>Nombre del contacto: {{ datos[0].nombreContacto }}</label>
-        </div>
-        <div>
-          <label>Correo electrónico: {{ datos[0].correo }}</label>
-        </div>
-        <p style="margin-bottom: -10px">
-          A continuación se suministrará una serie de preguntas con el propósito
-          de mejorar nuestra calidad de servicio, favor de marcar la opción que
-          corresponda a su opinión.
-        </p>
-      </div>
-    </template>
-    <template v-else-if="resultadosLength < 1 && isTimeout">
-      <p class="cargando"></p>
-      <p>Cargando...</p>
-    </template>
-    <template v-else="resultadosLength < 1">
-      <p>Esta encuesta no tiene ninguna pregunta o respuesta.</p>
-      <button class="boton boton-eliminar">Eliminar encuesta</button>
-    </template> -->
-    <!--     <div class="panel-tabla tabla-col6" id="Resultados" v-else>
-      <div class="item-tabla item-tabla-head">Preguntas</div>
-      <div class="item-tabla item-tabla-head">Excelente</div>
-      <div class="item-tabla item-tabla-head">Bueno</div>
-      <div class="item-tabla item-tabla-head">Regular</div>
-      <div class="item-tabla item-tabla-head">Malo</div>
-      <div class="item-tabla item-tabla-head">Pésimo</div>
-      <template v-for="(fila, index) in resultados" :key="index">
-        <div v-if="index === 0" class="item-tabla full">
-          {{ fila.contenidoCategoria }}
-        </div>
-        <div v-else-if="resultados[index].contenidoCategoria !==
-          resultados[index - 1].contenidoCategoria
-          " class="item-tabla full">
-          {{ fila.contenidoCategoria }}
-        </div>
-
-        <div class="item-tabla item-tabla-text">
-          {{ fila.contenidoPregunta }}
-        </div>
-        <div class="item-tabla">
-          <i class="fa fa-check" v-if="fila.valor === 10"></i>
-        </div>
-        <div class="item-tabla">
-          <i class="fa fa-check" v-if="fila.valor === 8"></i>
-        </div>
-        <div class="item-tabla">
-          <i class="fa fa-check" v-if="fila.valor === 6"></i>
-        </div>
-        <div class="item-tabla">
-          <i class="fa fa-check" v-if="fila.valor === 4"></i>
-        </div>
-        <div class="item-tabla">
-          <i class="fa fa-check" v-if="fila.valor === 2"></i>
-        </div>
-      </template>
-      <div class="item-tabla full">Observaciones adicionales:</div>
-      <div class="item-tabla full" style="background-color: white">
-        {{ datos[0].comentarios || "No hubo observaciones adicionales." }}
-      </div>
-
-      <button class="boton" data-html2canvas-ignore @click="createPDF">
+    <template v-if="datos && datosLength > 0 && resultados && resultadosLength">
+      <TablaResumen :resultados="resultados" :datos="datos"/>
+      <button class="boton boton-terminar" data-html2canvas-ignore @click="createPDF">
         Exportar a PDF
       </button>
-    </div> -->
-    <!-- <div class="intro">
-      <span>
-        <label>Ref: PGE-AD-004</label>
-        <label>LAQUIN MR S.A. DE C.V.</label>
-        <label>F 068</label>
-      </span>
-      <span>
-        <label></label>
-        <label>R 04</label>
-      </span>
-    </div> -->
+    </template>
+    <template
+      v-else-if="!isTimeout && (datosLength < 1 || resultadosLength < 1)"
+    >
+      <p class="cargando"></p>
+      <p>Cargando...</p></template
+    >
+    <template v-else-if="!datos || datosLength < 1">
+      <p>La encuesta que intenta acceder no existe.</p>
+    </template>
+    <template v-else>
+      <p>La encuesta que intenta acceder no tiene ningún valor.</p>
+      <button class="boton boton-eliminar">Eliminar encuesta</button>
+    </template>
   </section>
   <section>
     <button class="boton" @click="router.push('/admin')">Regresar</button>
   </section>
 </template>
-
-<style scoped>
-.item-tabla {
-  border-radius: 0px;
-  color: black;
-  font-size: 0.85rem;
-}
-
-.item-tabla-head {
-  background-color: rgb(125, 125, 255);
-  border-top: 0px;
-  font-weight: bold;
-}
-
-.item-tabla-text {
-  text-align: left;
-}
-
-.full {
-  grid-column: 1 / -1;
-  text-align: left;
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 2px;
-  background-color: lightgray;
-}
-
-.panel-tabla>.boton {
-  grid-column: 1 / -1;
-}
-
-.intro {
-  padding: 35px;
-  font-size: 0.85rem;
-  text-align: justify;
-}
-
-.intro p,
-.intro h3,
-.intro label {
-  color: black;
-  font-weight: bold;
-}
-
-.intro p {
-  text-indent: 35px;
-}
-
-.intro h3 {
-  font-size: 1rem;
-  font-weight: bolder;
-}
-
-.intro span {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.intro .logo {
-  height: 70px;
-}
-</style>
