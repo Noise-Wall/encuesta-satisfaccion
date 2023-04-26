@@ -63,6 +63,7 @@ controller.login = async (req, res) => {
       nombreUsuario: querySingle.nombreUsuario,
     });
     res.cookie("token", token, {
+      domain: "laquin-encuesta-rest.onrender.com",
       maxAge: 3600000,
       // sameSite: false,
       // secure: true,
