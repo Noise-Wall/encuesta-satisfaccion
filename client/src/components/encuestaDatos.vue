@@ -7,7 +7,7 @@ import pop from "../components/popup";
 
 const router = useRouter();
 const isTimeout = ref(false);
-onMounted(() => setTimeout(() => (isTimeout.value = true), 3000));
+onMounted(() => setTimeout(() => (isTimeout.value = true), 18000));
 
 const empresas = ref({});
 const empresaSelected = ref([""]);
@@ -130,7 +130,7 @@ async function insertarEncuesta(idEmpresa) {
   <div v-else-if="!isTimeout">
     <div class="cargando"></div>
     <p style="text-align: center">
-      Cargando búsqueda de empresas existentes...
+      Cargando aplicación... Esto puede tardar unos momentos.
     </p>
   </div>
   <div v-else><p style="text-align: center"></p></div>

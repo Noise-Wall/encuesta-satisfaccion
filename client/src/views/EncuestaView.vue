@@ -296,6 +296,7 @@ fieldset {
   padding: 20px;
   margin: 10px 25px;
   display: flex;
+  width: inherit;
 }
 
 fieldset > form {
@@ -324,4 +325,5 @@ textarea {
   margin: 10px;
   width: 100%;
 }
+
 </style>

@@ -28,38 +28,50 @@ function parametros(string) {
   }
 }
 // routes to editView with data passed through states
-function edit(key, object) {
+function edit(id, object) {
   const data = object;
   router.push({
     name: "editar",
     state: data,
-    params: { categoria: parametros(Object.keys(object)[0]), id: key },
+    params: { categoria: parametros(Object.keys(object)[0]), id: id },
   });
 }
 
-async function eliminar(key, object) {
+async function eliminar(id, object) {
   const params = parametros(Object.keys(object)[0]);
-  const temp = {};
-  console.log(`/${params}s/delete/${key}`);
-  await del.deleteTabla(`/${params}s/delete/${key}`, temp);
+  console.log(params);
+  if (params === "encuesta") {
+    await del.deleteTabla(`/respuestas/delete/group/${id}`);
+  } else {
+    await del.deleteTabla(`/${params}s/delete/${id}`);
+  }
 }
 
-function confirmarBorrado(key, object) {
+function confirmarBorrado(id, object) {
   console.log("confirmar borrado");
   const data = Object.entries(object);
 
-  const display = `<h3>Atención</h3> Se borrará el siguiente dato: <br>
+  const display = `<h3>Atención</h3> 
+  
+  <b>${parametros(Object.keys(object)[0])==="encuesta"?"Se borrarán todos los datos de la siguiente encuesta, incluyendo las respuestas:":"Se borrará el siguiente dato:"}</b> <br>
   <br>${data[0][0]}: ${data[0][1]}
   <br>${data[1][0]}: ${data[1][1]}
+
   <br><br>Para continuar, clic en el boton de Aceptar.
   `;
 
-  pop.createPopup(display, async (e) => {
-    await eliminar(key, object).then(() => {
-      e.target.parentElement.parentElement.remove();
-      window.location.reload()
-    }).catch(e => console.log(e.message));
-  }, "boton-eliminar");
+  pop.createPopup(
+    display,
+    async (e) => {
+      await eliminar(id, object)
+        .then(() => {
+          e.target.parentElement.parentElement.remove();
+          window.location.reload();
+        })
+        .catch((e) => console.log(e.message));
+    },
+    "boton-eliminar"
+  );
 }
 </script>
 

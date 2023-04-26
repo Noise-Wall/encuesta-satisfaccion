@@ -5,7 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
-import TablaResumen from "../components/tableResumen.vue"
+import TablaResumen from "../components/tableResumen.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -38,7 +38,7 @@ const getDatos = async () => {
     .catch((e) => console.log(e.message));
 };
 
-const createPDF = () => {
+function createPDF() {
   const doc = new jsPDF("p", "mm");
   const section = document.getElementById("intro").parentElement;
   section.style.border = "0px";
@@ -53,7 +53,12 @@ const createPDF = () => {
     doc.addImage(imgData, "PNG", 10, 0);
     doc.save("test.pdf");
   });
-};
+}
+
+async function eliminar() {
+  const id = route.params.id
+  await del.deleteTabla(`/${params}s/delete/${id}`);
+}
 
 onMounted(() => {
   setTimeout(() => {
@@ -67,8 +72,12 @@ onMounted(() => {
 <template>
   <section>
     <template v-if="datos && datosLength > 0 && resultados && resultadosLength">
-      <TablaResumen :resultados="resultados" :datos="datos"/>
-      <button class="boton boton-terminar" data-html2canvas-ignore @click="createPDF">
+      <TablaResumen :resultados="resultados" :datos="datos" />
+      <button
+        class="boton boton-terminar"
+        data-html2canvas-ignore
+        @click="createPDF"
+      >
         Exportar a PDF
       </button>
     </template>

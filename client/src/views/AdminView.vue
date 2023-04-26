@@ -40,8 +40,7 @@ async function setCategoria(e) {
   //   jsonData.value = temp.data;
   // });
   jsonDataLength.value = Object.values(jsonData.value)[0].length;
-  if (categoria.value === "Categorias")
-    tablaColumnas.value = "tabla-col3";
+  if (categoria.value === "Categorias") tablaColumnas.value = "tabla-col3";
   else tablaColumnas.value = "tabla-col5";
 
   switch (categoria.value) {
@@ -85,6 +84,12 @@ function runTimeout() {
   isTimeout.value = false;
   setTimeout(() => (isTimeout.value = true), 3000);
 }
+
+async function logout() {
+  await login
+    .logout()
+    .then(() => router.push("/"))
+}
 </script>
 
 <template>
@@ -119,6 +124,6 @@ function runTimeout() {
     </template>
   </section>
   <section>
-    <button class="boton" @click="router.push('/')">Regresar al inicio</button>
+    <button class="boton" @click="logout">Cerrar sesión</button>
   </section>
 </template>

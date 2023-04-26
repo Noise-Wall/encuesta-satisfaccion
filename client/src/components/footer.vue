@@ -1,6 +1,22 @@
+<script setup>
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+</script>
 <template>
-<footer>
+  <footer>
     <div class="line"></div>
-    <p @click="router.push('/admin')">Ir al portal de administrador</p>
-</footer>
+    <span>
+      <p>® 2023 Laquin MR, S.A. de C.V.</p>
+      <p @click="router.push('/admin')">Administrador</p>
+    </span>
+  </footer>
 </template>
+
+<style scoped>
+span {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+</style>

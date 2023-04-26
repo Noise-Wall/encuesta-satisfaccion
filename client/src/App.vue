@@ -1,10 +1,9 @@
 <script setup>
 // functions & libraries
 import { ref } from 'vue'
-import { RouterView, RouterLink, useRoute, useRouter } from "vue-router"
+import { RouterView, RouterLink, useRoute } from "vue-router"
 
 const route = useRoute()
-const router = useRouter()
 // components & views
 import Navbar from './components/navbar.vue'
 import Footer from './components/footer.vue'
@@ -29,5 +28,5 @@ else {
     <main>
         <RouterView />
     </main>
-    <Footer/>
+    <Footer />
 </template>

@@ -64,7 +64,7 @@ controller.login = async (req, res) => {
     });
     res.cookie("token", token, {
       maxAge: 3600000,
-      sameSite: "lax",
+      sameSite: "Strict",
     });
 
     res.status(202).json({
@@ -76,7 +76,7 @@ controller.login = async (req, res) => {
 };
 
 controller.logout = (req, res) => {
-  const token = req.cookie.token || null;
+  const token = req.cookies.token || null;
   if (token === null)
     return res
       .status(400)
