@@ -20,7 +20,7 @@ Cuenta también con un back-end Express.js, que necesita un servicio de Node.js 
 git clone https://github.com/Noise-Wall/encuesta-satisfaccion.git
 ```
 
-2. Ir al directorio *./client* y correr el siguiente comando.
+2. Correr el siguiente codigo en una terminal en la carpeta del proyecto.
 
 ```bash
 cd ./client
