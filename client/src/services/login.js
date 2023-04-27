@@ -1,23 +1,6 @@
 import axios from "axios";
 import token from "./token";
-
-function api() {
-  try {
-    return axios.create({
-      baseURL: "https://laquin-encuesta-rest.onrender.com/usuarios",
-      // baseURL: "http://localhost:7070/usuarios",
-      headers: {
-        Accept: "application/x-www-form-urlencoded",
-        "Content-Type": "application/x-www-form-urlencoded",
-        Secure: true,
-      },
-      withCredentials: true,
-    });
-  } catch (error) {
-    console.log(error.message);
-    return error;
-  }
-}
+import API from "./API"
 
 function validateRoute(route) {
   if (route.fullPath.startsWith("/admin")) {
@@ -51,24 +34,24 @@ function validateRoute(route) {
 }
 
 async function login(object) {
-  return api()
-    .post("/login", object)
+  return API()
+    .post("/user/login", object)
     .catch((err) =>
       err.response ? console.log(err.response) : console.log(err.message)
     );
 }
 
 async function logout() {
-  return api()
-    .post("/logout")
+  return API()
+    .post("/user/logout")
     .catch((err) =>
       err.response ? console.log(err.response) : console.log(err.message)
     );
 }
 
 function validate() {
-  return api()
-    .post("/validate")
+  return API()
+    .post("/user/validate")
     .catch((err) =>
       err.response ? console.log(err.response) : console.log(err.message)
     );
