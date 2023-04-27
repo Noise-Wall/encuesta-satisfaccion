@@ -8,7 +8,7 @@ export default () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Secure: true,
+        // Secure: true,
       },
       withCredentials: true,
     });
