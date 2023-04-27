@@ -67,7 +67,7 @@ controller.login = async (req, res) => {
     res.cookie("token", token, {
       domain: process.env.DOMAIN,
       maxAge: 3600000,
-      SameSite: 'none',
+      SameSite: false,
       // secure: true,
     });
 
