@@ -65,7 +65,7 @@ controller.login = async (req, res) => {
       nombreUsuario: querySingle.nombreUsuario,
     });
     res.cookie("token", token, {
-      domain: process.env.CLIENT,
+      domain: process.env.DOMAIN,
       maxAge: 3600000,
       SameSite: 'none',
       // secure: true,
