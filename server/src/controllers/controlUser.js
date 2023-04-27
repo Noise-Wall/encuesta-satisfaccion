@@ -60,16 +60,18 @@ controller.login = async (req, res) => {
   );
 
   if (comparison) {
-    console.log('comparacion')
     const token = generateAccessToken({
       nombreUsuario: querySingle.nombreUsuario,
     });
+    
     res.cookie("token", token, {
       domain: process.env.DOMAIN,
       maxAge: 3600000,
       SameSite: false,
-      // secure: true,
+      secure: true,
     });
+
+    console.log(console.log(res.cookies))
 
     res.status(202).json({
       message: "Inicio de sesión exitoso.",
