@@ -38,6 +38,7 @@ function login(object) {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
+      withCredentials: true,
     })
     .catch((err) =>
       err.response ? console.log(err.response) : console.log(err.message)
