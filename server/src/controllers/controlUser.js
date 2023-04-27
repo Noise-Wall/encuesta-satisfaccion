@@ -35,6 +35,7 @@ controller.login = async (req, res) => {
   const nombreUsuario = req.body.nombreUsuario || null;
   const sqlSingle = "SELECT * FROM Usuarios WHERE nombreUsuario = ?";
   let querySingle = {};
+  console.log('intento de login')
   if (nombreUsuario === null)
     return res
       .status(400)
@@ -59,11 +60,11 @@ controller.login = async (req, res) => {
   );
 
   if (comparison) {
+    console.log('comparacion')
     const token = generateAccessToken({
       nombreUsuario: querySingle.nombreUsuario,
     });
     res.cookie("token", token, {
-      domain: "laquin-encuesta-rest.onrender.com",
       maxAge: 3600000,
       SameSite: false,
       secure: true,

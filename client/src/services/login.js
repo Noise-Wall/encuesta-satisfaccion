@@ -1,4 +1,3 @@
-import axios from "axios";
 import token from "./token";
 import API from "./API"
 
@@ -33,9 +32,13 @@ function validateRoute(route) {
   return route.fullPath;
 }
 
-async function login(object) {
+function login(object) {
   return API()
-    .post("/user/login", object)
+    .post("/usuarios/login", object, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
     .catch((err) =>
       err.response ? console.log(err.response) : console.log(err.message)
     );
@@ -43,7 +46,7 @@ async function login(object) {
 
 async function logout() {
   return API()
-    .post("/user/logout")
+    .post("/usuarios/logout")
     .catch((err) =>
       err.response ? console.log(err.response) : console.log(err.message)
     );
@@ -51,7 +54,7 @@ async function logout() {
 
 function validate() {
   return API()
-    .post("/user/validate")
+    .post("/usuarios/validate")
     .catch((err) =>
       err.response ? console.log(err.response) : console.log(err.message)
     );

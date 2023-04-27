@@ -6,10 +6,11 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute()
 const router = useRouter()
 
-function inicioSesion(e) {
+async function inicioSesion(e) {
     let data = Object.fromEntries(
         new FormData(document.querySelector("#form")).entries()
     )
+
     console.log(`Autenticando usuario ${data.nombreUsuario}...`)
 
     if (data.nombreUsuario.trim() === '' || data.contrasena.trim() === '') {
@@ -19,7 +20,7 @@ function inicioSesion(e) {
     }
 
     try {
-        login.login(data).then(() => router.push("/admin"))
+        await login.login(data).then(() => router.push("/admin"))
     } catch (error) {
         console.log(error.message)
     }
