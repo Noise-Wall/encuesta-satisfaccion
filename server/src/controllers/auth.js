@@ -20,27 +20,13 @@ function authenticateToken(req, res) {
   });
 }
 
-function hostnameAuthorization(req, res, next) {
-  if (req.protocol === "https" && process.env.ENV !== "DEV") {
-    console.log(process.env.DOMAIN.match(req.hostname));
-    if (!process.env.DOMAIN.match(req.hostname))
-      return res.status(401).send({ message: "Acceso denegado." });
-  } else if (process.env.ENV === "DEV") {
-    console.log(process.env.DOMAIN.match(req.hostname));
-    if (!process.env.DOMAIN.match(req.hostname))
-      return res.status(401).send({ message: "Acceso denegado." });
-  } else {
-    console.log(
-      `Se denegó petición ${req.protocol.toUpperCase()} de ${req.hostname}`
-    );
-    return res.status(401).send({ message: "Acceso denegado." });
-  }
-
+function headerAuthorization(req, res, next) {
+  console.log(req.headers)
   next();
 }
 
 module.exports = {
   generateAccessToken,
   authenticateToken,
-  hostnameAuthorization,
+  headerAuthorization,
 };

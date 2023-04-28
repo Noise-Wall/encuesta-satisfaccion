@@ -6,7 +6,7 @@ const myConnection = require("express-myconnection");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const { hostnameAuthorization } = require('./controllers/auth')
+const { headerAuthorization } = require('./controllers/auth')
 
 // route files
 const mainRoute = require("./routes/main");
@@ -32,7 +32,7 @@ app.use(
 );
 
 app.use(cookieParser());
-app.use(hostnameAuthorization)
+app.use(headerAuthorization)
 
 // mysql connection
 app.use(
