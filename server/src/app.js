@@ -17,6 +17,7 @@ const latestRoute = require("./routes/latest");
 const userRoute = require("./routes/user");
 
 // settings
+app.set("trust proxy", 1)
 app.set("port", process.env.PORT || 8080);
 app.use(express.urlencoded({ extended: false }));
 // otorga acceso al front end a hacer requests del API
