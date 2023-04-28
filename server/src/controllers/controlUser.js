@@ -35,7 +35,7 @@ controller.login = async (req, res) => {
   const nombreUsuario = req.body.nombreUsuario || null;
   const sqlSingle = "SELECT * FROM Usuarios WHERE nombreUsuario = ?";
   let querySingle = {};
-  console.log('intento de login')
+  console.log('Intento de login')
   if (nombreUsuario === null)
     return res
       .status(400)

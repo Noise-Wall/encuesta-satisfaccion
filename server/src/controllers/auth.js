@@ -6,7 +6,7 @@ function generateAccessToken(user) {
 }
 
 function authenticateToken(req, res) {
-  const token = req.cookies.token
+  const token = req.cookies.token;
   if (token == null)
     return res.status(401).json({ message: "Acceso restringido" });
 
@@ -15,9 +15,19 @@ function authenticateToken(req, res) {
       console.log(err);
       return res.status(403).json({ message: "Acceso prohibido" });
     }
-    
-    res.status(202).json({ message: "Aceptado"});
+
+    res.status(202).json({ message: "Aceptado" });
   });
 }
 
-module.exports = { generateAccessToken, authenticateToken };
+function hostnameAuthorization(req, res, next) {
+  console.log(`Request from ${req.hostname}, at ${req.ip}`);
+  console.log(req.hostname.match(process.env.DOMAIN));
+  next();
+}
+
+module.exports = {
+  generateAccessToken,
+  authenticateToken,
+  hostnameAuthorization,
+};
