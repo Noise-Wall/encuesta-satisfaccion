@@ -6,8 +6,6 @@ const myConnection = require("express-myconnection");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const { headerAuthorization, validateAuthorization } = require('./controllers/auth')
-
 // route files
 const mainRoute = require("./routes/main");
 const empresasRoute = require("./routes/empresa");
@@ -32,8 +30,6 @@ app.use(
 );
 
 app.use(cookieParser());
-app.use(headerAuthorization);
-app.use(validateAuthorization);
 
 // mysql connection
 app.use(

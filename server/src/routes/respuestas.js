@@ -1,13 +1,51 @@
 const router = require("express").Router();
-
+const {
+  headerAuthorization,
+  validateAuthorization,
+} = require("../controllers/auth");
 const respuestaController = require("../controllers/controlRespuesta");
 
-router.get("/", respuestaController.get);
-router.post("/", respuestaController.insert);
-router.get("/group/:id", respuestaController.getByEncuesta);
-router.get("/:id", respuestaController.getSingle);
-router.patch("/update/:id", respuestaController.update);
-router.delete("/delete/:id", respuestaController.delete);
-router.delete("/delete/group/:id", respuestaController.deleteByEncuesta)
+router.get(
+  "/",
+  headerAuthorization,
+  validateAuthorization,
+  respuestaController.get
+);
+router.post(
+  "/",
+  headerAuthorization,
+  validateAuthorization,
+  respuestaController.insert
+);
+router.get(
+  "/group/:id",
+  headerAuthorization,
+  validateAuthorization,
+  respuestaController.getByEncuesta
+);
+router.get(
+  "/:id",
+  headerAuthorization,
+  validateAuthorization,
+  respuestaController.getSingle
+);
+router.patch(
+  "/update/:id",
+  headerAuthorization,
+  validateAuthorization,
+  respuestaController.update
+);
+router.delete(
+  "/delete/:id",
+  headerAuthorization,
+  validateAuthorization,
+  respuestaController.delete
+);
+router.delete(
+  "/delete/group/:id",
+  headerAuthorization,
+  validateAuthorization,
+  respuestaController.deleteByEncuesta
+);
 
 module.exports = router;
