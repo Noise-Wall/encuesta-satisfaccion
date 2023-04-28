@@ -14,4 +14,12 @@
 
 ---
 
-=== 
+### 28-ABR
+
+- (**Importante**) Introducir rate-limiting para prevenir ataques de fuerza bruta
+- Anadir un header especial para limitar el acceso al API
+    - El header vendria del cliente unicamente
+    - (*Tentativo*) Despues de que el API reciba el header, manda un cookie al cliente para poder continuar con la comunicacion.
+
+---
+

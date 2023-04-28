@@ -2,6 +2,8 @@ const controller = {};
 const { query } = require("./query");
 
 controller.all = (req, res) => {
+  console.log(req.ip);
+
   const queryEmpresa = query(req, res, "SELECT * FROM Empresa", "");
   const queryCategorias = query(req, res, "SELECT * FROM Categoria", "");
   const queryPregunta = query(req, res, "SELECT * FROM Pregunta", "");
