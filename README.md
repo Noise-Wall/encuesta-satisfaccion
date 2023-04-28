@@ -2,9 +2,7 @@
 
 Sitio web para la realizacion de una encuesta de satisfaccion al cliente, asi como el manejo de la informacion que provenga de esta.
 
-La aplicación cuenta con un servicio de front-end hecho en Vue.js, que puede ser hosteado como un servicio, o construirse en una página web estática. 
-
-Cuenta también con un back-end Express.js, que necesita un servicio de Node.js que lo utilice.
+La aplicación consiste en un servicio de front-end hecho en Vue.js, que puede ser hosteado como un servicio, o construirse en una página web estática, y un back-end Express.js, que necesita un servicio de Node.js que lo utilice.
 
 ## Requisitos
 
