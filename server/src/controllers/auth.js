@@ -21,7 +21,11 @@ function authenticateToken(req, res) {
 }
 
 function headerAuthorization(req, res, next) {
-  console.log(req.headers)
+  const origin = req.headers.origin || ""
+ 
+  if (origin.match(process.env.DOMAIN)) console.log('matches')
+  else console.log('dont match')
+
   next();
 }
 
