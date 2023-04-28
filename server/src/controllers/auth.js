@@ -21,8 +21,19 @@ function authenticateToken(req, res) {
 }
 
 function hostnameAuthorization(req, res, next) {
-  console.log(`Request from ${req.hostname}, at ${req.ip}`);
-  console.log(req.hostname.match(process.env.DOMAIN));
+  console.log(
+    `${req.protocol.toUpperCase()} request from ${req.hostname}, at ${req.ip}`
+  );
+
+  if (req.protocol === "https" && process.env.ENV !== "DEV") {
+    if (!req.hostname.match(process.env.DOMAIN)) return res.status(401).send({ message: "Acceso denegado." });
+  }
+  else if (process.env.ENV === "DEV"){
+    console.log(req.hostname.match(process.env.DOMAIN));
+    if (!req.hostname.match(process.env.DOMAIN)) return res.status(401).send({ message: "Acceso denegado." });
+  }
+  else return res.status(401).send({ message: "Acceso denegado." });
+
   next();
 }
 
