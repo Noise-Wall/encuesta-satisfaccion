@@ -71,8 +71,6 @@ controller.login = async (req, res) => {
       secure: true,
     });
 
-    // res.header('Authorization', `Bearer token=${token}; Domain=${process.env.DOMAIN}; Path=/; Expires=${Date.now()+3600000}; Secure; SameSite=None`)
-
     res.status(202).json({
       message: "Inicio de sesión exitoso.",
     });
