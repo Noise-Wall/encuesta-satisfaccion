@@ -20,34 +20,29 @@ function authenticateToken(req, res) {
 }
 
 function headerAuthorization(req, res, next) {
-  const origin = req.headers.origin || "";
-  const isCookie = req.cookies.clientOrigin;
+  let xFrom =
+    Object.entries(req.headers).filter((e) => e.includes("x-from"))[0] || [];
+  console.log(xFrom);
+  const cookie = req.cookies.clientOrigin;
 
-  if (origin.match(process.env.DOMAIN) && !isCookie) {
-    res.cookie("clientOrigin", generateAccessToken({ origin: origin }), {
+  if (xFrom.includes(process.env.DOMAIN) && !cookie) {
+    res.cookie("clientOrigin", generateAccessToken({ "x-from": xFrom }), {
       domain: process.env.DOMAIN,
       maxAge: 3600000,
       SameSite: false,
       secure: true,
     });
-  }
-
-  next();
-}
-
-function validateAuthorization(req, res, next) {
-  const origin = req.cookies.clientOrigin;
-
-  if (origin == null) {
+  } else if (xFrom.includes(process.env.DOMAIN) && cookie) {
+    jwt.verify(cookie, process.env.TOKENSECRET, (err, {}) => {
+      if (err) {
+        console.log(err);
+        return res.status(403).json({ message: "Acceso prohibido" });
+      }
+    });
+  } else {
+    console.log("Error de validación: el cliente de origen es inválido");
     return res.status(401).json({ message: "Acceso denegado" });
   }
-
-  jwt.verify(origin, process.env.TOKENSECRET, (err, {}) => {
-    if (err) {
-      console.log(err);
-      return res.status(403).json({ message: "Acceso prohibido" });
-    }
-  });
   next();
 }
 
@@ -55,5 +50,4 @@ module.exports = {
   generateAccessToken,
   authenticateToken,
   headerAuthorization,
-  validateAuthorization,
 };

@@ -1,10 +1,7 @@
 const router = require("express").Router();
-const {
-  headerAuthorization,
-  validateAuthorization,
-} = require("../controllers/auth");
+const { headerAuthorization } = require("../controllers/auth");
 const mainController = require("../controllers/controlMain");
 
-router.get("/", headerAuthorization, validateAuthorization, mainController.all);
+router.get("/", headerAuthorization, mainController.all);
 
 module.exports = router;
