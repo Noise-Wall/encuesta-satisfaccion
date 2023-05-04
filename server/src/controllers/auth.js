@@ -1,10 +1,12 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
+// funcion que generara el token jwt de acceso
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.TOKENSECRET, { expiresIn: "1h" });
 }
 
+// valida si existe cookie token y es legitimo
 function authenticateToken(req, res) {
   const token = req.cookies.token;
   if (token == null)
@@ -19,6 +21,8 @@ function authenticateToken(req, res) {
   });
 }
 
+// middleware que valida que la peticion tenga los headers adecuados.
+// Para detener acceso desde el link en el navegador.
 function headerAuthorization(req, res, next) {
   let xFrom =
     Object.entries(req.headers).filter((e) => e.includes("x-from"))[0] || [];

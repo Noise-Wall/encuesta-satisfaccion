@@ -20,7 +20,15 @@ async function inicioSesion(e) {
     }
 
     try {
-        await login.login(data).then(() => router.push("/admin"))
+        await login.login(data).then((result) => {
+            if (result.status >= 400) {
+                console.log(result)
+                const mensaje = result.data.message || "Ha habido un error al intentar iniciar sesión. Inténtalo de nuevo."
+                pop.createPopup(mensaje)
+                return
+            }
+            router.push("/admin")
+        })
     } catch (error) {
         console.log(error.message)
     }

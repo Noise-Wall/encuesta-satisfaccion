@@ -389,9 +389,6 @@ fieldset {
 footer {
   position: relative;
   width: 100%;
-  /* bottom: 0;
-  left: 0; */
-  z-index: 2;
   padding: 2px;
   margin: 15px auto;
   display: flex;
