@@ -91,7 +91,10 @@ main {
 }
 
 section {
-  border: 1px solid green;
+  margin: 10px;
+  border: 2px solid green;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 2px var(--shadow);
   width: 100%;
   max-width: 1000px;
 }
@@ -399,7 +402,6 @@ footer {
 
 footer p {
   color: lightgray;
-  cursor: pointer;
 }
 
 footer .line {

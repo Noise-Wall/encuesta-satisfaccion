@@ -6,8 +6,6 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute()
 const router = useRouter()
 
-document.cookie = "name=testcookie"
-
 async function inicioSesion(e) {
     let data = Object.fromEntries(
         new FormData(document.querySelector("#form")).entries()

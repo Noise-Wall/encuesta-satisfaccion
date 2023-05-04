@@ -8,7 +8,6 @@ const router = useRouter();
     <div class="line"></div>
     <span>
       <p>® 2023 Laquin MR, S.A. de C.V.</p>
-      <p @click="router.push('/admin')">Administrador</p>
     </span>
   </footer>
 </template>

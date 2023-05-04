@@ -4,6 +4,7 @@ const userController = require("../controllers/controlUser");
 
 router.get("/", userController.get);
 router.post("/login", userController.login);
+router.post("/check", userController.validate);
 router.post("/logout", userController.logout);
 router.post("/validate", authenticateToken)
 router.post("/", userController.insert);

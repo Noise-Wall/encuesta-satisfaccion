@@ -7,7 +7,7 @@ const controller = {};
 const salt = process.env.SALT;
 
 controller.get = async (req, res) => {
-  const sql = "SELECT * FROM Usuarios";
+  const sql = "SELECT idUsuario, nombreUsuario FROM Usuarios";
   queryAll = await query(req, res, sql, "")
     .then((data) => res.json({ Usuarios: data }))
     .catch((err) => {
@@ -32,51 +32,38 @@ controller.insert = async (req, res) => {
 };
 
 controller.login = async (req, res) => {
-  const nombreUsuario = req.body.nombreUsuario || null;
-  const sqlSingle = "SELECT * FROM Usuarios WHERE nombreUsuario = ?";
-  let querySingle = {};
-  console.log('Intento de login')
-  if (nombreUsuario === null)
-    return res
-      .status(400)
-      .json({ message: "No se introdujo un nombre de usuario válido." });
+  await validate(req, res).then((result) => {
+    console.log(result.comparison);
 
-  await query(req, res, sqlSingle, nombreUsuario)
-    .then((result) => {
-      querySingle.nombreUsuario = result[0].nombreUsuario || null;
-      querySingle.contrasena = result[0].contrasena || null;
-      if (querySingle.nombreUsuario === null)
-        return res
-          .status(400)
-          .json({ message: "No se introdujo un nombre de usuario válido." });
-    })
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+    if (result.comparison) {
+      const token = generateAccessToken({
+        nombreUsuario: result.user,
+      });
 
-  let comparison = await bcrypt.compare(
-    req.body.contrasena,
-    querySingle.contrasena
-  );
+      res.cookie("token", token, {
+        domain: process.env.DOMAIN,
+        maxAge: 3600000,
+        SameSite: false,
+        secure: true,
+      });
 
-  if (comparison) {
-    const token = generateAccessToken({
-      nombreUsuario: querySingle.nombreUsuario,
-    });
-    
-    res.cookie("token", token, {
-      domain: process.env.DOMAIN,
-      maxAge: 3600000,
-      SameSite: false,
-      secure: true,
-    });
+      return res.status(202).json({
+        message: "Inicio de sesión exitoso.",
+      });
+    } else {
+      return res.status(401).json({ message: "Error: contraseña inválida." });
+    }
+  }).catch(err => console.log(err));
+};
 
-    res.status(202).json({
-      message: "Inicio de sesión exitoso.",
-    });
-  } else {
-    res.status(401).json({ message: "Error: contraseña inválida." });
-  }
+controller.validate = async (req, res) => {
+  await validate(req, res).then((result) => {
+    if (result.comparison) {
+      return res.status(202).json({ message: "Validación exitosa. " });
+    } else {
+      return res.status(401).json({ message: "Error de validación." });
+    }
+  }).catch(err => console.log(err));
 };
 
 controller.logout = (req, res) => {
@@ -118,5 +105,39 @@ controller.delete = async (req, res) => {
       return res.status(500).json(err);
     });
 };
+
+async function validate(req, res) {
+  const nombreUsuario = req.body.nombreUsuario || null;
+  const sqlSingle = "SELECT * FROM Usuarios WHERE nombreUsuario = ?";
+  let querySingle = {};
+  console.log("Intento de login");
+  if (nombreUsuario === null)
+    return res
+      .status(400)
+      .json({ message: "No se introdujo un nombre de usuario válido." });
+
+  await query(req, res, sqlSingle, nombreUsuario)
+    .then((result) => {
+      querySingle.nombreUsuario = result[0].nombreUsuario || null;
+      querySingle.contrasena = result[0].contrasena || null;
+      if (querySingle.nombreUsuario === null)
+        return res
+          .status(400)
+          .json({ message: "No se introdujo un nombre de usuario válido." });
+    })
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
+
+  let comparison = await bcrypt.compare(
+    req.body.contrasena,
+    querySingle.contrasena
+  );
+
+  return {
+    comparison: comparison,
+    user: querySingle.nombreUsuario,
+  };
+}
 
 module.exports = controller;

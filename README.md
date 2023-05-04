@@ -10,7 +10,7 @@ La aplicación consiste en un servicio de front-end hecho en Vue.js, que puede s
 - Npm o yarn.
 - Servicio de hosting para back-ends de Node. (Render, Railway, Cyclic.sh, etc.)
 
-## Instalación del front-end
+## Instalación del cliente
 
 1. Descargar el código mediante Git o manualmente.
 
@@ -27,3 +27,23 @@ npm run build
 ```
 
 3. Aparecerá una carpeta en el directorio *./client* de nombre *./dist.*. Esta contendrá los archivos estáticos, listos para ser subidos a un host web.
+
+## Instalacion del servicio
+
+- Ambiente local:
+
+    1. Instalar y actualizar Node.
+
+    2. Abrir una terminal en el directorio base y correr el siguiente codigo
+
+    ```bash
+    cd ./server
+    npm install
+    npm run src/app
+    ```
+
+    - Para especificar un puerto especifico, agregar a la ultima linea el puerto deseado con --port=PUERTO_DESEADO
+
+- Servicio de hosting
+
+    - Agregar el enlace de este repositorio al servicio seleccionado. Generalmente se incluye la opcion de construir el servicio mediante un enlace a GitHub.

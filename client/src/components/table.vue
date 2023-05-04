@@ -20,8 +20,8 @@ function parametros(string) {
       return "pregunta";
     case "idEncuesta":
       return "encuesta";
-    case "idRespuesta":
-      return "respuesta";
+    case "idUsuario":
+      return "usuario";
     default:
       console.log("Categoria invalida");
       return;

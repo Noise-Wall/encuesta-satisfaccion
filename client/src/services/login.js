@@ -53,6 +53,10 @@ async function logout() {
     );
 }
 
+async function check(object) {
+  return API().post("/usuarios/check", object).catch((err) => err.response ? console.log(err.response) : console.log(err.message))
+}
+
 function validate() {
   return API()
     .post("/usuarios/validate")
@@ -64,5 +68,6 @@ function validate() {
 export default {
   login,
   logout,
+  check,
   validateRoute,
 };

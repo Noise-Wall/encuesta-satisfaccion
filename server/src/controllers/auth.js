@@ -25,14 +25,14 @@ function headerAuthorization(req, res, next) {
   console.log(xFrom);
   const cookie = req.cookies.clientOrigin;
 
-  if (xFrom.includes(process.env.DOMAIN) && !cookie) {
+  if (process.env.DOMAIN.match(xFrom[1]) && !cookie) {
     res.cookie("clientOrigin", generateAccessToken({ "x-from": xFrom }), {
       domain: process.env.DOMAIN,
       maxAge: 3600000,
       SameSite: false,
       secure: true,
     });
-  } else if (xFrom.includes(process.env.DOMAIN) && cookie) {
+  } else if (process.env.DOMAIN.match(xFrom[1]) && cookie) {
     jwt.verify(cookie, process.env.TOKENSECRET, (err, {}) => {
       if (err) {
         console.log(err);

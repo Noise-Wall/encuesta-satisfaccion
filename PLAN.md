@@ -1,6 +1,6 @@
 ### 26-ABR
 
-- (**Importante**) Averiguar como poder acceder a la ruta Admin sin tener que entrar mediante un link en la vista principal
+- ~~(**Importante**) Averiguar como poder acceder a la ruta Admin sin tener que entrar mediante un link en la vista principal~~ *Hecho mediante WebHashHistory*
 - Adornar el <section>
 - Anadir la tabla de usuarios a la vista Admin, que muestre solamente el ID y el nombre del usuario
 - Anadir la creacion de usuarios
@@ -17,9 +17,15 @@
 ### 28-ABR
 
 - (**Importante**) Introducir rate-limiting para prevenir ataques de fuerza bruta
-- Anadir un header especial para limitar el acceso al API
-    - El header vendria del cliente unicamente
-    - (*Tentativo*) Despues de que el API reciba el header, manda un cookie al cliente para poder continuar con la comunicacion.
+- ~~Anadir un header especial para limitar el acceso al API~~
+    - ~~El header vendria del cliente unicamente~~
+    - ~~(*Tentativo*) Despues de que el API reciba el header, manda un cookie al cliente para poder continuar con la comunicacion.~~
 
 ---
 
+### 2-MAY
+
+- Implementar paso de mensajes de estatus a las varias vistas cuando se realice una accion y se pushee a otra ruta.
+- Redecorar la seleccion de categorias
+- Marcar error si la base de datos no carga
+- Implementar el link de despertado

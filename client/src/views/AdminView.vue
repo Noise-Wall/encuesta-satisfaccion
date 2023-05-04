@@ -40,7 +40,7 @@ async function setCategoria(e) {
   //   jsonData.value = temp.data;
   // });
   jsonDataLength.value = Object.values(jsonData.value)[0].length;
-  if (categoria.value === "Categorias") tablaColumnas.value = "tabla-col3";
+  if (categoria.value === "Categorias" || categoria.value === "Usuarios") tablaColumnas.value = "tabla-col3";
   else tablaColumnas.value = "tabla-col5";
 
   switch (categoria.value) {
@@ -64,8 +64,8 @@ async function setCategoria(e) {
       tablaTitulos.value = ["ID", "Fecha", "Comentarios", "Empresa"];
       break;
 
-    case "Respuestas":
-      tablaTitulos.value = ["ID", "Valor", "ID Pregunta", "ID Encuesta"];
+    case "Usuarios":
+      tablaTitulos.value = ["ID", "Usuario"];
       break;
 
     default:
@@ -100,7 +100,7 @@ async function logout() {
       <li @click="setCategoria">Categorias</li>
       <li @click="setCategoria">Empresas</li>
       <li @click="setCategoria">Encuestas</li>
-      <li @click="setCategoria">Respuestas</li>
+      <li @click="setCategoria">Usuarios</li>
     </ul>
   </section>
   <section v-if="categoria">

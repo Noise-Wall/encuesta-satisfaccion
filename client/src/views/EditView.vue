@@ -5,6 +5,7 @@ import get from "../services/get";
 import ins from "../services/insert";
 import upd from "../services/update";
 import login from "../services/login";
+import pop from "../components/popup.js"
 
 // componentes de formulario de edicion
 import FormPregunta from "../components/formPregunta.vue";
@@ -59,10 +60,10 @@ if (Object.entries(history.state).length < 7) {
           ["comentarios", ""],
           ["idEmpresa", ""],
         ];
-      case "respuesta":
+      case "usuario":
         return [
-          ["idRespuesta", ""],
-          ["valor", ""],
+          ["idUsuario", ""],
+          ["nombreUsuario", ""],
         ];
     }
   });
@@ -92,33 +93,34 @@ async function insertarData() {
   let data = Object.fromEntries(
     new FormData(document.querySelector("#form")).entries()
   );
-  if (Object.values(data)[0] == "") data = Object.fromEntries(Object.entries(data).filter((key, val)=>val !== 0)) 
+  if (Object.values(data)[0] == "") data = Object.fromEntries(Object.entries(data).filter((key, val) => val !== 0))
 
+  await validarContrasena(data)
   // se prepara la ruta y se envia la informacion
-  if (modo.value === "Editar") {
-    const url = `/${route.params.categoria}s/update/${route.params.id}`;
-
-    await upd.updateTabla(url, data)
-      .then((res) => {
-        console.log(res)
-        console.log(`actualizado`);
-        router.push("/admin");
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
-  } else {
-    const url = `/${route.params.categoria}s`
-    await ins.insertTabla(url, data)
-      .then((res) => {
-        console.log(res)
-        console.log(`insertado`);
-        router.push("/admin");
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
-  }
+  /*   if (modo.value === "Editar") {
+      const url = `/${route.params.categoria}s/update/${route.params.id}`;
+  
+      await upd.updateTabla(url, data)
+        .then((res) => {
+          console.log(res)
+          console.log(`actualizado`);
+          router.push("/admin");
+        })
+        .catch((e) => {
+          console.log(e.message);
+        });
+    } else {
+      const url = `/${route.params.categoria}s`
+      await ins.insertTabla(url, data)
+        .then((res) => {
+          console.log(res)
+          console.log(`insertado`);
+          router.push("/admin");
+        })
+        .catch((e) => {
+          console.log(e.message);
+        });
+    } */
 }
 
 const titulosArray = computed(() => {
@@ -134,26 +136,31 @@ const titulosArray = computed(() => {
       return ["ID Categoría", "Contenido de la categoría"];
     case "encuesta":
       return ["ID Encuesta", "Fecha de la encuesta", "Comentarios", "Empresa"];
-    case "respuesta":
-      return ["ID Respuesta", "Valor", "idPregunta", "idEncuesta"];
+    case "usuario":
+      return ["ID Usuario", "Nombre de Usuario", "Contraseña", "Confirmar Contraseña", "Contraseña anterior"];
   }
 });
+
+async function validarContrasena(data) {
+  const confirmar = document.getElementById('confirmarContrasena').value
+  let previa = null;
+  if (modo.value === 'Editar') {
+    previa = document.getElementById('previaContrasena').value
+  }
+  if (confirmar !== data.contrasena) pop.createPopup("Las contraseñas no son iguales.")
+
+  if (previa) await login.check({ idUsuario: data.idUsuario, nombreUsuario: data.nombreUsuario, contrasena: previa }).then(res => console.log(res))
+}
 </script>
 
 <template>
   <section v-if="isLogin">
     <p>{{ modo }} {{ route.params.categoria }}</p>
-    <form class="form" id="form">
-      <FormPregunta
-        v-if="route.params.categoria === 'pregunta'"
-        :currentState="currentState"
-        :catData="Object.values(extraData)[0]"
-      />
-      <FormEncuesta
-        v-else-if="route.params.categoria === 'encuesta'"
-        :currentState="currentState"
-        :empData="Object.values(extraData)[0]"
-      />
+    <form class="form" id="form" @change="e => e.preventDefault()">
+      <FormPregunta v-if="route.params.categoria === 'pregunta'" :currentState="currentState"
+        :catData="Object.values(extraData)[0]" />
+      <FormEncuesta v-else-if="route.params.categoria === 'encuesta'" :currentState="currentState"
+        :empData="Object.values(extraData)[0]" />
       <Form v-else :currentState="currentState" :titulos="titulosArray" />
     </form>
     <button class="boton" @click="insertarData">
