@@ -31,7 +31,6 @@ const getDatos = async () => {
   await get
     .getTabla(`/encuestas/datos/${route.params.id}`)
     .then((res) => {
-      // console.log(res.Encuesta[0])
       datos.value = res;
       datosLength.value = Object.values(datos.value.Encuesta).length;
     })
@@ -43,7 +42,7 @@ function createPDF() {
   const section = document.getElementById("intro").parentElement;
   section.style.border = "0px";
   const options = {
-    backgroundColor: null,
+    // backgroundColor: null,
     // logging: false,
     scale: 0.9,
     windowWidth: 855,
@@ -51,7 +50,8 @@ function createPDF() {
   html2canvas(section, options).then(function (canvas2) {
     const imgData = canvas2.toDataURL("image/png");
     doc.addImage(imgData, "PNG", 10, 0);
-    doc.save("test.pdf");
+    doc.fill()
+    doc.save(`${datos.value.Encuesta[0].nombreEmpresa.replace(" ", "-")}_${datos.value.Encuesta[0].fecha.replace(" ", "-")}.pdf`);
   });
 }
 
@@ -73,20 +73,14 @@ onMounted(() => {
   <section>
     <template v-if="datos && datosLength > 0 && resultados && resultadosLength">
       <TablaResumen :resultados="resultados" :datos="datos" />
-      <button
-        class="boton boton-terminar"
-        data-html2canvas-ignore
-        @click="createPDF"
-      >
+      <button class="boton boton-terminar" data-html2canvas-ignore @click="createPDF">
         Exportar a PDF
       </button>
     </template>
-    <template
-      v-else-if="!isTimeout && (datosLength < 1 || resultadosLength < 1)"
-    >
+    <template v-else-if="!isTimeout && (datosLength < 1 || resultadosLength < 1)">
       <p class="cargando"></p>
-      <p>Cargando...</p></template
-    >
+      <p>Cargando...</p>
+    </template>
     <template v-else-if="!datos || datosLength < 1">
       <p>La encuesta que intenta acceder no existe.</p>
     </template>
