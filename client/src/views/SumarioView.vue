@@ -1,5 +1,7 @@
 <script setup>
 import get from "../services/get";
+import del from "../services/delete";
+import pop from "../components/popup"
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { jsPDF } from "jspdf";
@@ -11,6 +13,7 @@ const route = useRoute();
 const router = useRouter();
 
 const isTimeout = ref(false);
+const isCanvas = ref(false);
 
 const resultados = ref({});
 const datos = ref({});
@@ -38,26 +41,43 @@ const getDatos = async () => {
 };
 
 function createPDF() {
-  const doc = new jsPDF("p", "mm");
+  isCanvas.value = true
+  const doc = new jsPDF("p", "px");
   const section = document.getElementById("intro").parentElement;
+  section.parentElement.style.backgroundColor = "#fcfcfc";
+  // section.style.backgroundColor = "#fcfcfc";
   section.style.border = "0px";
+  section.style.boxShadow = "none";
   const options = {
-    // backgroundColor: null,
-    // logging: false,
-    scale: 0.9,
-    windowWidth: 855,
+    // allowTaint: true,
+    scale: 1,
+    windowWidth: 795,
+    removeContainer: true,
   };
   html2canvas(section, options).then(function (canvas2) {
     const imgData = canvas2.toDataURL("image/png");
-    doc.addImage(imgData, "PNG", 10, 0);
-    doc.fill()
+    isCanvas.value = false
+    doc.addImage(imgData, "PNG", 20, 10);
+    // doc.fill()
     doc.save(`${datos.value.Encuesta[0].nombreEmpresa.replace(" ", "-")}_${datos.value.Encuesta[0].fecha.replace(" ", "-")}.pdf`);
   });
 }
 
 async function eliminar() {
   const id = route.params.id
-  await del.deleteTabla(`/${params}s/delete/${id}`);
+  try {
+    try {
+      await del.deleteTabla(`/respuestas/delete/group/${id}`)
+      await del.deleteTabla(`/encuestas/delete/${id}`)
+    } catch (err) {
+      pop.createPopup(err.message)
+    }
+    pop.createPopup("Encuesta eliminada.", e => {
+      router.push('/admin'); e.target.parentElement.parentElement.remove()
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 onMounted(() => {
@@ -73,8 +93,8 @@ onMounted(() => {
   <section>
     <template v-if="datos && datosLength > 0 && resultados && resultadosLength">
       <TablaResumen :resultados="resultados" :datos="datos" />
-      <button class="boton boton-terminar" data-html2canvas-ignore @click="createPDF">
-        Exportar a PDF
+      <button class="boton boton-terminar" data-html2canvas-ignore @click="createPDF" :disabled="isCanvas">
+        {{ isCanvas ? 'Exportando...' : 'Exportar a PDF' }}
       </button>
     </template>
     <template v-else-if="!isTimeout && (datosLength < 1 || resultadosLength < 1)">
@@ -86,7 +106,7 @@ onMounted(() => {
     </template>
     <template v-else>
       <p>La encuesta que intenta acceder no tiene ningún valor.</p>
-      <button class="boton boton-eliminar">Eliminar encuesta</button>
+      <button class="boton boton-eliminar" @click="eliminar">Eliminar encuesta</button>
     </template>
   </section>
   <section>

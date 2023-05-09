@@ -83,7 +83,6 @@ async function extraDataGet() {
   } else if (route.params.categoria === "encuesta") {
     extraData.value = await get.getTabla("/empresas").catch((e) => e.message);
   }
-  console.log(extraData.value);
 }
 extraDataGet();
 
@@ -93,34 +92,41 @@ async function insertarData() {
   let data = Object.fromEntries(
     new FormData(document.querySelector("#form")).entries()
   );
+  // filtra la id si no se introdujo ningun parametro
   if (Object.values(data)[0] == "") data = Object.fromEntries(Object.entries(data).filter((key, val) => val !== 0))
 
-  await validarContrasena(data)
+  if (route.params.categoria === "usuario") {
+    console.log("validando...")
+    const res = await validarContrasena(data)
+    if (res > 300) {pop.createPopup("La contraseña anterior no es válida."); return}
+    console.log("validado")
+  }
+
   // se prepara la ruta y se envia la informacion
-  /*   if (modo.value === "Editar") {
-      const url = `/${route.params.categoria}s/update/${route.params.id}`;
-  
-      await upd.updateTabla(url, data)
-        .then((res) => {
-          console.log(res)
-          console.log(`actualizado`);
-          router.push("/admin");
-        })
-        .catch((e) => {
-          console.log(e.message);
-        });
-    } else {
-      const url = `/${route.params.categoria}s`
-      await ins.insertTabla(url, data)
-        .then((res) => {
-          console.log(res)
-          console.log(`insertado`);
-          router.push("/admin");
-        })
-        .catch((e) => {
-          console.log(e.message);
-        });
-    } */
+  if (modo.value === "Editar") {
+    const url = `/${route.params.categoria}s/update/${route.params.id}`;
+
+    await upd.updateTabla(url, data)
+      .then((res) => {
+        console.log(res)
+        console.log(`actualizado`);
+        router.push("/admin");
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+  } else {
+    const url = `/${route.params.categoria}s`
+    await ins.insertTabla(url, data)
+      .then((res) => {
+        console.log(res)
+        console.log(`insertado`);
+        router.push("/admin");
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+  }
 }
 
 const titulosArray = computed(() => {
@@ -143,13 +149,18 @@ const titulosArray = computed(() => {
 
 async function validarContrasena(data) {
   const confirmar = document.getElementById('confirmarContrasena').value
+  let result = 404;
   let previa = null;
   if (modo.value === 'Editar') {
     previa = document.getElementById('previaContrasena').value
   }
   if (confirmar !== data.contrasena) pop.createPopup("Las contraseñas no son iguales.")
+  else result = 202;
 
-  if (previa) await login.check({ idUsuario: data.idUsuario, nombreUsuario: data.nombreUsuario, contrasena: previa }).then(res => console.log(res))
+  if (previa) await login.check({ idUsuario: data.idUsuario, nombreUsuario: data.nombreUsuario, contrasena: previa }).then(res => {
+    result = res.status;
+  })
+  return result;
 }
 </script>
 

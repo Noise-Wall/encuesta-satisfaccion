@@ -41,7 +41,12 @@ async function eliminar(id, object) {
   const params = parametros(Object.keys(object)[0]);
   console.log(params);
   if (params === "encuesta") {
-    await del.deleteTabla(`/respuestas/delete/group/${id}`);
+    try {
+      await del.deleteTabla(`/respuestas/delete/group/${id}`);
+      await del.deleteTabla(`/encuestas/delete/${id}`)
+    } catch (err) {
+      pop.createPopup(err.message)
+    }
   } else {
     await del.deleteTabla(`/${params}s/delete/${id}`);
   }

@@ -1,4 +1,16 @@
 <script setup>
+import { ref } from 'vue'
+
+function sacarPromedio(array) {
+  let sum = 0;
+  console.log(array)
+  for (let i = 0; i < array.length; i++) {
+    sum += array[i].valor
+  }
+  return sum / array.length
+}
+
+
 const props = defineProps({
   resultados: Object,
   datos: Object,
@@ -12,46 +24,50 @@ const props = defineProps({
       <img src="../../public/img/logo.png" alt="logo" class="logo" />
       <h3 style="text-align: right">Encuesta de Satisfacción al Cliente</h3>
     </span>
-    <p>
+    <p class="estimado">
       Estimado cliente, nos dirigimos a usted para solicitarle la realización
       del siguiente cuestionario con el propósito de ajustarnos mejor a sus
       necesidades. Su opinión es de gran importancia para nosotros.
     </p>
     <div style="display: flex; justify-content: space-between">
-      <label>Empresa: {{ datos.Encuesta[0].nombreEmpresa }}</label>
-      <label
-        >Fecha:
+      <label>EMPRESA: {{ datos.Encuesta[0].nombreEmpresa.toUpperCase() }}</label>
+      <label>FECHA:
         {{
           new Intl.DateTimeFormat("es", {
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(new Date(datos.Encuesta[0].fecha))
-        }}</label
-      >
+          }).format(new Date(datos.Encuesta[0].fecha)).toUpperCase()
+        }}</label>
     </div>
     <div>
-      <label>Nombre del contacto: {{ datos.Encuesta[0].nombreContacto }}</label>
+      <label>NOMBRE DEL CONTACTO: {{ datos.Encuesta[0].nombreContacto.toUpperCase() }}</label>
     </div>
     <div>
-      <label>Correo electrónico: {{ datos.Encuesta[0].correo }}</label>
+      <label>CORREO ELECTRÓNICO: {{ datos.Encuesta[0].correo.toUpperCase() }}</label>
     </div>
-    <p style="margin-bottom: -10px">
-      A continuación se suministrará una serie de preguntas con el propósito de
+    <p class="continuacion">
+      1- A continuación se suministrará una serie de preguntas con el propósito de
       mejorar nuestra calidad de servicio, favor de marcar la opción que
       corresponda a su opinión.
     </p>
   </div>
-  <div class="panel-tabla tabla-col6" id="Resultados">
+  <div class="panel-tabla tabla-col8" id="Resultados">
     <div class="item-tabla item-tabla-head">Preguntas</div>
-    <div class="item-tabla item-tabla-head">Excelente</div>
-    <div class="item-tabla item-tabla-head">Bueno</div>
-    <div class="item-tabla item-tabla-head">Regular</div>
-    <div class="item-tabla item-tabla-head">Malo</div>
-    <div class="item-tabla item-tabla-head">Pésimo</div>
+    <div class="item-tabla item-tabla-head">Excelente (10)</div>
+    <div class="item-tabla item-tabla-head">Bueno (8)</div>
+    <div class="item-tabla item-tabla-head">Regular (6)</div>
+    <div class="item-tabla item-tabla-head">Malo (4)</div>
+    <div class="item-tabla item-tabla-head">Pésimo (2)</div>
+    <div class="item-tabla item-tabla-head">N/A</div>
+    <div class="item-tabla item-tabla-head">CALIFICACIÓN POR ATRIBUTO</div>
     <template v-for="(fila, index) in resultados.Respuesta" :key="index">
+      <div class="item-tabla full"
+        v-if="!resultados.Respuesta[index - 1] || resultados.Respuesta[index - 1].contenidoCategoria !== fila.contenidoCategoria">
+        {{ fila.contenidoCategoria.toUpperCase() }}
+      </div>
       <div class="item-tabla item-tabla-text">
-        {{ fila.contenidoPregunta }}
+        {{ index + 1 }}- {{ fila.contenidoPregunta }}
       </div>
       <div class="item-tabla">
         <i class="fa fa-check" v-if="fila.valor === 10"></i>
@@ -68,13 +84,32 @@ const props = defineProps({
       <div class="item-tabla">
         <i class="fa fa-check" v-if="fila.valor === 2"></i>
       </div>
+      <div class="item-tabla">
+        <i class="fa fa-check" v-if="fila.valor === null"></i>
+      </div>
+      <div class="item-tabla">
+        {{ fila.valor }}
+      </div>
     </template>
-    <div class="item-tabla full">Observaciones adicionales:</div>
-    <div class="item-tabla full" style="background-color: white">
+    <div class="item-tabla" style="font-weight: bold; text-align: left">
+      CALIFICACIÓN (PROMEDIO)
+    </div>
+    <div class="item-tabla full half blanco">{{ sacarPromedio(resultados.Respuesta) }}</div>
+    <div class="item-tabla full blanco">2.-Si desea realizar alguna observación sobre el servicio que no hayamos
+      contemplado en la encuesta háganos el favor de compartirla:</div>
+    <div class="item-tabla full blanco">
       {{
         datos.Encuesta[0].comentarios || "No hubo observaciones adicionales."
       }}
     </div>
+  </div>
+  <div class="intro nomargin">
+    <p>
+      Criterios de Evaluación son los siguientes: Excelente (10 puntos), Bueno (8 puntos), Regular
+      (6 puntos), Malo (4 puntos) y Pésimo (2 puntos), se suman los resultados y se saca un promedio.<br />
+      Criterio de <b>Aceptación:</b> calificación promedio mayor / igual a 7.<br />
+      Criterio de <b>Rechazo:</b> calificación promedio menor a 7
+    </p>
   </div>
   <div class="intro">
     <span>
@@ -90,64 +125,5 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.item-tabla {
-  border-radius: 0px;
-  color: black;
-  font-size: 0.85rem;
-}
-
-.item-tabla-head {
-  background-color: rgb(125, 125, 255);
-  border-top: 0px;
-  font-weight: bold;
-}
-
-.item-tabla-text {
-  text-align: left;
-}
-
-.full {
-  grid-column: 1 / -1;
-  text-align: left;
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 2px;
-  background-color: lightgray;
-}
-
-.panel-tabla > .boton {
-  grid-column: 1 / -1;
-}
-
-.intro {
-  padding: 35px;
-  font-size: 0.85rem;
-  text-align: justify;
-}
-
-.intro p,
-.intro h3,
-.intro label {
-  color: black;
-  font-weight: bold;
-}
-
-.intro p {
-  text-indent: 35px;
-}
-
-.intro h3 {
-  font-size: 1rem;
-  font-weight: bolder;
-}
-
-.intro span {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.intro .logo {
-  height: 70px;
-}
+@import '../../public/css/estilosSumario.css'
 </style>

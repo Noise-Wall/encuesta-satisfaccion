@@ -63,7 +63,11 @@ async function logout() {
 
 async function check(object) {
   return API()
-    .post("/usuarios/check", object)
+    .post("/usuarios/check", object, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
     .catch((err) => {
       return {
         status: err.response.status || 400,

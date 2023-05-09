@@ -32,38 +32,39 @@ controller.insert = async (req, res) => {
 };
 
 controller.login = async (req, res) => {
-  await validate(req, res).then((result) => {
-    console.log(result.comparison);
+  await validate(req, res)
+    .then((result) => {
+      console.log(result.comparison);
 
-    if (result.comparison) {
-      const token = generateAccessToken({
-        nombreUsuario: result.user,
-      });
+      if (result.comparison) {
+        const token = generateAccessToken({
+          nombreUsuario: result.user,
+        });
 
-      res.cookie("token", token, {
-        domain: process.env.DOMAIN,
-        maxAge: 3600000,
-        SameSite: false,
-        secure: true,
-      });
+        res.cookie("token", token, {
+          domain: process.env.DOMAIN,
+          maxAge: 3600000,
+          SameSite: false,
+          secure: true,
+        });
 
-      return res.status(202).json({
-        message: "Inicio de sesión exitoso.",
-      });
-    } else {
-      return res.status(401).json({ message: "Error: contraseña inválida." });
-    }
-  }).catch(err => console.log(err));
+        return res.status(202).json({
+          message: "Inicio de sesión exitoso.",
+        });
+      } else {
+        return res.status(401).json({ message: "Error: contraseña inválida." });
+      }
+    })
+    .catch((err) => console.log(err));
 };
 
 controller.validate = async (req, res) => {
-  await validate(req, res).then((result) => {
-    if (result.comparison) {
-      return res.status(202).json({ message: "Validación exitosa. " });
-    } else {
-      return res.status(401).json({ message: "Error de validación." });
-    }
-  }).catch(err => console.log(err));
+  await validate(req, res)
+    .then((result) => {
+      if (result.comparison === true) res.status(202).json(result)
+      else res.status(401).json(result)
+    })
+    .catch((error) => res.status(401).json(error));
 };
 
 controller.logout = (req, res) => {
@@ -111,6 +112,7 @@ async function validate(req, res) {
   const sqlSingle = "SELECT * FROM Usuarios WHERE nombreUsuario = ?";
   let querySingle = {};
   console.log("Intento de login");
+  console.log(req.body);
   if (nombreUsuario === null)
     return res
       .status(400)
@@ -129,10 +131,9 @@ async function validate(req, res) {
       return res.status(500).json(err);
     });
 
-  let comparison = await bcrypt.compare(
-    req.body.contrasena,
-    querySingle.contrasena
-  );
+  let comparison = await bcrypt
+    .compare(req.body.contrasena, querySingle.contrasena)
+    .catch((err) => console.log(err));
 
   return {
     comparison: comparison,
