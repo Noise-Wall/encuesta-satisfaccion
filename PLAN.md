@@ -3,7 +3,7 @@
 - ~~(**Importante**) Averiguar como poder acceder a la ruta Admin sin tener que entrar mediante un link en la vista principal~~ *Hecho mediante WebHashHistory*
 - ~~Adornar el <section>~~
 - ~~Anadir la tabla de usuarios a la vista Admin, que muestre solamente el ID y el nombre del usuario~~
-- Anadir la creacion de usuarios
+- ~~Anadir la creacion de usuarios~~
 - ~~Quitar la tabla de respuestas a la vista Admin~~
 - Hacer una ruta en el backend para recabar cuantas respuestas ha tenido una cierta pregunta, para despues ser implementada como una grafica
 - Implementar la creacion de graficas

@@ -12,6 +12,20 @@ function setUsuarioEdit(string) {
   isUsuarioEdit.value = string !== ""
   return ""
 }
+
+function mostrarContrasena(e) {
+  const current = e.target.previousElementSibling.type
+  if (current === "password") {
+    e.target.previousElementSibling.type = "text"
+    e.target.classList.remove("fa-eye")
+    e.target.classList.add("fa-eye-slash")
+  }
+  if (current === "text") {
+    e.target.previousElementSibling.type = "password"
+    e.target.classList.remove("fa-eye-slash")
+    e.target.classList.add("fa-eye")
+  }
+}
 </script>
 
 
@@ -24,14 +38,23 @@ function setUsuarioEdit(string) {
   </template>
   <template v-if="titulos[0].toLowerCase().includes('usuario')">
     <label for="contrasena">Contraseña{{ isUsuarioEdit ? ' nueva' : '' }}</label>
-    <input type="password" name="contrasena" class="form-item"
-      :placeholder="isUsuarioEdit ? 'En caso de querer cambiar contraseña' : 'Campo obligatorio'">
+    <span class="password">
+      <input type="password" name="contrasena" class="form-item"
+        :placeholder="isUsuarioEdit ? 'En caso de querer cambiar contraseña' : 'Campo obligatorio'">
+      <i class="fa-solid fa-eye" @click="e => mostrarContrasena(e)"></i>
+    </span>
     <label for="confirmarContrasena">Confirmar contraseña{{ isUsuarioEdit ? ' nueva' : '' }}</label>
-    <input type="password" id="confirmarContrasena" class="form-item"
-      :placeholder="isUsuarioEdit ? 'En caso de querer cambiar contraseña' : 'Campo obligatorio'">
+    <span class="password">
+      <input type="password" id="confirmarContrasena" class="form-item"
+        :placeholder="isUsuarioEdit ? '' : 'Campo obligatorio'">
+      <i class="fa-solid fa-eye" @click="e => mostrarContrasena(e)"></i>
+    </span>
     <template v-if="isUsuarioEdit">
       <label for="previaContrasena">Introducir previa contraseña</label>
-      <input type="password" id="previaContrasena" class="form-item" placeholder="En caso de querer cambiar contraseña">
+      <span class="password">
+        <input type="password" id="previaContrasena" class="form-item">
+        <i class="fa-solid fa-eye" @click="e => mostrarContrasena(e)"></i>
+      </span>
     </template>
   </template>
 </template>

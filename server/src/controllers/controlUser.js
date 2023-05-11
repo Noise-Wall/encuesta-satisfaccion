@@ -90,6 +90,7 @@ controller.getSingle = async (req, res) => {
 controller.update = async (req, res) => {
   const id = req.params.id;
   const body = req.body;
+  if (req.body.contrasena) req.body.contrasena = bcrypt.hashSync(req.body.contrasena, salt);
   const sql = "UPDATE Usuarios SET ? WHERE idUsuario = ?";
   queryUpdate = await query(req, res, sql, [body, id])
     .then(() => res.json({ message: "Operación exitosa." }))
