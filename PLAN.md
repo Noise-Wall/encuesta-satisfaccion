@@ -35,3 +35,15 @@
 ### 4-MAY
 
 - (**Seguridad**)(*Tentativo*) Implementar limites de tamano por peticion. En Node.JS, utilizar paquete raw-body.
+
+---
+
+### 12-MAY
+
+- Agregar ruta de recuperacion de contrasena
+
+### 15-MAY
+
+- Agregar documentacion a los parametros de la tabla
+- Necesita ser mas sturdy la app cuando no hay valores dentro
+- organizar preguntas mejor (categoria > preguntas)

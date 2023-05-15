@@ -49,7 +49,7 @@ CREATE TABLE Usuarios(
 	nombreUsuario VARCHAR(30) NOT NULL,
 	contrasena VARCHAR(60) NOT NULL,
 	PRIMARY KEY (idUsuario)
-)
+);
 
 DESCRIBE Empresa;
 DESCRIBE Categoria;

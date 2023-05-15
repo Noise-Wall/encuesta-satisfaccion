@@ -126,8 +126,8 @@ async function contestarEncuesta() {
 
   await insertComentario();
 
-  data.forEach(async (element) => {
-    await ins
+  data.forEach((element) => {
+    setTimeout(async () => await ins
       .insertTabla("/respuestas", element)
       .then((res) => console.log(res))
       .catch((e) => {
@@ -136,14 +136,14 @@ async function contestarEncuesta() {
           "Hubo un error al subir la información. Intente de nuevo."
         );
         return;
-      });
-  });
-
+      }), 300)
+  })
+    
   pop.createPopup(
-    "Encuesta contestada exitosamente.",
-    e => terminarEncuesta(e),
-    "terminar"
-  );
+      "Encuesta contestada exitosamente.",
+      e => terminarEncuesta(e),
+      "terminar"
+    )
 }
 
 const terminarEncuesta = (e) => {
@@ -181,13 +181,9 @@ getCategorias();
               <div class="item-encuesta item-encuesta-head" v-if="indexP === 0">
                 {{ cat.contenidoCategoria }}
               </div>
-              <div
-                class="item-encuesta item-encuesta-head"
-                v-else-if="
-                  preguntas[indexP].idCategoria !==
-                  preguntas[indexP - 1].idCategoria
-                "
-              >
+              <div class="item-encuesta item-encuesta-head" v-else-if="preguntas[indexP].idCategoria !==
+                preguntas[indexP - 1].idCategoria
+                ">
                 {{ cat.contenidoCategoria }}
               </div>
             </template>
@@ -199,41 +195,11 @@ getCategorias();
             </legend>
             <form>
               <input type="hidden" name="idPregunta" :value="item.idPregunta" />
-              <span
-                ><input
-                  type="radio"
-                  value="10"
-                  :name="`valor${indexP}`"
-                />Excelente</span
-              >
-              <span
-                ><input
-                  type="radio"
-                  value="8"
-                  :name="`valor${indexP}`"
-                />Bueno</span
-              >
-              <span
-                ><input
-                  type="radio"
-                  value="6"
-                  :name="`valor${indexP}`"
-                />Regular</span
-              >
-              <span
-                ><input
-                  type="radio"
-                  value="4"
-                  :name="`valor${indexP}`"
-                />Malo</span
-              >
-              <span
-                ><input
-                  type="radio"
-                  value="2"
-                  :name="`valor${indexP}`"
-                />Pésimo</span
-              >
+              <span><input type="radio" value="10" :name="`valor${indexP}`" />Excelente</span>
+              <span><input type="radio" value="8" :name="`valor${indexP}`" />Bueno</span>
+              <span><input type="radio" value="6" :name="`valor${indexP}`" />Regular</span>
+              <span><input type="radio" value="4" :name="`valor${indexP}`" />Malo</span>
+              <span><input type="radio" value="2" :name="`valor${indexP}`" />Pésimo</span>
             </form>
           </fieldset>
         </template>
@@ -245,20 +211,12 @@ getCategorias();
             Si desea realizar alguna observación sobre el servicio que no
             hayamos contemplado en la encuesta, compártalo a continuación:
           </legend>
-          <textarea
-            name="comentarios"
-            rows="4"
-            placeholder="Comparta su opinión (opcional)..."
-            id="comentarios"
-          ></textarea>
+          <textarea name="comentarios" rows="4" placeholder="Comparta su opinión (opcional)..."
+            id="comentarios"></textarea>
         </fieldset>
       </div>
 
-      <button
-        class="boton boton-terminar"
-        v-if="!confirmado"
-        @click="confirmado = true"
-      >
+      <button class="boton boton-terminar" v-if="!confirmado" @click="confirmado = true">
         <h1>Terminar encuesta</h1>
       </button>
       <button v-else class="boton terminar" @click="contestarEncuesta()">
@@ -299,14 +257,14 @@ fieldset {
   width: inherit;
 }
 
-fieldset > form {
+fieldset>form {
   width: 100%;
   height: 100%;
   display: inherit;
   justify-content: space-around;
 }
 
-fieldset > form > span > input[type="radio"] {
+fieldset>form>span>input[type="radio"] {
   cursor: pointer;
   margin: 10px;
 }
@@ -325,5 +283,4 @@ textarea {
   margin: 10px;
   width: 100%;
 }
-
 </style>

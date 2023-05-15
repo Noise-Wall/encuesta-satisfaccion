@@ -18,7 +18,11 @@ La aplicación consiste en un servicio de front-end hecho en Vue.js, que puede s
 git clone https://github.com/Noise-Wall/encuesta-satisfaccion.git
 ```
 
-2. Correr el siguiente codigo en una terminal en la carpeta del proyecto.
+2. Correr el archivo client-start.sh
+
+o
+
+Correr el siguiente codigo en una terminal en la carpeta del proyecto.
 
 ```bash
 cd ./client
@@ -34,7 +38,11 @@ npm run build
 
     1. Instalar y actualizar Node.
 
-    2. Abrir una terminal en el directorio base y correr el siguiente codigo
+    2. Correr el archivo server-start.sh
+    
+    o
+
+    Abrir una terminal en el directorio base y correr el siguiente codigo
 
     ```bash
     cd ./server

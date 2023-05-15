@@ -32,8 +32,9 @@ controller.insert = async (req, res) => {
 };
 
 controller.login = async (req, res) => {
+  if (res.headerSent) return;
   await validate(req, res)
-    .then((result) => {
+  .then((result) => {
       console.log(result.comparison);
 
       if (result.comparison) {
@@ -59,10 +60,11 @@ controller.login = async (req, res) => {
 };
 
 controller.validate = async (req, res) => {
+  if (res.headerSent) return;
   await validate(req, res)
     .then((result) => {
-      if (result.comparison === true) res.status(202).json(result)
-      else res.status(401).json(result)
+      if (result.comparison === true) res.status(202).json(result);
+      else res.status(401).json(result);
     })
     .catch((error) => res.status(401).json(error));
 };
@@ -90,7 +92,8 @@ controller.getSingle = async (req, res) => {
 controller.update = async (req, res) => {
   const id = req.params.id;
   const body = req.body;
-  if (req.body.contrasena) req.body.contrasena = bcrypt.hashSync(req.body.contrasena, salt);
+  if (req.body.contrasena)
+    req.body.contrasena = bcrypt.hashSync(req.body.contrasena, salt);
   const sql = "UPDATE Usuarios SET ? WHERE idUsuario = ?";
   queryUpdate = await query(req, res, sql, [body, id])
     .then(() => res.json({ message: "Operación exitosa." }))
@@ -134,7 +137,10 @@ async function validate(req, res) {
 
   let comparison = await bcrypt
     .compare(req.body.contrasena, querySingle.contrasena)
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
 
   return {
     comparison: comparison,

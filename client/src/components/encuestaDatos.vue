@@ -7,16 +7,25 @@ import pop from "../components/popup";
 
 const router = useRouter();
 const isTimeout = ref(false);
-onMounted(() => setTimeout(() => (isTimeout.value = true), 18000));
+onMounted(() => setTimeout(() => (isTimeout.value = true), 10000));
 
 const empresas = ref({});
 const empresaSelected = ref([""]);
 
-getEmpresas();
 async function getEmpresas() {
-  empresas.value = await get
+  await get
     .getTabla("/empresas")
-    .catch((e) => console.log(e.message));
+    .then((result) => {
+      if (result.message) {
+        empresas.value = null;
+        return;
+      };
+      empresas.value = result
+    })
+    .catch((e) => {
+      console.log(e.message)
+      isTimeout.value = true
+    });
 }
 
 function selectEmpresa(e) {
@@ -63,8 +72,8 @@ async function comenzarEncuesta(e) {
 
     await get
       .getTabla("/latest/empresa")
-      .then(() => {
-        idEmpresa = Object.values(temp)[0].idEmpresa;
+      .then((result) => {
+        idEmpresa = Object.values(result)[0].idEmpresa;
       })
       .catch((e) => {
         console.log(e.message);
@@ -81,12 +90,15 @@ async function insertarEncuesta(idEmpresa) {
     .getTabla("/latest/encuesta")
     .catch((e) => console.log(e.message));
 
+  console.log(idEncuesta.length)
+
   const body = {
-    idEncuesta: idEncuesta[0].idEncuesta + 1,
+    idEncuesta: idEncuesta.length>0 ? idEncuesta[0].idEncuesta + 1 : 1,
     idEmpresa: idEmpresa,
     fecha: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     comentarios: "",
   };
+
   await ins
     .insertTabla("/encuestas", body)
     .then((res) => {
@@ -97,10 +109,11 @@ async function insertarEncuesta(idEmpresa) {
     })
     .catch((e) => console.log(e.message));
 }
+getEmpresas();
 </script>
 
 <template>
-  <fieldset v-if="empresas.Empresa">
+  <fieldset v-if="empresas">
     <legend>Busque aquí su empresa</legend>
     <form class="form" @submit="(e) => e.preventDefault()">
       <input
@@ -133,9 +146,9 @@ async function insertarEncuesta(idEmpresa) {
       Cargando aplicación... Esto puede tardar unos momentos.
     </p>
   </div>
-  <div v-else><p style="text-align: center"></p></div>
+  <div v-else><p style="text-align: center">Intente de nuevo para ver empresas existentes.</p></div>
   <fieldset>
-    <legend>O llene el siguiente formulario:</legend>
+    <legend>{{empresas?'O l':'L'}}lene el siguiente formulario:</legend>
     <form class="form" id="form">
       <label for="nombreEmpresa" class="form-item">
         Nombre de la empresa:

@@ -121,6 +121,9 @@ async function logout() {
     </template>
     <template v-else>
       <p>No se encontró ningún valor.</p>
+      <button class="boton" @click="agregar">
+        <h1>+</h1>
+      </button>
     </template>
   </section>
   <section>

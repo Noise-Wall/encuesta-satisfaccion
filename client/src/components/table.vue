@@ -99,8 +99,8 @@ function confirmarBorrado(id, object) {
         ></i>
         <i
           class="fa-solid fa-eye"
-          v-if="parametros(Object.keys(parent)[0]) === 'encuesta'"
-          @click="router.push(`/admin/encuesta/${Object.values(parent)[0]}`)"
+          v-if="parametros(Object.keys(parent)[0]) === 'encuesta' || parametros(Object.keys(parent)[0]) === 'pregunta'"
+          @click="router.push(`/admin/${parametros(Object.keys(parent)[0])}/${Object.values(parent)[0]}`)"
         ></i>
         <i
           class="fa-solid fa-trash-can"

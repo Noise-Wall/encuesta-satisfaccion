@@ -15,8 +15,8 @@ const loginLimiter = rateLimit({
 
 // limita peticiones por cada segundo y medio.
 const stdRateLimiter = rateLimit({
-  windowMs: 1500,
-  max: 3,
+  windowMs: 1000,
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
 });
