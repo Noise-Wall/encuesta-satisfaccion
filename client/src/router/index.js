@@ -43,9 +43,8 @@ const router = createRouter({
             component: ()=>import("../views/SumarioView.vue")
         },
         {
-            path: "/admin/pregunta/:id",
+            path: "/admin/pregunta",
             name: "preguntas",
-            params: true,
             component: ()=>import("../views/ResultadosView.vue")
         },
         {

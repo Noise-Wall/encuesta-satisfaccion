@@ -52,6 +52,43 @@ controller.getByCategoria = (req, res) => {
     })
     .catch((e) => res.json(e));
 };
+// metodo HTTP GET para obtener todas las respuestas que ha tenido una pregunta en un tiempo determinado.
+controller.getByRespuestas = async (req, res) => {
+  const id = req.params.id;
+  const year = !isNaN(req.params.year) 
+    ? parseInt(req.params.year) 
+    : null;
+  const cuarto = !isNaN(req.params.cuarto)
+    ? parseInt(req.params.cuarto) * 3 - 2
+    : null;
+
+  let sql =
+    "SELECT Respuesta.valor, Encuesta.fecha FROM Pregunta INNER JOIN Respuesta ON Respuesta.idPregunta = Pregunta.idPregunta INNER JOIN Encuesta ON Encuesta.idEncuesta = Respuesta.idEncuesta WHERE Pregunta.idPregunta = ?";
+
+  let inicio = "";
+  let fin = "";
+
+  if (year) {
+    sql += " AND Encuesta.fecha >= ? AND Encuesta.fecha < ?";
+    inicio = `${year}-01-01`;
+    fin = `${year + 1}-01-01`;
+    if (cuarto && (cuarto >= 1 && cuarto <= 10)) {
+      console.log('yes')
+      inicio = `${year}-${cuarto > 9 ? cuarto : '0' + cuarto}-01`
+      if (cuarto + 3 <= 12) fin = `${year}-${cuarto+3 > 9 ? cuarto + 3 : '0' + (cuarto + 3)}-01`;
+    }
+  }
+
+  console.log(`inicio ${inicio}, fin ${fin}`);
+
+  await query(req, res, sql, [id, inicio, fin])
+    .then((data) => {
+      res.json({
+        Pregunta: data,
+      });
+    })
+    .catch((e) => res.status(400).json(e));
+};
 // metodo HTTP PATCH para actualizar una entrada en Pregunta
 controller.update = (req, res) => {
   const id = req.params.id;

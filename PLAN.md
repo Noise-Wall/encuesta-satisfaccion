@@ -5,7 +5,7 @@
 - ~~Anadir la tabla de usuarios a la vista Admin, que muestre solamente el ID y el nombre del usuario~~
 - ~~Anadir la creacion de usuarios~~
 - ~~Quitar la tabla de respuestas a la vista Admin~~
-- Hacer una ruta en el backend para recabar cuantas respuestas ha tenido una cierta pregunta, para despues ser implementada como una grafica
+- ~~Hacer una ruta en el backend para recabar cuantas respuestas ha tenido una cierta pregunta, para despues ser implementada como una grafica~~
 - Implementar la creacion de graficas
 - (*Tentativo*) Separar la vista resumen de las encuestas en un apartado diferente
 - Terminar el README
@@ -46,4 +46,17 @@
 
 - Agregar documentacion a los parametros de la tabla
 - Necesita ser mas sturdy la app cuando no hay valores dentro
-- organizar preguntas mejor (categoria > preguntas)
+- ~~Organizar preguntas mejor (categoria > preguntas)~~
+- (**Tentativo**) brindar opcion de editar datos a empresa
+- Separar tablas de AdminView para mostrar contenido en vez de IDs.
+- Agregar confirmacion a todos los edits y deletes que no se supone deben usarse.
+- Cambiar la habilitacion a un boton y un label verde/rojo
+- ~~Cachar las queries que responden con error~~
+- Cambiar la visualizacion de las preguntas a una vista ajena, en vez de entrar a ella mediante las preguntas como con las encuestas.
+- ~~Cambiar query de preguntas respuestas a dar info por ano.~~
+
+### 18-MAY
+
+- Ver plugin AutoTable del jsPDF
+- Implementar limite de objetos mostrados en tablas ()
+- Implementar modulos, para no estar importando los archivos completos al requerir una sola funcion

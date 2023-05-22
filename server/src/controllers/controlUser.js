@@ -34,7 +34,7 @@ controller.insert = async (req, res) => {
 controller.login = async (req, res) => {
   if (res.headerSent) return;
   await validate(req, res)
-  .then((result) => {
+    .then((result) => {
       console.log(result.comparison);
 
       if (result.comparison) {
@@ -63,10 +63,12 @@ controller.validate = async (req, res) => {
   if (res.headerSent) return;
   await validate(req, res)
     .then((result) => {
-      if (result.comparison === true) res.status(202).json(result);
-      else res.status(401).json(result);
+      if (result.comparison === true) return res.status(202).json(result);
+      else return res.status(401).json(result);
     })
-    .catch((error) => res.status(401).json(error));
+    .catch((error) => {
+      return res.status(401).json(error);
+    });
 };
 
 controller.logout = (req, res) => {
@@ -115,31 +117,33 @@ async function validate(req, res) {
   const nombreUsuario = req.body.nombreUsuario || null;
   const sqlSingle = "SELECT * FROM Usuarios WHERE nombreUsuario = ?";
   let querySingle = {};
+  let comparison;
   console.log("Intento de login");
   console.log(req.body);
   if (nombreUsuario === null)
-    return res
-      .status(400)
-      .json({ message: "No se introdujo un nombre de usuario válido." });
+    return { message: "No se introdujo un nombre de usuario válido." };
 
   await query(req, res, sqlSingle, nombreUsuario)
     .then((result) => {
       querySingle.nombreUsuario = result[0].nombreUsuario || null;
-      querySingle.contrasena = result[0].contrasena || null;
+      querySingle.contrasena =
+        result[0].contrasena == "" ? null : result[0].contrasena;
       if (querySingle.nombreUsuario === null)
-        return res
-          .status(400)
-          .json({ message: "No se introdujo un nombre de usuario válido." });
+        return { message: "No se introdujo un nombre de usuario válido." };
+      if (querySingle.contrasena === null)
+        return { message: "No se introdujo una contrasena válida." };
+    }).then(async () => {
+      try {
+        comparison = await bcrypt.compare(
+          req.body.contrasena,
+          querySingle.contrasena
+        );
+      } catch (err) {
+        console.log(`Error: ${err.message}`)
+      }
     })
     .catch((err) => {
-      return res.status(500).json(err);
-    });
-
-  let comparison = await bcrypt
-    .compare(req.body.contrasena, querySingle.contrasena)
-    .catch((err) => {
-      console.log(err);
-      return err;
+      return {message: err.message};
     });
 
   return {

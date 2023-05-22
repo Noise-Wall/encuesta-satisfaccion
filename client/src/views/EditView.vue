@@ -98,7 +98,7 @@ async function insertarData() {
   if (route.params.categoria === "usuario") {
     console.log("validando...")
     const res = await validarContrasena(data)
-    if (res > 300) {pop.createPopup("La contraseña anterior no es válida."); return}
+    if (res > 300) { pop.createPopup("La contraseña anterior no es válida."); return }
     console.log("validado")
   }
 
@@ -177,7 +177,9 @@ async function validarContrasena(data) {
     <button class="boton" @click="insertarData">
       Agregar {{ route.params.categoria }}
     </button>
-    <p><router-link to="/admin">Regresar</router-link></p>
+  </section>
+  <section>
+    <button class="boton" @click="router.push('/admin')">Regresar</button>
   </section>
 </template>
 

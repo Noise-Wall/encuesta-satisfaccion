@@ -7,7 +7,7 @@ const query = async (req, res, sql, input) => {
       try {
         conn.query(sql, input, (err, result) => {
           if (err) {
-            return res.json(err);
+            return res.status(400).json(err);
           }
           resolve(result);
         });

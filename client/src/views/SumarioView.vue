@@ -59,7 +59,11 @@ function createPDF() {
     isCanvas.value = false
     doc.addImage(imgData, "PNG", 20, 10);
     // doc.fill()
-    doc.save(`${datos.value.Encuesta[0].nombreEmpresa.replace(" ", "-")}_${datos.value.Encuesta[0].fecha.replace(" ", "-")}.pdf`);
+    const a = document.createElement('a')
+    a.target = "_blank"
+    a.href = doc.output('bloburl');
+    // doc.save(`${datos.value.Encuesta[0].nombreEmpresa.replace(" ", "-")}_${datos.value.Encuesta[0].fecha.replace(" ", "-")}.pdf`)
+    a.click()
   });
 }
 

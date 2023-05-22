@@ -42,7 +42,7 @@ controller.getSingle = (req, res) => {
 controller.getByEncuesta = (req, res) => {
   let id = req.params.id;
   let sql =
-    "SELECT Respuesta.valor,Pregunta.contenidoPregunta, Categoria.contenidoCategoria FROM Respuesta INNER JOIN Pregunta on Respuesta.idPregunta = Pregunta.idPregunta INNER JOIN Categoria on Pregunta.idCategoria = Categoria.idCategoria WHERE Respuesta.idEncuesta = ? ORDER BY Categoria.idCategoria";
+    "SELECT Respuesta.valor,Pregunta.contenidoPregunta, Categoria.contenidoCategoria FROM Respuesta INNER JOIN Pregunta on Respuesta.idPregunta = Pregunta.idPregunta INNER JOIN Categoria on Pregunta.idCategoria = Categoria.idCategoria WHERE Respuesta.idEncuesta = ? ORDER BY Categoria.idCategoria, Pregunta.idPregunta";
   const queryByEncuesta = query(req, res, sql, id);
   Promise.all([queryByEncuesta])
     .then((data) => {

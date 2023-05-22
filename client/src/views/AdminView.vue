@@ -105,12 +105,14 @@ async function logout() {
   </section>
   <section v-if="categoria">
     <p :style="'font-weight: bold;'" id="categoriaLabel">{{ categoria }}</p>
+
+
     <template v-if="jsonData && jsonDataLength > 0">
-      <Tabla
-        :tablaTitulos="tablaTitulos"
-        :tablaColumnas="tablaColumnas"
-        :tablaData="Object.values(jsonData)[0]"
-      />
+      <div v-if="categoria === 'Preguntas'" class="vista-nueva" @click="router.push('/admin/pregunta')">
+        <i class="fa-solid fa-chart-simple"></i>
+        <p>Ir a resultados</p>
+      </div>
+      <Tabla :tablaTitulos="tablaTitulos" :tablaColumnas="tablaColumnas" :tablaData="Object.values(jsonData)[0]" />
       <button class="boton" @click="agregar">
         <h1>+</h1>
       </button>
@@ -130,3 +132,38 @@ async function logout() {
     <button class="boton" @click="logout">Cerrar sesión</button>
   </section>
 </template>
+
+<style scoped>
+.vista-nueva {
+  width: 75%;
+  margin: 25px auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  background-color: var(--color2);
+  cursor: pointer;
+}
+
+.vista-nueva:hover {
+  border: 3px solid orange;
+  margin: 22px auto;
+}
+
+.vista-nueva:hover>* {
+  color: rgb(95, 226, 90);
+  text-decoration: underline;
+}
+
+.vista-nueva:active {
+  border: 3px solid rgb(95, 226, 90);
+}
+.vista-nueva:active>* {
+  color: orange;
+}
+
+.vista-nueva>.fa-solid {
+  margin: 0 10px;
+}
+</style>
