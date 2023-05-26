@@ -7,12 +7,15 @@ const controller = {};
 const salt = process.env.SALT;
 
 controller.get = async (req, res) => {
-  const sql = "SELECT idUsuario, nombreUsuario FROM Usuarios";
-  queryAll = await query(req, res, sql, "")
+  const page = req.query.page ? (parseInt(req.query.page) - 1) * 10 : null;
+  let sql = "SELECT idUsuario, nombreUsuario FROM Usuarios";
+  
+  if (req.query.count === 'yes') sql = sql.replace("SELECT *", "SELECT COUNT(*) AS count");
+  else if (page !== null) sql += ` LIMIT ${page}, 10`;
+
+  await query(req, res, sql)
     .then((data) => res.json({ Usuarios: data }))
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+    .catch((e) => res.status(500).json(e));
 };
 
 controller.insert = async (req, res) => {
@@ -24,11 +27,9 @@ controller.insert = async (req, res) => {
     contrasena: contrasena,
   };
   const sql = "INSERT INTO Usuarios SET ?";
-  queryInsert = await query(req, res, sql, user)
-    .then(() => res.status(201).json({ message: "Operación exitosa." }))
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+  await query(req, res, sql, user)
+    .then(() => res.status(201).json({ Upload: "Operación exitosa." }))
+    .catch((e) => res.status(500).json(e));
 };
 
 controller.login = async (req, res) => {
@@ -56,7 +57,7 @@ controller.login = async (req, res) => {
         return res.status(401).json({ message: "Error: contraseña inválida." });
       }
     })
-    .catch((err) => console.log(err));
+    .catch((e) => console.log(e));
 };
 
 controller.validate = async (req, res) => {
@@ -66,8 +67,8 @@ controller.validate = async (req, res) => {
       if (result.comparison === true) return res.status(202).json(result);
       else return res.status(401).json(result);
     })
-    .catch((error) => {
-      return res.status(401).json(error);
+    .catch((e) => {
+      return res.status(401).json(e);
     });
 };
 
@@ -84,11 +85,9 @@ controller.logout = (req, res) => {
 controller.getSingle = async (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM Usuarios WHERE idUsuario = ?";
-  queryGetSingle = await query(req, res, sql, id)
+  await query(req, res, sql, id)
     .then((data) => res.json({ Usuarios: data[0] }))
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+    .catch((e) => res.status(500).json(e));
 };
 
 controller.update = async (req, res) => {
@@ -97,20 +96,16 @@ controller.update = async (req, res) => {
   if (req.body.contrasena)
     req.body.contrasena = bcrypt.hashSync(req.body.contrasena, salt);
   const sql = "UPDATE Usuarios SET ? WHERE idUsuario = ?";
-  queryUpdate = await query(req, res, sql, [body, id])
-    .then(() => res.json({ message: "Operación exitosa." }))
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+  await query(req, res, sql, [body, id])
+    .then(() => res.json({ Update: "Operación exitosa." }))
+    .catch((e) => res.status(500).json(e));
 };
 controller.delete = async (req, res) => {
   const id = req.params.id;
   const sql = "DELETE FROM Usuarios WHERE idUsuario = ?";
   queryDelete = await query(req, res, sql, id)
-    .then(() => res.json({ message: "Operación exitosa." }))
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+    .then(() => res.json({ Delete: "Operación exitosa." }))
+    .catch((e) => res.status(500).json(e));
 };
 
 async function validate(req, res) {
@@ -132,18 +127,19 @@ async function validate(req, res) {
         return { message: "No se introdujo un nombre de usuario válido." };
       if (querySingle.contrasena === null)
         return { message: "No se introdujo una contrasena válida." };
-    }).then(async () => {
+    })
+    .then(async () => {
       try {
         comparison = await bcrypt.compare(
           req.body.contrasena,
           querySingle.contrasena
         );
-      } catch (err) {
-        console.log(`Error: ${err.message}`)
+      } catch (e) {
+        console.log(`Error: ${e.message}`);
       }
     })
-    .catch((err) => {
-      return {message: err.message};
+    .catch((e) => {
+      return { message: e.message };
     });
 
   return {

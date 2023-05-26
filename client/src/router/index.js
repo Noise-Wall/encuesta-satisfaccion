@@ -16,6 +16,7 @@ const router = createRouter({
         {
             path: "/admin",
             name: "admin",
+            params: true,
             component: ()=>import("../views/AdminView.vue")
         },
         {
@@ -37,7 +38,7 @@ const router = createRouter({
             component: ()=>import("../views/AdminView.vue")
         },
         {
-            path: "/admin/encuesta/:id",
+            path: "/admin/encuestas/:id",
             name: "resumen",
             params: true,
             component: ()=>import("../views/SumarioView.vue")

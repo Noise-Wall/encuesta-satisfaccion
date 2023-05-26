@@ -35,7 +35,7 @@ const props = defineProps({
     </template>
   </select>
   <label :for="currentState[3][0]" class="form-item">Habilitar pregunta:</label>
-  <span>
+  <span class="radio" @click="e=>e.target.firstElementChild.checked=true">
     <input
       type="radio"
       name="deshabilitada"
@@ -43,9 +43,9 @@ const props = defineProps({
       :checked="currentState[3][1] === 0 || currentState[3][1] === ''"
       required
     />
-    Deshabilitada
+    Deshabilitada 
   </span>
-  <span>
+  <span class="radio" @click="e=>e.target.firstElementChild.checked=true">
     <input
       type="radio"
       name="deshabilitada"
@@ -53,6 +53,6 @@ const props = defineProps({
       :checked="currentState[3][1] === 1"
       required
     />
-    Habilitada
+    Habilitada 
   </span>
 </template>

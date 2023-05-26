@@ -3,6 +3,10 @@ const props = defineProps({
   currentState: Array,
   empData: Array,
 });
+
+function formatISODate(date) {
+  return new Date(date).toISOString().substring(0, 10)
+}
 </script>
 
 <template>
@@ -20,7 +24,7 @@ const props = defineProps({
     type="date"
     class="form-item"
     :name="currentState[1][0]"
-    :value="currentState[1][1]"
+    :value="formatISODate(currentState[1][1])"
     required
   />
   <label :for="currentState[2][0]" class="form-item">Comentarios</label>

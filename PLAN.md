@@ -60,3 +60,5 @@
 - Ver plugin AutoTable del jsPDF
 - Implementar limite de objetos mostrados en tablas ()
 - Implementar modulos, para no estar importando los archivos completos al requerir una sola funcion
+- Implementar parametros GET en la vista Admin, para seleccionar la tabla y la página (y para quitar de una buena vez la categoria)
+    - Para la paginacion, agregar a todas las rutas un parametro extra de paginado

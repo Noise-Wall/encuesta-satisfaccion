@@ -30,21 +30,21 @@ const props = defineProps({
       necesidades. Su opinión es de gran importancia para nosotros.
     </p>
     <div style="display: flex; justify-content: space-between">
-      <label>EMPRESA: {{ datos.Encuesta[0].nombreEmpresa.toUpperCase() }}</label>
+      <label>EMPRESA: {{ datos.Encuesta.nombreEmpresa.toUpperCase() }}</label>
       <label>FECHA:
         {{
           new Intl.DateTimeFormat("es", {
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(new Date(datos.Encuesta[0].fecha)).toUpperCase()
+          }).format(new Date(datos.Encuesta.fecha)).toUpperCase()
         }}</label>
     </div>
     <div>
-      <label>NOMBRE DEL CONTACTO: {{ datos.Encuesta[0].nombreContacto.toUpperCase() }}</label>
+      <label>NOMBRE DEL CONTACTO: {{ datos.Encuesta.nombreContacto.toUpperCase() }}</label>
     </div>
     <div>
-      <label>CORREO ELECTRÓNICO: {{ datos.Encuesta[0].correo.toUpperCase() }}</label>
+      <label>CORREO ELECTRÓNICO: {{ datos.Encuesta.correo.toUpperCase() }}</label>
     </div>
     <p class="continuacion">
       1- A continuación se suministrará una serie de preguntas con el propósito de
@@ -99,7 +99,7 @@ const props = defineProps({
       contemplado en la encuesta háganos el favor de compartirla:</div>
     <div class="item-tabla full blanco">
       {{
-        datos.Encuesta[0].comentarios || "No hubo observaciones adicionales."
+        datos.Encuesta.comentarios || "No hubo observaciones adicionales."
       }}
     </div>
   </div>

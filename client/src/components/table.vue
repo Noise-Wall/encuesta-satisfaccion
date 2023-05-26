@@ -1,8 +1,14 @@
 <script setup>
-import { useRouter } from "vue-router";
-import del from "../services/delete.js";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { deleteTabla } from "../services/delete.js";
 import pop from "./popup";
+
+const route = useRoute();
 const router = useRouter();
+const params = ref(route.query.cat.toLowerCase());
+
+console.log(params.value);
 
 const props = defineProps({
   tablaTitulos: Array,
@@ -10,45 +16,46 @@ const props = defineProps({
   tablaData: Object,
 });
 
-function parametros(string) {
-  switch (string) {
-    case "idEmpresa":
-      return "empresa";
-    case "idCategoria":
-      return "categoria";
-    case "idPregunta":
-      return "pregunta";
-    case "idEncuesta":
-      return "encuesta";
-    case "idUsuario":
-      return "usuario";
-    default:
-      console.log("Categoria invalida");
-      return;
-  }
-}
 // routes to editView with data passed through states
 function edit(id, object) {
   const data = object;
   router.push({
     name: "editar",
     state: data,
-    params: { categoria: parametros(Object.keys(object)[0]), id: id },
+    params: {
+      categoria: params.value,
+      id: id,
+    },
   });
 }
 
 async function eliminar(id, object) {
-  const params = parametros(Object.keys(object)[0]);
-  console.log(params);
-  if (params === "encuesta") {
+  const categoriasValidas = [
+    "empresas",
+    "categorias",
+    "preguntas",
+    "encuestas",
+    "usuarios",
+  ];
+
+  if (!categoriasValidas.includes(params.value)) {
+    console.log("Error: categoría inválida. Cancelando eliminación.");
+    return;
+  }
+
+  if (params.value === "encuestas") {
     try {
-      await del.deleteTabla(`/respuestas/delete/group/${id}`);
-      await del.deleteTabla(`/encuestas/delete/${id}`)
+      await deleteTabla(`/respuestas/delete/group/${id}`);
     } catch (err) {
-      pop.createPopup(err.message)
+      pop.createPopup(err.message);
+      return;
     }
-  } else {
-    await del.deleteTabla(`/${params}s/delete/${id}`);
+  }
+  try {
+    await deleteTabla(`/${params.value}/delete/${id}`);
+  } catch (err) {
+    pop.createPopup(err.message);
+    return;
   }
 }
 
@@ -58,7 +65,11 @@ function confirmarBorrado(id, object) {
 
   const display = `<h3>Atención</h3> 
   
-  <b>${parametros(Object.keys(object)[0])==="encuesta"?"Se borrarán todos los datos de la siguiente encuesta, incluyendo las respuestas:":"Se borrará el siguiente dato:"}</b> <br>
+  <b>${
+    params.value === "encuestas"
+      ? "Se borrarán todos los datos de la siguiente encuesta, incluyendo las respuestas:"
+      : "Se borrará el siguiente dato:"
+  }</b> <br>
   <br>${data[0][0]}: ${data[0][1]}
   <br>${data[1][0]}: ${data[1][1]}
 
@@ -71,7 +82,7 @@ function confirmarBorrado(id, object) {
       await eliminar(id, object)
         .then(() => {
           e.target.parentElement.parentElement.remove();
-          window.location.reload();
+          router.push(`/admin?cat=${route.query.cat}&page=1`);
         })
         .catch((e) => console.log(e.message));
     },
@@ -99,8 +110,8 @@ function confirmarBorrado(id, object) {
         ></i>
         <i
           class="fa-solid fa-eye"
-          v-if="parametros(Object.keys(parent)[0]) === 'encuesta'"
-          @click="router.push(`/admin/${parametros(Object.keys(parent)[0])}/${Object.values(parent)[0]}`)"
+          v-if="params === 'encuestas'"
+          @click="router.push(`/admin/${params}/${Object.values(parent)[0]}`)"
         ></i>
         <i
           class="fa-solid fa-trash-can"
@@ -117,5 +128,12 @@ function confirmarBorrado(id, object) {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.item-tabla {
+  word-wrap: break-word;
+  max-height: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

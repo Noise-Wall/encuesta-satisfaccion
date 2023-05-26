@@ -16,10 +16,11 @@ async function getEmpresas() {
   await get
     .getTabla("/empresas")
     .then((result) => {
-      if (result.message) {
+      if (result.message || result.Empresa.length < 1) {
         empresas.value = null;
         return;
       };
+
       empresas.value = result
     })
     .catch((e) => {
@@ -86,14 +87,13 @@ async function comenzarEncuesta(e) {
 
 async function insertarEncuesta(idEmpresa) {
   const date = new Date();
-  const idEncuesta = await get
-    .getTabla("/latest/encuesta")
-    .catch((e) => console.log(e.message));
+  let idEncuesta; 
+  await get.getTabla("/latest/encuesta").then(result => idEncuesta = result.idEncuesta)
 
-  console.log(idEncuesta.length)
+  console.log(idEncuesta)
 
   const body = {
-    idEncuesta: idEncuesta.length>0 ? idEncuesta[0].idEncuesta + 1 : 1,
+    idEncuesta: idEncuesta ? idEncuesta + 1 : 1,
     idEmpresa: idEmpresa,
     fecha: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     comentarios: "",

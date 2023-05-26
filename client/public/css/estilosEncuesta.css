@@ -8,6 +8,7 @@
   --colorFondo2: #34495e;
   --shadow: rgba(0, 0, 0, 0.2);
   --colorDarkGray: rgb(50, 50, 50);
+  --verdesuave: rgb(95, 226, 90);
 }
 
 * {
@@ -353,6 +354,19 @@ fieldset {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.radio {
+  cursor: pointer;
+}
+
+.radio:hover {
+  text-decoration: underline;
+  color: orange;
+}
+
+.radio:active {
+  color: green
 }
 
 /* Popup */

@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from "vue-router";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import autoTable, { Table } from "jspdf-autotable";
 import get from "../services/get";
 import login from "../services/login";
 import pop from "../components/popup.js"
@@ -33,6 +33,8 @@ onMounted(() => {
 
 const preguntas = ref([])
 const respuestas = ref([])
+
+const tablaExport = ref([])
 
 async function getPreguntas() {
     await get.getTabla("/preguntas").then((result) => {
@@ -66,17 +68,24 @@ async function getRespuestas(e) {
 }
 
 async function generateTabla() {
+    tablaExport.value = []
     const doc = new jsPDF()
-    let list = []
-    for (let res in respuestas.value) {
-        console.log(res)
-        list.push(JSON.parse(JSON.stringify(respuestas.value[res])))
-    }
-    console.log(list)
-    autoTable(doc, { body: list })
+    respuestas.value.forEach((res) => {
+        const list = []
+        res.forEach(e => {
+            list.push(Object.values(e))
+        })
+        tablaExport.value.push(list)
+    })
+    console.log(tablaExport.value)
+
+    return
+
+    // autoTable(doc, { columns: [{header: "Valor", dataKey: "valor"}, {header: "Fecha", dataKey: "fecha"}],body: tablaExport.value })
     
     const a = document.createElement("a")
     a.target ="_blank"
+    // a.href=encodeUri
     a.href = doc.output('bloburl')
     a.click()
 }

@@ -5,7 +5,7 @@ const props = defineProps({
 
 function getPromedio(arr) {
     let resultado = arr.reduce((count, respuesta) => count + respuesta.valor, 0);
-    return resultado / arr.length
+    return (resultado / arr.length).toFixed(2)
 }
 
 function formatoMes(date) {

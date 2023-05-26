@@ -1,8 +1,7 @@
 // funcion para regresar informacion de un query de la base de datos
-const query = async (req, res, sql, input) => {
+const query = async (req, res, sql, input=null) => {
   return new Promise((resolve, reject) => {
     req.getConnection((err, conn) => {
-      // console.log(conn)
       if (err) console.log(err);
       try {
         conn.query(sql, input, (err, result) => {

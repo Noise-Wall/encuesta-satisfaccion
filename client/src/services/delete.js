@@ -16,9 +16,7 @@ function deleteFunc(string) {
     });
 }
 
-export default {
-  async deleteTabla(string) {
-    const res = await deleteFunc(string);
-    return res.data;
-  },
+export const deleteTabla = async (string) => {
+  const res = await deleteFunc(string);
+  return res.data;
 };

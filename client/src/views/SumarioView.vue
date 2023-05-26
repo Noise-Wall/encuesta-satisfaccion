@@ -1,8 +1,8 @@
 <script setup>
 import get from "../services/get";
-import del from "../services/delete";
-import pop from "../components/popup"
-import { ref, onMounted } from "vue";
+import {deleteTabla} from "../services/delete";
+import pop from "../components/popup";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -17,15 +17,15 @@ const isCanvas = ref(false);
 
 const resultados = ref({});
 const datos = ref({});
-const resultadosLength = ref(0);
-const datosLength = ref(0);
+const resultadosLength = ref(0)
+const datosLength = ref(0)
 
 const getResultados = async () => {
   await get
     .getTabla(`/respuestas/group/${route.params.id}`)
     .then((res) => {
       resultados.value = res;
-      resultadosLength.value = Object.values(resultados.value.Respuesta).length;
+      resultadosLength.value = Object.values(res.Respuesta).length
     })
     .catch((e) => console.log(e.message));
 };
@@ -34,14 +34,15 @@ const getDatos = async () => {
   await get
     .getTabla(`/encuestas/datos/${route.params.id}`)
     .then((res) => {
+      console.log(res.Encuesta)
       datos.value = res;
-      datosLength.value = Object.values(datos.value.Encuesta).length;
+      datosLength.value = Object.values(res.Encuesta).length
     })
     .catch((e) => console.log(e.message));
 };
 
 function createPDF() {
-  isCanvas.value = true
+  isCanvas.value = true;
   const doc = new jsPDF("p", "px");
   const section = document.getElementById("intro").parentElement;
   section.parentElement.style.backgroundColor = "#fcfcfc";
@@ -56,31 +57,32 @@ function createPDF() {
   };
   html2canvas(section, options).then(function (canvas2) {
     const imgData = canvas2.toDataURL("image/png");
-    isCanvas.value = false
+    isCanvas.value = false;
     doc.addImage(imgData, "PNG", 20, 10);
     // doc.fill()
-    const a = document.createElement('a')
-    a.target = "_blank"
-    a.href = doc.output('bloburl');
+    const a = document.createElement("a");
+    a.target = "_blank";
+    a.href = doc.output("bloburl");
     // doc.save(`${datos.value.Encuesta[0].nombreEmpresa.replace(" ", "-")}_${datos.value.Encuesta[0].fecha.replace(" ", "-")}.pdf`)
-    a.click()
+    a.click();
   });
 }
 
 async function eliminar() {
-  const id = route.params.id
+  const id = route.params.id;
   try {
     try {
-      await del.deleteTabla(`/respuestas/delete/group/${id}`)
-      await del.deleteTabla(`/encuestas/delete/${id}`)
+      await deleteTabla(`/respuestas/delete/group/${id}`);
+      await deleteTabla(`/encuestas/delete/${id}`);
     } catch (err) {
-      pop.createPopup(err.message)
+      pop.createPopup(err.message);
     }
-    pop.createPopup("Encuesta eliminada.", e => {
-      router.push('/admin'); e.target.parentElement.parentElement.remove()
-    })
+    pop.createPopup("Encuesta eliminada.", (e) => {
+      router.push("/admin");
+      e.target.parentElement.parentElement.remove();
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
 
@@ -97,11 +99,18 @@ onMounted(() => {
   <section>
     <template v-if="datos && datosLength > 0 && resultados && resultadosLength">
       <TablaResumen :resultados="resultados" :datos="datos" />
-      <button class="boton boton-terminar" data-html2canvas-ignore @click="createPDF" :disabled="isCanvas">
-        {{ isCanvas ? 'Exportando...' : 'Exportar a PDF' }}
+      <button
+        class="boton boton-terminar"
+        data-html2canvas-ignore
+        @click="createPDF"
+        :disabled="isCanvas"
+      >
+        {{ isCanvas ? "Exportando..." : "Exportar a PDF" }}
       </button>
     </template>
-    <template v-else-if="!isTimeout && (datosLength < 1 || resultadosLength < 1)">
+    <template
+      v-else-if="!isTimeout && (datosLength < 1 || resultadosLength < 1)"
+    >
       <p class="cargando"></p>
       <p>Cargando...</p>
     </template>
@@ -110,7 +119,9 @@ onMounted(() => {
     </template>
     <template v-else>
       <p>La encuesta que intenta acceder no tiene ningún valor.</p>
-      <button class="boton boton-eliminar" @click="eliminar">Eliminar encuesta</button>
+      <button class="boton boton-eliminar" @click="eliminar">
+        Eliminar encuesta
+      </button>
     </template>
   </section>
   <section>
