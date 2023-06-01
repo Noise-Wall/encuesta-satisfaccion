@@ -107,32 +107,49 @@ section > p {
 /* Menu de seleccion de categorias */
 
 .menu {
-  width: 100%;
+  width: 90%;
+  height: 4em;
+  margin: 10px auto;
   padding: 15px;
   list-style-type: none;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  /* gap: 35px; */
+  border-radius: 15px;
   background-color: var(--color2);
   cursor: pointer;
 }
 
-.menu a {
+.menu li {
   text-decoration: none;
   color: var(--colorlaquin);
-  background-color: var(--color3);
-  padding: 20px 10px;
+  border-radius: 15px;
+  border: 3px solid rgba(0,0,0,0);
+  padding: 5px 15px;
+  margin: 0 auto;
 }
 
 .menu > li:hover {
-  color: rgba(95, 238, 90, 0.9);
-  font-size: 1.05rem;
+  color: var(--colorFondo1);
+  font-weight: bold;
   text-decoration: underline;
+  border: 3px solid orange;
 }
 
 .menu > li:active {
   color: orange;
-  font-size: 1.05rem;
+  font-weight: bold;
   text-decoration: underline;
+  border: 3px solid var(--colorFondo1);
+}
+
+.menu .active {
+  color: green;
+  font-weight: bold;
+  text-decoration: underline;
+  border: 3px solid orange;
 }
 
 /* Clases de tabla */

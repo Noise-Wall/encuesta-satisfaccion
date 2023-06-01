@@ -17,46 +17,46 @@ const router = createRouter({
             path: "/admin",
             name: "admin",
             params: true,
-            component: ()=>import("../views/AdminView.vue")
+            component: ()=>import("../views/admin/AdminView.vue")
         },
         {
             path: "/admin/editar/:categoria/:id",
             name: "editar",
             params: true,
-            component: ()=>import("../views/EditView.vue"),
+            component: ()=>import("../views/admin/EditView.vue"),
         },
         {
             path: "/admin/agregar/:categoria",
             name: "agregar",
             params: true,
-            component: ()=>import("../views/EditView.vue"),
+            component: ()=>import("../views/admin/EditView.vue"),
         },
         {
             path: "/admin/eliminar/:categoria/:id",
             name: "eliminar",
             params: true,
-            component: ()=>import("../views/AdminView.vue")
+            component: ()=>import("../views/admin/AdminView.vue")
         },
         {
-            path: "/admin/encuestas/:id",
+            path: "/admin/encuestas",
             name: "resumen",
             params: true,
-            component: ()=>import("../views/SumarioView.vue")
+            component: ()=>import("../views/admin/ResultadosSelectView.vue")
         },
         {
             path: "/admin/pregunta",
             name: "preguntas",
-            component: ()=>import("../views/ResultadosView.vue")
+            component: ()=>import("../views/admin/ResultadosView.vue")
         },
         {
             path: "/encuesta/:id",
             name: "encuesta",
-            component: ()=>import("../views/EncuestaView.vue")
+            component: ()=>import("../views/encuesta/EncuestaView.vue")
         },
         {
             path: "/encuesta/error",
             name: "errorEncuesta",
-            component: ()=>import("../views/404EncuestaView.vue")
+            component: ()=>import("../views/encuesta/404EncuestaView.vue")
         },
         {
             path: "/:pathMatch(.*)*",

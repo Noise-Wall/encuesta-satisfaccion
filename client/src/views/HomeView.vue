@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import encuestaInfo from '../components/encuestaInfo.vue'
-import encuestaDatos from '../components/encuestaDatos.vue'
+import encuestaInfo from '../components/encuesta/encuestaInfo.vue'
+import encuestaDatos from '../components/encuesta/encuestaDatos.vue'
 
 const comenzado = ref(false)
 function comenzar() {

@@ -9,7 +9,7 @@
 - Implementar la creacion de graficas
 - (*Tentativo*) Separar la vista resumen de las encuestas en un apartado diferente
 - Terminar el README
-- Separar mas limpiamente los componentes por carpetas
+- ~~Separar mas limpiamente los componentes por carpetas~~
 - (*Tentativo*) Fragmentar las hojas de estilo para que solo se use donde se necesite.
 
 ---
@@ -26,7 +26,7 @@
 ### 2-MAY
 
 - Implementar paso de mensajes de estatus a las varias vistas cuando se realice una accion y se pushee a otra ruta.
-- Redecorar la seleccion de categorias
+- ~~Redecorar la seleccion de categorias~~
 - Marcar error si la base de datos no carga
 - Implementar el link de despertado
 
@@ -52,13 +52,44 @@
 - Agregar confirmacion a todos los edits y deletes que no se supone deben usarse.
 - Cambiar la habilitacion a un boton y un label verde/rojo
 - ~~Cachar las queries que responden con error~~
-- Cambiar la visualizacion de las preguntas a una vista ajena, en vez de entrar a ella mediante las preguntas como con las encuestas.
+- ~~Cambiar la visualizacion de las preguntas a una vista ajena, en vez de entrar a ella mediante las preguntas como con las encuestas.~~
 - ~~Cambiar query de preguntas respuestas a dar info por ano.~~
 
 ### 18-MAY
 
 - Ver plugin AutoTable del jsPDF
-- Implementar limite de objetos mostrados en tablas ()
+- ~~Implementar limite de objetos mostrados en tablas ()~~
 - Implementar modulos, para no estar importando los archivos completos al requerir una sola funcion
-- Implementar parametros GET en la vista Admin, para seleccionar la tabla y la página (y para quitar de una buena vez la categoria)
-    - Para la paginacion, agregar a todas las rutas un parametro extra de paginado
+- ~~Implementar parametros GET en la vista Admin, para seleccionar la tabla y la página (y para quitar de una buena vez la categoria)~~
+    - ~~Para la paginacion, agregar a todas las rutas un parametro extra de paginado~~
+
+
+### 26-MAY
+
+- Hacer lo siguiente
+
+```
+isTimeout > runTimeout
+
+isLogin > validateLogin
+
+refs into simple getFromApi
+
+possibly process router pushes and route info on a separate file?
+
+
+button component with default onclick as push
+
+external loading component
+
+external seleccionar form component
+```
+
+- La clase menu  necesita acortarse cuando la pantalla es pequena
+
+- Unir las clases menu y vista-nueva
+
+- En vista resultados (preguntas), hacer refs los campos del formulario
+    - Posible solucion para el colectado de empresas en Encuesta View
+
+- exportar formatos de fecha
