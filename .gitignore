@@ -6,3 +6,6 @@ client/dist
 
 # Local Netlify folder
 .netlify
+
+*.xlsx
+*.pdf

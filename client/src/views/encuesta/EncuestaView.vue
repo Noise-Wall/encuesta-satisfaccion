@@ -177,11 +177,11 @@ getCategorias();
       <p>Lo sentimos. No se han encontrado preguntas.</p>
     </template>
     <template v-else>
-      <div class="debug">
+      <!-- <div class="debug">
         <button class="boton" @click="rellenarEncuesta">
           (DEBUG) Rellenar encuesta
         </button>
-      </div>
+      </div> -->
 
       <div class="info">
         <p>Los criterios de evaluación son los siguientes:</p>

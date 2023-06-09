@@ -16,6 +16,7 @@ const encuestaRoute = require("./routes/encuesta");
 const respuestasRoute = require("./routes/respuestas");
 const latestRoute = require("./routes/latest");
 const userRoute = require("./routes/user");
+const resultadosRoute = require("./routes/resultados");
 
 // configura el puerto
 app.set("port", process.env.PORT || 8080);
@@ -69,6 +70,8 @@ app.use("/encuestas", encuestaRoute);
 app.use("/respuestas", respuestasRoute);
 app.use("/latest", latestRoute);
 app.use("/usuarios", userRoute);
+app.use("/resultados", resultadosRoute);
+
 // route 404
 app.all("*", (req, res) =>
   res.status(404).json({

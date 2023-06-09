@@ -4,9 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "dev": "clear && nodemon src/app.js",
-    "pdf": "node src/controllers/file/fileHandler.js pdf",
-    "xlsx": "node src/controllers/file/fileHandling.js xlsx"
+    "dev": "clear && nodemon src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -16,14 +14,16 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "exceljs": "^4.3.0",
     "express": "^4.18.2",
     "express-myconnection": "^1.0.4",
     "express-rate-limit": "^6.7.0",
     "jsonwebtoken": "^9.0.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
+    "lodash": "^4.17.21",
     "mysql2": "^3.1.2",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
+    "xlsx-populate": "^1.21.0"
   },
   "devDependencies": {
     "morgan": "^1.10.0",
