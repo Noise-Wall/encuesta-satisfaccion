@@ -56,4 +56,13 @@ export default {
       console.log(`Get method ERROR: ${e.message} `);
     }
   },
+  async getXLSX(string, filename) {
+    try {
+      let res = await download(string, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      .then((result) => {console.log(result); fileDownload(result.data, filename)});
+      return res;
+    } catch (e) {
+      console.log(`Get method ERROR: ${e.message} `);
+    }
+  },
 };

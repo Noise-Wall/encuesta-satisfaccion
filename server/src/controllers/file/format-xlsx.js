@@ -2,13 +2,23 @@ const xlsxPopulate = require("xlsx-populate");
 const { crearPlantilla } = require("./format-xlsx-template");
 
 async function generarXLSX(data) {
-  await crearPlantilla(data.year)
+  await crearPlantilla(data.year);
 
   console.log("Creating XLSX file...");
-  xlsxPopulate.fromFileAsync("encuesta.xlsx").then((wb) => {
-  // xlsxPopulate.fromBlankAsync().then((wb) => {
+  xlsxPopulate.fromFileAsync("template.xlsx").then((wb) => {
     const sheet = wb.sheet(0);
     sheet.name(`${data.year}`);
+
+    const filteredData = {
+      c1: filteredRespuestas(Object.values(data.respuestas), 1, sheet.name()),
+      c2: filteredRespuestas(Object.values(data.respuestas), 2, sheet.name()),
+      c3: filteredRespuestas(Object.values(data.respuestas), 3, sheet.name()),
+      c4: filteredRespuestas(Object.values(data.respuestas), 4, sheet.name()),
+    };
+
+    filteredData.len = Object.values(filteredData).reduce((a, b) =>
+      a.length > b.length ? a : b
+    ).length;
 
     sheet.range("A1:BA1").forEach((cell) => {
       cell.column().width(5.1);
@@ -31,18 +41,22 @@ async function generarXLSX(data) {
     rowSiguiente = poblarPreguntas(sheet, data.preguntas, 6);
     colSiguiente = poblarEncuestas(
       sheet,
-      filteredRespuestas(Object.entries(data.respuestas), 1, sheet.name()),
+      filteredData.c1,
       9,
       3,
-      1
+      1,
+      filteredData.len
     );
+    console.log(colSiguiente);
     colSiguiente = poblarEncuestas(
       sheet,
-      filteredRespuestas(Object.entries(data.respuestas), 2, sheet.name()),
+      filteredData.c2,
       9,
       colSiguiente,
-      2
+      2,
+      filteredData.len
     );
+    console.log(colSiguiente);
     poblarFuncionesEncuesta(
       sheet,
       rowSiguiente,
@@ -55,17 +69,19 @@ async function generarXLSX(data) {
     poblarPreguntas(sheet, data.preguntas, rowSiguiente + 3);
     colSiguiente = poblarEncuestas(
       sheet,
-      filteredRespuestas(Object.entries(data.respuestas), 3, sheet.name()),
+      filteredData.c3,
       rowSiguiente + 6,
       3,
-      3
+      3,
+      filteredData.len
     );
     colSiguiente = poblarEncuestas(
       sheet,
-      filteredRespuestas(Object.entries(data.respuestas), 4, sheet.name()),
+      filteredData.c4,
       rowSiguiente + 6,
       colSiguiente,
-      4
+      4,
+      filteredData.len
     );
     poblarFuncionesEncuesta(
       sheet,
@@ -75,8 +91,9 @@ async function generarXLSX(data) {
     );
     sombreroTabla(sheet, rowSiguiente + 3, colSiguiente - 1);
 
-    // return wb.toFileAsync("./encuesta.xlsx");
-    return wb.outputAsync();
+    console.log("XLSX creado.");
+    return wb.toFileAsync("encuesta.xlsx");
+    // return wb.outputAsync();
   });
 }
 
@@ -121,29 +138,35 @@ function poblarPreguntas(sheet, data, rpos) {
   return rpos + data.length + 3;
 }
 
-function poblarEncuestas(sheet, data, rpos, cpos, trimestre) {
-  for (let i = 0; i < data.length; i++) {
+function poblarEncuestas(sheet, data, rpos, cpos, trimestre, maxLength) {
+  for (let i = 0; i < maxLength; i++) {
     const dataInicio = sheet.row(rpos).cell(cpos + i);
-    dataInicio
-      .value(data[i])
-      .style({ border: { left: "medium", right: "medium", bottom: "dashed" } });
+    if (data[i]) {
+      dataInicio.value(data[i]).style({
+        border: { left: "medium", right: "medium", bottom: "dashed" },
+      });
+    } else {
+      dataInicio.value(Array(data[0].length).fill(["-"])).style({
+        border: { left: "medium", right: "medium", bottom: "dashed" },
+      });
+    }
   }
 
   // Titulos de los datos de la encuesta
   sheet
-    .range(rpos - 1, cpos, rpos - 1, cpos + data.length - 1)
+    .range(rpos - 1, cpos, rpos - 1, cpos + maxLength - 1)
     .forEach((valor) => valor.value(`C${valor.columnNumber() - cpos + 1}`))
     .style({ border: "medium", bold: true });
 
   sheet
-    .range(rpos - 2, cpos, rpos - 2, cpos + data.length)
+    .range(rpos - 2, cpos, rpos - 2, cpos + maxLength)
     .merged(true)
     .value(`${trimestre}${trimestre == 1 ? "ER" : "°"} TRIMESTRE`)
     .style({ border: "medium" });
 
-  poblarFuncionesPregunta(sheet, rpos - 1, cpos + data.length, data.length);
+  poblarFuncionesPregunta(sheet, rpos - 1, cpos + maxLength, maxLength);
 
-  return cpos + data.length + 1;
+  return cpos + maxLength + 1;
 }
 
 function poblarFuncionesPregunta(sheet, rpos, cpos, offset) {
@@ -216,13 +239,13 @@ function filteredRespuestas(data, trimestre, year) {
   const dataFilter = data
     .filter(
       (res) =>
-        new Date(res[1][1].fecha) >= new Date(inicio) &&
-        new Date(res[1][1].fecha) < new Date(fin)
+        new Date(res[1].fecha) >= new Date(inicio) &&
+        new Date(res[1].fecha) < new Date(fin)
     )
     .sort((a, b) => {
-      return new Date(a[1][1].fecha) > new Date(b[1][1].fecha);
+      return new Date(a[1].fecha) > new Date(b[1].fecha);
     })
-    .map((valor) => Object.values(valor[1][0]))
+    .map((valor) => Object.values(valor[0]))
     .map((valor) => valor.map((entry) => [entry]));
 
   return dataFilter;

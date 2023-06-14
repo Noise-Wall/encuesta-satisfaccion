@@ -44,8 +44,8 @@ const router = createRouter({
             component: ()=>import("../views/admin/ResultadosSelectView.vue")
         },
         {
-            path: "/admin/pregunta",
-            name: "preguntas",
+            path: "/admin/resultados",
+            name: "resultados",
             component: ()=>import("../views/admin/ResultadosView.vue")
         },
         {

@@ -36,7 +36,7 @@ controller.login = async (req, res) => {
   if (res.headerSent) return;
   await validate(req, res)
     .then((result) => {
-      console.log(result.comparison);
+      // console.log(result.comparison);
 
       if (result.comparison) {
         const token = generateAccessToken({
@@ -114,7 +114,7 @@ async function validate(req, res) {
   let querySingle = {};
   let comparison;
   console.log("Intento de login");
-  console.log(req.body);
+  // console.log(req.body);
   if (nombreUsuario === null)
     return { message: "No se introdujo un nombre de usuario válido." };
 

@@ -1,8 +1,7 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import jsPDF from "jspdf";
-import autoTable, { Table } from "jspdf-autotable";
 import get from "../../services/get";
 import login from "../../services/login";
 
@@ -28,12 +27,17 @@ onMounted(() => {
   else isLogin.value = true;
 
   runTimeout();
+  getPreguntas();
+  getRespuestas();
 });
 
 const preguntas = ref([]);
 const respuestas = ref([]);
+const year = computed(() => (route.query.year ? route.query.year : null));
 
-const tablaExport = ref([]);
+watch(year, () => {
+  getRespuestas();
+});
 
 async function getPreguntas() {
   await get
@@ -41,101 +45,70 @@ async function getPreguntas() {
     .then((result) => {
       preguntas.value = result.Pregunta;
     })
-    .catch((e) => console.log(e));
+    .catch((err) => console.log(err.message));
 }
-getPreguntas();
 
-async function getRespuestas(e) {
-  e.target.innerHTML = "Exportando...";
-  const idPregunta = document.getElementById("id").value;
-  const fecha = document.getElementById("fecha").value;
-  const trimestres = [];
+async function getRespuestas() {
+  respuestas.value = []
+  await get
+    .getTabla(`/resultados/data/${year.value}`)
+    .then((result) => {
+      const respuestasArr = Object.values(result.Data).sort((a, b) => {
+        return new Date(a[1].fecha) > new Date(b[1].fecha);
+      });
 
-  if (fecha && !isNaN(fecha)) {
-    for (let i = 1; i <= 4; i++) {
-      await get
-        .getTabla(`/preguntas/respuestas/${idPregunta}/${fecha}/${i}`)
-        .then((result) => {
-          trimestres.push(result.Pregunta);
-        })
-        .catch((e) => console.log(e));
-    }
-    // Se obtiene un arreglo con el maximo de valores disponibles
-    let csv = getLargestIndex(trimestres);
+      respuestas.value = respuestasArr;
+    })
+    .catch((err) => console.log(err.message));
+  // console.log(respuestasPorTrimestre(4));
+}
 
-    // Formato vertical de los datos
-    trimestres.forEach((trimestre) => {
-      for (let i = 0; i < csv.length; i++) {
-        if (trimestre[i]) {
-          csv[i].push(
-            `\"${trimestre[i].valor}\",\"${formatoFecha(
-              new Date(trimestre[i].fecha)
-            )}\"`
-          );
-        } else csv[i].push("\"\",\"\"");
-      }
-    });
-
-    // Se anexan promedios al fondo
-    let promedios = trimestres.map(trimestre => `\"${getPromedio(trimestre)}\",\"\"`)
-    csv.push(promedios)
-
-    // Se prepara el documento csv
-    const headerString = `\"${fecha}\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"\n\"C1\",\"\","C2\",\"\","C3\",\"\","C4\",\"\"\n`
-    const csvString =
-      "data:text/csv;charset=utf-8," + headerString + csv.map((e) => e.join(",")).join("\n");
-
-    // Se exporta
-    const a = document.createElement("a");
-    a.target = "_blank";
-    a.href = encodeURI(csvString)
-    a.download = `${fecha}.csv`;
-    a.click();
-
-    // respuestas.value = trimestres
-    e.target.innerHTML = "Generar tabla";
-    return;
+function respuestasPorTrimestre(trimestre = 0) {
+  let inicio = new Date(`${year.value}-01-01`);
+  let fin;
+  switch (trimestre) {
+    case 1:
+      fin = new Date(`${year.value}-04-01`);
+      break;
+    case 2:
+      inicio = new Date(`${year.value}-04-01`);
+      fin = new Date(`${year.value}-07-01`);
+      break;
+    case 3:
+      inicio = new Date(`${year.value}-07-01`);
+      fin = new Date(`${year.value}-10-01`);
+      break;
+    case 4:
+      inicio = new Date(`${year.value}-10-01`);
+      fin = new Date(`${parseInt(year.value) + 1}-01-01`);
+      break;
   }
-}
-
-async function generateTabla() {
-  tablaExport.value = [];
-  const doc = new jsPDF();
-  respuestas.value.forEach((res) => {
-    const list = [];
-    res.forEach((e) => {
-      list.push(Object.values(e));
-    });
-    tablaExport.value.push(list);
-  });
-  console.log(tablaExport.value);
-
-  return;
-
-  // autoTable(doc, { columns: [{header: "Valor", dataKey: "valor"}, {header: "Fecha", dataKey: "fecha"}],body: tablaExport.value })
-
-  const a = document.createElement("a");
-  a.target = "_blank";
-  // a.href=encodeUri
-  a.href = doc.output("bloburl");
-  a.click();
-}
-
-function getLargestIndex(array) {
-  let length = 0;
-  let newArray = [];
-  array.forEach(
-    (item) => (length = item.length > length ? item.length : length)
+  // Object.values(respuestas.value).forEach(respuesta => console.log(respuesta))
+  return Object.values(respuestas.value).filter(
+    (respuesta) =>
+      new Date(respuesta[1].fecha) >= inicio &&
+      new Date(respuesta[1].fecha) < fin
   );
-  for (let i = 0; i < length; i++) {
-    newArray.push([]);
-  }
-  return newArray;
+}
+// respuestasPorTrimestre(1);
+async function exportarXLSX(e) {
+  e.target.innerHTML = "Exportando...";
+  e.target.disabled = true
+  await get
+    .getXLSX(`/resultados/${year.value}`, `encuesta-${year.value}.xlsx`)
+    .then(() => {
+      e.target.innerHTML = "Exportar a archivo Excel";
+      e.target.disabled = false
+    })
+    .catch((err) => console.log(err));
 }
 
 function getPromedio(arr) {
-    let resultado = arr.reduce((count, respuesta) => count + respuesta.valor, 0);
-    return (resultado / arr.length).toFixed(2)
+  let count = 0
+  for (let i in arr) {
+    count += arr[i]
+  }
+  return (count / arr.length).toFixed(2);
 }
 
 function formatoFecha(date) {
@@ -144,6 +117,13 @@ function formatoFecha(date) {
     month: "numeric",
     year: "numeric",
   }).format(date);
+}
+
+function tablaColumnas(data) {
+  const length = Object.values(data).length;
+  console.log("length:", length);
+
+  return "2fr ".padEnd((length + 2) * 4, "1fr ");
 }
 </script>
 
@@ -156,52 +136,126 @@ function formatoFecha(date) {
     Hubo un error al conectar al servicio. Intente de nuevo.
   </section>
   <section v-else>
-    <form class="form" id="form">
-      <label for="id">Seleccionar pregunta:</label>
-      <select name="id" id="id">
-        <option v-for="pregunta in preguntas" :value="pregunta.idPregunta">
-          {{ pregunta.contenidoPregunta }}
-        </option>
-      </select>
+    <form class="form" id="form" @submit="(e) => e.preventDefault()">
       <label for="fecha">Seleccionar periodo:</label>
       <input
         type="number"
         name="fecha"
         min="2000"
-        max="2100"
-        value="2023"
+        max="2200"
         id="fecha"
+        @load="(e) => { e.target.value = new Date().getFullYear()}"
+        @change="
+          (e) => {
+            router.push(`/admin/resultados?year=${e.target.value}`);
+          }
+        "
       />
     </form>
 
-    <div v-if="respuestas.length > 0" class="flex-tablas">
-      <TableTrimestres
-        :respuestas="respuestas[0]"
-        v-if="respuestas[0].length > 0"
-        >Trimestre 1</TableTrimestres
+  <template v-if="Object.values(respuestas).length > 0">
+    <div
+      
+      class="panel-tabla"
+      :style="`grid-template-columns: ${tablaColumnas(respuestas[0][0])};`"
+    >
+      <div class="item-tabla item-tabla-head">1er Trimestre</div>
+      <div class="item-tabla item-tabla-head" v-for="(campos, p) in respuestas[0][0]" :index="p">P{{p}}</div>
+      <div class="item-tabla item-tabla-head">Prom.</div>
+      <template
+        v-for="(respuesta, index) in respuestasPorTrimestre(1)"
+        :key="index"
       >
-      <TableTrimestres
-        :respuestas="respuestas[1]"
-        v-if="respuestas[1].length > 0"
-        >Trimestre 2</TableTrimestres
-      >
-      <TableTrimestres
-        :respuestas="respuestas[2]"
-        v-if="respuestas[2].length > 0"
-        >Trimestre 3</TableTrimestres
-      >
-      <TableTrimestres
-        :respuestas="respuestas[3]"
-        v-if="respuestas[3].length > 0"
-        >Trimestre 4</TableTrimestres
-      >
+        <div class="item-tabla" v-if="!respuesta[0].hasOwnProperty('fecha')">
+          Encuesta {{ index + 1 }}
+        </div>
+        <div
+          class="item-tabla"
+          v-if="!respuesta[0].hasOwnProperty('fecha')"
+          v-for="entry in Object.values(respuesta[0])"
+        >
+          {{ entry }}
+        </div>
+        <div class="item-tabla">{{ getPromedio(Object.values(respuesta[0])) }}</div>
+      </template>
     </div>
-    <button class="boton" @click="generateCsv" v-if="respuestas.length > 0">
-      Exportar
-    </button>
+    <div
+      class="panel-tabla"
+      :style="`grid-template-columns: ${tablaColumnas(respuestas[0][0])};`"
+    >
+      <div class="item-tabla item-tabla-head">2° Trimestre</div>
+      <div class="item-tabla item-tabla-head" v-for="(campos, p) in respuestas[0][0]" :index="p">P{{p}}</div>
+      <div class="item-tabla item-tabla-head">Prom.</div>
+      <template
+        v-for="(respuesta, index) in respuestasPorTrimestre(2)"
+        :key="index"
+      >
+        <div class="item-tabla" v-if="!respuesta[0].hasOwnProperty('fecha')">
+          Encuesta {{ index + 1 }}
+        </div>
+        <div
+          class="item-tabla"
+          v-if="!respuesta[0].hasOwnProperty('fecha')"
+          v-for="entry in Object.values(respuesta[0])"
+        >
+          {{ entry }}
+        </div>
+        <div class="item-tabla">{{ getPromedio(Object.values(respuesta[0])) }}</div>
+      </template>
+    </div>
+    <div
+      class="panel-tabla"
+      :style="`grid-template-columns: ${tablaColumnas(respuestas[0][0])};`"
+    >
+      <div class="item-tabla item-tabla-head">3° Trimestre</div>
+      <div class="item-tabla item-tabla-head" v-for="(campos, p) in respuestas[0][0]" :index="p">P{{p}}</div>
+      <div class="item-tabla item-tabla-head">Prom.</div>
+      <template
+        v-for="(respuesta, index) in respuestasPorTrimestre(3)"
+        :key="index"
+      >
+        <div class="item-tabla" v-if="!respuesta[0].hasOwnProperty('fecha')">
+          Encuesta {{ index + 1 }}
+        </div>
+        <div
+          class="item-tabla"
+          v-if="!respuesta[0].hasOwnProperty('fecha')"
+          v-for="entry in Object.values(respuesta[0])"
+        >
+          {{ entry }}
+        </div>
+        <div class="item-tabla">{{ getPromedio(Object.values(respuesta[0])) }}</div>
+      </template>
+    </div>
+    <div
+      class="panel-tabla"
+      :style="`grid-template-columns: ${tablaColumnas(respuestas[0][0])};`"
+    >
+      <div class="item-tabla item-tabla-head">4° Trimestre</div>
+      <div class="item-tabla item-tabla-head" v-for="(campos, p) in respuestas[0][0]" :index="p">P{{p}}</div>
+      <div class="item-tabla item-tabla-head">Prom.</div>
+      <template
+        v-for="(respuesta, index) in respuestasPorTrimestre(4)"
+        :key="index"
+      >
+        <div class="item-tabla" v-if="!respuesta[0].hasOwnProperty('fecha')">
+          Encuesta {{ index + 1 }}
+        </div>
+        <div
+          class="item-tabla"
+          v-if="!respuesta[0].hasOwnProperty('fecha')"
+          v-for="entry in Object.values(respuesta[0])"
+        >
+          {{ entry }}
+        </div>
+        <div class="item-tabla">{{ getPromedio(Object.values(respuesta[0])) }}</div>
+      </template>
+    </div>
+    </template>
 
-    <button class="boton" @click="(e) => getRespuestas(e)">
-      Generar tabla y exportar
+    <p v-else> No se encontraron encuestas en este año.</p>
+    <button class="boton" @click="(e) => exportarXLSX(e)">
+      Exportar a archivo Excel
     </button>
   </section>
   <section>

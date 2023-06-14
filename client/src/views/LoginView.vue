@@ -7,6 +7,7 @@ const route = useRoute();
 const router = useRouter();
 
 async function inicioSesion(e) {
+  e.target.disabled = true
   e.target.value = "Autenticando...";
   let data = Object.fromEntries(
     new FormData(document.querySelector("#form")).entries()
@@ -18,6 +19,7 @@ async function inicioSesion(e) {
     createPopup("Debe llenar todos los campos.", (f) =>
       f.target.parentElement.parentElement.remove()
     );
+    e.target.disabled = false
     e.target.value = "Iniciar sesión";
     return;
   }
@@ -30,6 +32,7 @@ async function inicioSesion(e) {
           result.data.message ||
           "Ha habido un error al intentar iniciar sesión. Inténtalo de nuevo.";
         createPopup(mensaje);
+        e.target.disabled = false
         e.target.value = "Iniciar sesión";
         return;
       }
@@ -38,6 +41,7 @@ async function inicioSesion(e) {
   } catch (error) {
     console.log(error.message);
     createPopup(error.message);
+    e.target.disabled = false
     e.target.value = "Iniciar sesión";
     return;
   }

@@ -18,7 +18,7 @@ async function crearPlantilla(year) {
   });
 
   ws.addImage(logo, "A1:C5");
-  await wb.xlsx.writeFile("encuesta.xlsx");
+  await wb.xlsx.writeFile("template.xlsx");
 }
 
 module.exports = { crearPlantilla };

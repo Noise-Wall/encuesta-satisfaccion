@@ -152,7 +152,7 @@ async function logout() {
       <div
         v-if="categoria === 'Preguntas'"
         class="vista-nueva"
-        @click="router.push('/admin/pregunta')"
+        @click="router.push(`/admin/resultados?year=${new Date().getFullYear()}`)"
       >
         <i class="fa-solid fa-chart-simple"></i>
         <p>Ir a resultados</p>
@@ -187,9 +187,6 @@ async function logout() {
       />
       <button class="boton" @click="agregar">
         <h1>+</h1>
-      </button>
-      <button class="boton" @click="exportar">
-        <h1>Exportar</h1>
       </button>
     </template>
     <template v-else-if="!isTimeout">
