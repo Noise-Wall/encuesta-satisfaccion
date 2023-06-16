@@ -1,5 +1,6 @@
 const xlsxPopulate = require("xlsx-populate");
 const { crearPlantilla } = require("./format-xlsx-template");
+const { hojaCategoria } = require("./xlsx-hoja-cat")
 
 async function generarXLSX(data) {
   await crearPlantilla(data.year);
@@ -47,7 +48,6 @@ async function generarXLSX(data) {
       1,
       filteredData.len
     );
-    console.log(colSiguiente);
     colSiguiente = poblarEncuestas(
       sheet,
       filteredData.c2,
@@ -56,7 +56,6 @@ async function generarXLSX(data) {
       2,
       filteredData.len
     );
-    console.log(colSiguiente);
     poblarFuncionesEncuesta(
       sheet,
       rowSiguiente,
@@ -90,6 +89,11 @@ async function generarXLSX(data) {
       data.preguntas.length
     );
     sombreroTabla(sheet, rowSiguiente + 3, colSiguiente - 1);
+
+    console.log("Creando hoja de información por categoría...")
+
+      
+      hojaCategoria(wb.addSheet('Resultado anual por categoría'),data.categorias)
 
     console.log("XLSX creado.");
     return wb.toFileAsync("encuesta.xlsx");
@@ -140,15 +144,18 @@ function poblarPreguntas(sheet, data, rpos) {
 
 function poblarEncuestas(sheet, data, rpos, cpos, trimestre, maxLength) {
   for (let i = 0; i < maxLength; i++) {
-    const dataInicio = sheet.row(rpos).cell(cpos + i);
+    let dataInicio = sheet.row(rpos).cell(cpos + i);
     if (data[i]) {
       dataInicio.value(data[i]).style({
         border: { left: "medium", right: "medium", bottom: "dashed" },
       });
     } else {
-      dataInicio.value(Array(data[0].length).fill(["-"])).style({
-        border: { left: "medium", right: "medium", bottom: "dashed" },
-      });
+      while (dataInicio.relativeCell(0, -1).value() != null) {
+        dataInicio.value("-").style({
+          border: { left: "medium", right: "medium", bottom: "dashed" },
+        });
+        dataInicio = dataInicio.relativeCell(1, 0);
+      }
     }
   }
 
@@ -170,13 +177,14 @@ function poblarEncuestas(sheet, data, rpos, cpos, trimestre, maxLength) {
 }
 
 function poblarFuncionesPregunta(sheet, rpos, cpos, offset) {
+  console.log("rpos: ", rpos, "cpos: ", cpos, "offset: ", offset)
   // Titulo de columna de promedios
   let pos = sheet.cell(rpos, cpos);
   pos.value("Prom.").style({ border: "medium", bold: true });
   let posOffset = sheet.cell(rpos + 1, cpos - offset);
   pos = pos.relativeCell(1, 0);
 
-  while (!isNaN(posOffset.value())) {
+  while (!isNaN(posOffset.value()) || posOffset.value() === "-") {
     pos
       .formula(
         `AVERAGE(${posOffset.address()}:${pos.relativeCell(0, -1).address()})`

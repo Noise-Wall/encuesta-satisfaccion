@@ -78,7 +78,7 @@ controller.exportarPDF = async (req, res) => {
 
   const fileName = join(__dirname, "../../resultados.pdf");
   
-  res.download(fileName, 'result.pdf', function (err) {
+  res.status(201).download(fileName, 'result.pdf', function (err) {
     if (err) {
       console.log(err);
     } else {

@@ -61,6 +61,12 @@ function mostrarContrasena(e) {
   }
 }
 
+function pressEnter (e) {
+  if (e.key === "Enter") {
+    document.getElementById('login').click()
+  } 
+}
+
 if (!route.fullPath.startsWith(login.validateRoute(route))) console.log(false);
 </script>
 <template>
@@ -71,7 +77,7 @@ if (!route.fullPath.startsWith(login.validateRoute(route))) console.log(false);
       <input type="text" name="nombreUsuario" class="form-item" />
       <label for="contrasena" class="form-item">Contraseña: </label>
       <span class="password">
-        <input type="password" name="contrasena" class="form-item" />
+        <input type="password" name="contrasena" class="form-item" @keydown="e => pressEnter(e)"/>
         <i class="fa-solid fa-eye" @click="(e) => mostrarContrasena(e)"></i>
       </span>
     </form>
@@ -79,6 +85,7 @@ if (!route.fullPath.startsWith(login.validateRoute(route))) console.log(false);
       type="submit"
       value="Iniciar sesión"
       class="boton"
+      id="login"
       @click="(e) => inicioSesion(e)"
     />
   </section>

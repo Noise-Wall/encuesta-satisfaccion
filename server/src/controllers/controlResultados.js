@@ -1,9 +1,9 @@
 const controller = {};
 const { generarXLSX } = require("./file/format-xlsx");
 const { query } = require("./query");
-const { merge } = require("lodash");
+const { merge, mergeWith, isArray } = require("lodash");
 const { join } = require("path");
-const { access, unlinkSync, constants } = require("fs");
+const { unlinkSync, existsSync } = require("fs");
 
 function getFormatDate(date) {
   const newDate = new Date(date);
@@ -17,7 +17,7 @@ function getFormatDate(date) {
   return newDate.getFullYear() + "-" + month + "-" + day;
 }
 
-controller.export = async (req, res) => {
+controller.export = async (req, res, next) => {
   const year =
     !isNaN(req.params.year) && req.params.year > 1900 && req.params.year < 2100
       ? req.params.year
@@ -28,10 +28,18 @@ controller.export = async (req, res) => {
     res,
     "SELECT contenidoPregunta FROM Pregunta WHERE deshabilitada = 1 ORDER BY idCategoria"
   );
+
   const respuestas = await query(
     req,
     res,
     "SELECT Respuesta.valor, Pregunta.idPregunta, Encuesta.idEncuesta, Encuesta.fecha FROM Pregunta INNER JOIN Respuesta ON Respuesta.idPregunta = Pregunta.idPregunta INNER JOIN Encuesta ON Encuesta.idEncuesta = Respuesta.idEncuesta WHERE Encuesta.fecha >= ? AND Encuesta.fecha < ? ORDER BY Encuesta.fecha, Pregunta.idCategoria, Pregunta.idPregunta",
+    [`${year}-01-01`, `${parseInt(year) + 1}-01-01`]
+  );
+
+  const categorias = await query(
+    req,
+    res,
+    "SELECT Encuesta.fecha, Respuesta.valor, Categoria.contenidoCategoria FROM Encuesta INNER JOIN Respuesta on Encuesta.idEncuesta = Respuesta.idEncuesta INNER JOIN Pregunta on Respuesta.idPregunta = Pregunta.idPregunta INNER JOIN Categoria on Pregunta.idCategoria = Categoria.idCategoria WHERE Encuesta.fecha >= ? AND Encuesta.fecha < ? ORDER BY Encuesta.fecha, Pregunta.idCategoria",
     [`${year}-01-01`, `${parseInt(year) + 1}-01-01`]
   );
 
@@ -44,28 +52,39 @@ controller.export = async (req, res) => {
     }))
     .reduce((anterior, respuesta) => merge(anterior, respuesta));
 
-  const encuesta = await generarXLSX({
+  const categoriasArr = categorias
+    .map((categoria) => ({
+      [getFormatDate(categoria.fecha).substring(0, 7)]: {
+        [categoria.contenidoCategoria]: [categoria.valor],
+      },
+    }))
+    .reduce((anterior, categoria) =>
+      mergeWith(anterior, categoria, (obj, src) => {
+        if (isArray(obj)) return obj.concat(src);
+      })
+    );
+
+  await generarXLSX({
     year: year,
     preguntas: preguntas,
     respuestas: respuestasArr,
-  });
-  const filename = join(__dirname, "../../encuesta.xlsx");
-  access(filename, constants.F_OK, (err) => {
-    if (err) {
-      res
-        .status(500)
-        .json({ message: "Hubo un error al intentar enviar archivo." });
-    } else {
-      res.download(filename, "encuesta.xlsx", (err) => {
-        if (err) console.log(err);
-        else {
-          console.log("Sent ", filename);
-          unlinkSync(filename);
-          unlinkSync(join(__dirname, "../../template.xlsx"));
-        }
-      });
-    }
-  });
+    categorias: categoriasArr,
+  }).then(() =>
+    setTimeout(() => {
+      const filename = join(__dirname, "../../encuesta.xlsx");
+
+      console.log(existsSync(filename));
+      if (existsSync(filename))
+        res.status(201).download(filename, "encuesta.xlsx", (err) => {
+          if (err) {
+            res.status(500).json({ message: "Archivo XLSX no encontrado." });
+          } else {
+            console.log("Sent ", filename);
+          }
+        });
+      else res.status(500).json({ message: "Error enviando archivo" });
+    }, 3000)
+  );
 };
 // metodo HTTP GET para obtener todas las respuestas que ha tenido una pregunta en un tiempo determinado.
 controller.data = async (req, res) => {
@@ -97,9 +116,12 @@ controller.data = async (req, res) => {
 
   console.log(`inicio ${inicio}, fin ${fin}`);
 
-  const respuestas = await query(req, res, sql, [inicio, fin])
+  const respuestas = await query(req, res, sql, [inicio, fin]);
 
-  if (respuestas.length < 1) return res.status(404).json({message: "Este año no tiene ninguna encuesta."})
+  if (respuestas.length < 1)
+    return res
+      .status(404)
+      .json({ message: "Este año no tiene ninguna encuesta." });
 
   const respuestasArr = Object.values(respuestas)
     .map((respuesta) => ({
@@ -110,7 +132,19 @@ controller.data = async (req, res) => {
     }))
     .reduce((anterior, respuesta) => merge(anterior, respuesta));
 
-  res.json({ Data: respuestasArr })
+  res.json({ Data: respuestasArr });
+};
+
+controller.clean = (req, res, next) => {
+  console.log("Cleaning previous files...");
+  const xlsxFile = join(__dirname, "../../encuesta.xlsx");
+  // "../../template.xlsx"
+  const xlsxTemplate = join(__dirname, "../../template.xlsx");
+
+  if (existsSync(xlsxFile)) unlinkSync(xlsxFile);
+  if (existsSync(xlsxTemplate)) unlinkSync(xlsxTemplate);
+
+  next();
 };
 
 module.exports = controller;
